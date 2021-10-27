@@ -20,7 +20,7 @@ public class BoardWritePostRes extends BaseResponseBody {
         BoardWritePostRes res = new BoardWritePostRes();
         res.setStatusCode(statusCode);
         res.setMessage(message);
-        res.setBoard(new BoardDto(board.getId(),board.getTitle(),board.getContent(),board.getRegDate(),board.getActive(),board.getUserId()));
+        res.setBoard(new BoardDto(board.getId(),board.getTitle(),board.getContent(),board.getRegDate(),board.getActive(),board.getUser().getEmail()));
         return res;
     }
 
