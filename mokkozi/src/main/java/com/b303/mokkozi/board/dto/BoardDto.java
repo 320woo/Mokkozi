@@ -17,16 +17,16 @@ public class BoardDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private Date regDate;
     private String active;
-    private Long userId;
+    private String userEmail;
 
 
     @Builder
-    public BoardDto(Long id, String title, String content, Date regDate, String active, Long userId) {
+    public BoardDto(Long id, String title, String content, Date regDate, String active, String userEmail) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.regDate = regDate;
         this.active = active;
-        this.userId = userId;
+        this.userEmail = userEmail;
     }
 }

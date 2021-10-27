@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 public interface BoardService {
     Page<BoardDto> getBoardList(BoardListGetReq boardListGetReq);
 
-    Board createBoard(String userEmail, BoardWritePostReq bwpr);
+    Board createBoard(User user, BoardWritePostReq bwpr);
 
     void deleteBoard(Long boardId) throws NoSuchElementException;
 
