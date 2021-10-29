@@ -8,6 +8,7 @@ import com.b303.mokkozi.board.response.BoardRes;
 import com.b303.mokkozi.board.response.BoardWritePostRes;
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.Board;
+import com.b303.mokkozi.entity.User;
 import io.swagger.annotations.*;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,10 +110,9 @@ public class BoardController {
 //            User user = userService.findByUserEmail(userEmail);
 //
 //            if (user != null) {
-
-//                 Board board = boardService.createBoard(userId,bwpr);
+        User user = new User();
         try{
-            Board board = boardService.createBoard("test@ssafy.com",bwpr);
+            Board board = boardService.createBoard(user,bwpr);
             return ResponseEntity.status(200).body(BoardWritePostRes.of(200, "게시글 작성 완료", board));
         }catch (Exception e){
             e.printStackTrace();
@@ -180,9 +180,8 @@ public class BoardController {
 //            if (user != null) {
 
         try{
-//                 Board board = boardService.createBoard(userId,boardId);
-
-            boardService.createBoardLike(user, boardId);
+            User user = new User();
+            boardService.createBoardLike(user,boardId);
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }catch (NoSuchElementException e){
             e.printStackTrace();

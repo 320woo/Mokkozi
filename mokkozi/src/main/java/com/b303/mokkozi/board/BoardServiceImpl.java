@@ -4,7 +4,6 @@ import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.board.request.BoardListGetReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.entity.Board;
-import com.b303.mokkozi.entity.BoardLike;
 import com.b303.mokkozi.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,9 +20,6 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     BoardRepository boardRepository;
 
-    @Autowired
-    BoardLikeRepository boardLikeRepository;
-
         @Override
         public Page<BoardDto> getBoardList(BoardListGetReq blgr) {
 
@@ -33,18 +29,18 @@ public class BoardServiceImpl implements BoardService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
             Page<Board> pageTuts = boardRepository.findAll(pageable);
-            Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(),m.getContent(),m.getRegDate(),m.getActive(),m.getUserId()));
+            Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(),m.getContent(),m.getRegDate(),m.getActive(),m.getUser().getEmail()));
 
             return boardList;
     }
 
     @Override
-    public Board createBoard(String userEmail, BoardWritePostReq bwpr) {
+    public Board createBoard(User user, BoardWritePostReq bwpr) {
 
             Board board = new Board();
             board.setTitle(bwpr.getTitle());
             board.setContent(bwpr.getContent());
-            board.setUserId(userEmail);
+            board.setUser(user);
             board.setActive("1");
             return boardRepository.save(board);
 
@@ -69,11 +65,11 @@ public class BoardServiceImpl implements BoardService {
             Pageable pageable = PageRequest.of(pageIdx,size,Sort.by(Sort.Direction.DESC,"id"));
             if(type.equals("writer")){
                 Page<Board> pageTuts = boardRepository.findByUserIdContaining(pageable,keyword);
-                Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(),m.getContent(),m.getRegDate(),m.getActive(),m.getUserId()));
+                Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(),m.getContent(),m.getRegDate(),m.getActive(),m.getUser().getEmail()));
                 return boardList;
             }else if(type.equals("title")){
                 Page<Board> pageTuts = boardRepository.findByTitleContaining(pageable,keyword);
-                Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(),m.getContent(),m.getRegDate(),m.getActive(),m.getUserId()));
+                Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(),m.getContent(),m.getRegDate(),m.getActive(),m.getUser().getEmail()));
                 return boardList;
             }else if(type.equals("tag")){
                 //태그..?
@@ -87,11 +83,11 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void createBoardLike(User user, Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("not found"));
-        BoardLike bl = new BoardLike();
-        bl.setUser(user);
-        bl.setBoard(board);
-        boardLikeRepository.save(bl);
+//        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("not found"));
+//        BoardLike bl = new BoardLike();
+//        bl.setUser(user);
+//        bl.setBoard(board);
+//        boardLikeRepository.save(bl);
     }
 
 }

@@ -19,7 +19,7 @@ public class BoardRes extends BaseResponseBody {
         BoardRes res = new BoardRes();
         res.setStatusCode(statusCode);
         res.setMessage(message);
-        res.setBoard(new BoardDto(board.getId(),board.getTitle(),board.getContent(),board.getRegDate(),board.getActive(),board.getUserId()));
+        res.setBoard(new BoardDto(board.getId(),board.getTitle(),board.getContent(),board.getRegDate(),board.getActive(),board.getUser().getEmail()));
         return res;
     }
 }

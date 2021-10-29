@@ -7,19 +7,25 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.util.Date;
 
 @Entity
 @Getter
 @Setter
-public class BoardLike {
+public class Gallery extends BaseEntity{
+
+    @Column(nullable = false)
+    private String filePath;
+    @Column(nullable = false)
+    private String title;
+    @Column(nullable = false)
+    private String sort;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",nullable = true)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "board_id",nullable = true)
     private Board board;
 
 }

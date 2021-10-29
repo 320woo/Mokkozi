@@ -9,17 +9,16 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-public class Board extends BaseEntity{
+public class ReportBoard extends BaseEntity{
 
-    private String title;
-    @Column(columnDefinition = "BLOB")
     private String content;
     private Date regDate;
-    private String active; //활동, 정지
+    private String result;
+
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "board_id",nullable = false)
+    private Board board;
 
     @PrePersist
     public void createdAt() {
