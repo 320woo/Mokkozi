@@ -63,7 +63,7 @@ public class BoardController {
 
     //게시글 상세조회
     @GetMapping("/{boardId}")
-    @ApiOperation(value = "게시글 목록 조회", notes = "게시글 목록을 조회한다.")
+    @ApiOperation(value = "게시글 상세 조회", notes = "단일 게시글을 조회한다.")
     @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> getBoardDetail(
@@ -163,7 +163,7 @@ public class BoardController {
 
     // 게시글 좋아요
     @PostMapping("/like")
-    @ApiOperation(value = "게시글 작성", notes = "새로운 게시글 작성한다.")
+    @ApiOperation(value = "게시글 좋아요", notes = "게시글 좋아요 기능을 적용한다.")
     @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> writeBoard(
@@ -181,7 +181,8 @@ public class BoardController {
 
         try{
 //                 Board board = boardService.createBoard(userId,boardId);
-            boardService.createBoardLike(user,boardId);
+
+            boardService.createBoardLike(user, boardId);
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }catch (NoSuchElementException e){
             e.printStackTrace();
