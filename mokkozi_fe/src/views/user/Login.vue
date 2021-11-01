@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="bg">
+  <v-container fluid>
     <v-row>
       <v-col>
         하이하이
@@ -20,9 +20,3 @@ export default {
   })
 }
 </script>
-
-<style lang="scss" scoped>
-.bg {
-  background-color: black;
-}
-</style>
