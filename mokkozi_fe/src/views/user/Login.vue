@@ -1,7 +1,11 @@
 <template>
-  <div>
-    로그인 페이지입니다.
-  </div>
+  <v-container fluid class="bg">
+    <v-row>
+      <v-col>
+        하이하이
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -9,11 +13,16 @@ export default {
   name: 'Login',
   props: {},
   data: () => ({
-    test: 1
+    user: {
+      email: '',
+      password: ''
+    }
   })
 }
 </script>
 
 <style lang="scss" scoped>
-
+.bg {
+  background-color: black;
+}
 </style>
