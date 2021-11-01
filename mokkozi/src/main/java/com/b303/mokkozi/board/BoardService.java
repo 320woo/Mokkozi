@@ -2,6 +2,7 @@ package com.b303.mokkozi.board;
 
 import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.board.request.BoardListGetReq;
+import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
@@ -21,4 +22,6 @@ public interface BoardService {
     Page<BoardDto> searchBoardList(String type,String keyword, int pageIdx);
 
     void createBoardLike(User userEmail, Long boardId);
+
+    Board modifyBoard(User user, BoardModifyPatchReq bmpr);
 }

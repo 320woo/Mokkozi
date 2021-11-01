@@ -2,6 +2,7 @@ package com.b303.mokkozi.board;
 
 import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.board.request.BoardListGetReq;
+import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.board.response.BoardListRes;
 import com.b303.mokkozi.board.response.BoardRes;
@@ -64,7 +65,7 @@ public class BoardController {
 
     //게시글 상세조회
     @GetMapping("/{boardId}")
-    @ApiOperation(value = "게시글 목록 조회", notes = "게시글 목록을 조회한다.")
+    @ApiOperation(value = "게시글 상세 조회", notes = "게시글 상세정보를 조회한다.")
     @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> getBoardDetail(
@@ -125,6 +126,35 @@ public class BoardController {
     }
 
     // 게시글 수정
+    @PatchMapping("")
+    @ApiOperation(value = "게시글 수정", notes = "게시글 정보를 수정한다.")
+    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
+            @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
+    public ResponseEntity<? extends BaseResponseBody> modifyBoard(
+            @RequestBody @ApiParam(value = "게시글 수정 정보", required = true) BoardModifyPatchReq bmpr
+//            ,@ApiIgnore Authentication authentication
+    ) {
+//        if (authentication == null) {
+//            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+//        } else {
+//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+//            String userEmail = userDetails.getUserEmail();
+//            User user = userService.findByUserEmail(userEmail);
+//
+//            if (user != null) {
+        User user = null;
+        try {
+            Board board = boardService.modifyBoard(user,bmpr);
+            return ResponseEntity.ok(BoardRes.of(200, "게시글 수정 완료.", board));
+        }catch (NoSuchElementException e){
+            return ResponseEntity.ok(BaseResponseBody.of(404, "게시글 결과 없음."));
+        }catch (Exception e){
+            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+        }
+//            }
+
+//        }
+    }
 
 
     // 게시글 삭제
@@ -163,7 +193,7 @@ public class BoardController {
 
     // 게시글 좋아요
     @PostMapping("/like")
-    @ApiOperation(value = "게시글 작성", notes = "새로운 게시글 작성한다.")
+    @ApiOperation(value = "게시글 좋아요", notes = "게시글 좋아요")
     @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> writeBoard(
