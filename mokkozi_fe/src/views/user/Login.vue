@@ -10,11 +10,14 @@
           <div>
             <v-text-field label="아이디" outlined></v-text-field>
             <v-text-field label="비밀번호" outlined></v-text-field>
-            <v-btn class="mb-3" width="100%" outlined color="#FF9292">
+            <v-btn class="mb-3" width="100%" outlined color="#FF9292" @click="login">
               로그인
             </v-btn>
-            <v-btn width="100%" outlined color="#FF9292">
+            <v-btn class="mb-3" width="100%" outlined color="#FF9292">
               <v-icon>fab fa-google</v-icon>Google 계정으로 로그인
+            </v-btn>
+            <v-btn width="100%" outlined color="#FF9292" @click="goToJoin">
+              아직 회원이 아니세요? 회원가입하기!
             </v-btn>
           </div>
         </div>
@@ -25,6 +28,9 @@
 </template>
 
 <script>
+import router from '../../router'
+import axios from 'axios'
+
 export default {
   name: 'Login',
   props: {},
@@ -33,7 +39,21 @@ export default {
       email: '',
       password: ''
     }
-  })
+  }),
+  methods: {
+    goToJoin () {
+      router.push('Join')
+    },
+    login () {
+      axios({
+        url: 'http://localhost:8000/api/meet/user/login',
+        method: 'POST'
+      }).then(resp => {
+        console.log(resp)
+      })
+    }
+
+  }
 }
 </script>
 
