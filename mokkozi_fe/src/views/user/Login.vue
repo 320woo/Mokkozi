@@ -1,12 +1,13 @@
 <template>
   <v-container fluid>
     <!-- row의 height를 지정해야만 align을 통해 start, center, end로 배치할 수 있다. -->
-    <v-row align="center" style="height: 937px;">
-      <v-col class="pr-15">
+    <v-row justify="center" align="center" style="height: 937px; width: 500px;">
+      <v-col class="pa-4">
         <div class="login-box" elevation="1" outlined style="height: 400px;">
           <div class="d-flex flex-wrap justify-center">
             <v-img max-width="400" max-height="200" src="@/assets/text_logo.png"></v-img>
           </div>
+<<<<<<< HEAD
           <div>
             <v-text-field label="아이디" outlined></v-text-field>
             <v-text-field label="비밀번호" outlined></v-text-field>
@@ -20,8 +21,30 @@
               아직 회원이 아니세요? 회원가입하기!
             </v-btn>
           </div>
-        </div>
+=======
+          <v-form v-model="formValid">
+            <v-text-field label="아이디"
+            v-model="credentials.email"
+            :rules="[rules.mailRequired, rules.email]"
+            outlined>
+            </v-text-field>
 
+            <v-text-field label="비밀번호"
+            v-model="credentials.password"
+            :rules="[rules.pwRequired, rules.min]"
+            :type="showPW ? 'text' : 'password'"
+            outlined>
+            </v-text-field>
+
+            <v-btn class="mb-3" width="100%" outlined color="#FF9292">
+              로그인
+            </v-btn>
+            <v-btn width="100%" outlined color="#FF9292">
+              <v-icon>mdi-google</v-icon>Google 계정으로 로그인
+            </v-btn>
+          </v-form>
+>>>>>>> 41398fd7ad4d5163e62514dc4b722db3915e194d
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -35,11 +58,20 @@ export default {
   name: 'Login',
   props: {},
   data: () => ({
-    user: {
+    credentials: {
       email: '',
       password: ''
+    },
+    formValid: false,
+    showPW: false,
+    rules: {
+      mailRequired: value => !!value || '아이디를 입력해 주세요.',
+      pwRequired: value => !!value || '비밀번호를 입력해 주세요.',
+      min: v => v.length >= 8 || '비밀번호는 8자 이상입니다.',
+      email: v => /.+@.+/.test(v) || '유효한 이메일을 입력해 주세요'
     }
   }),
+<<<<<<< HEAD
   methods: {
     goToJoin () {
       router.push('Join')
@@ -52,6 +84,9 @@ export default {
         console.log(resp)
       })
     }
+=======
+  created () {
+>>>>>>> 41398fd7ad4d5163e62514dc4b722db3915e194d
 
   }
 }
