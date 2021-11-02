@@ -8,11 +8,11 @@
             <div class="pa-5 d-flex justify-center flex-wrap flex-column side-page">
               <!-- 로고 이미지 -->
               <div class="mb-10">
-                <v-img src="@/assets/logo.png" max-height="200" max-width="200" alt="로고 이미지"></v-img>
+                <v-img src="@/assets/logo.png" max-height="100" max-width="100" alt="로고 이미지"></v-img>
               </div>
               <!-- 메인 이미지 -->
               <div class="mb-10">
-                <v-img class="main-img" src="@/assets/images/main.png"  alt="로고 이미지">
+                <v-img class="main-img" height="500" src="@/assets/images/main.png"  alt="메인 이미지">
                 </v-img>
               </div>
               <!-- 서비스 소개 문구 -->
@@ -28,7 +28,9 @@
           <!-- 매번 바뀌는 페이지 -->
           <v-col>
             <!-- Hoem.vue -->
-            <router-view/>
+            <top></top>
+            <router-view class="mt-10"/>
+            <foot></foot>
           </v-col>
         </v-row>
       </v-container>
@@ -38,19 +40,16 @@
 </template>
 
 <script>
-
 export default {
   name: 'App',
-
   data: () => ({
-    //
   })
 }
 </script>
 
 <style lang="scss" scoped>
 .com {
-  height: 937px;
+  height: 100%;
   background-color: white;
 }
 .main-img {

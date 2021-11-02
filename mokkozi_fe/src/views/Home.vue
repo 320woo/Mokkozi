@@ -4,7 +4,7 @@
     <v-row>
       <v-col>
         <div class="pa-5 d-flex justify-center flex-wrap flex-column side-page">
-          오른쪽 페이지
+          메인화면 채우기
         </div>
       </v-col>
     </v-row>
@@ -15,7 +15,6 @@
 
 export default {
   name: 'Home',
-
   components: {
   }
 }

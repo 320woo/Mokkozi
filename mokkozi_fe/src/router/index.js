@@ -40,7 +40,13 @@ const routes = [
     path: '/join',
     name: 'Join',
     component: Join
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../components/File.vue')
   }
+
 ]
 
 const router = new VueRouter({
