@@ -1,44 +1,38 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+    <v-main style="background-color: #FFE8E8;">
+      <v-container>
+        <v-row class="com">
+          <!-- 소개 페이지 -->
+          <v-col class="d-none d-md-flex">
+            <div class="pa-5 d-flex justify-center flex-wrap flex-column side-page">
+              <!-- 로고 이미지 -->
+              <div class="mb-10">
+                <v-img src="@/assets/logo.png" max-height="200" max-width="200" alt="로고 이미지"></v-img>
+              </div>
+              <!-- 메인 이미지 -->
+              <div class="mb-10">
+                <v-img class="main-img" src="@/assets/images/main.png"  alt="로고 이미지">
+                </v-img>
+              </div>
+              <!-- 서비스 소개 문구 -->
+              <div>
+                <h3>새로운 AR 소개팅 서비스를 체험해 보세요</h3>
+                <br>
+                <p>쉽고 빠르게, 그리고 부담없이 마음에 드는 이성을 찾고 싶다면?<br>
+                지금 바로 모꼬지를 통해 새로운 만남을 경험해 보세요
+                </p>
+              </div>
+            </div>
+          </v-col>
+          <!-- 매번 바뀌는 페이지 -->
+          <v-col>
+            <!-- Hoem.vue -->
+            <router-view/>
+          </v-col>
+        </v-row>
+      </v-container>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <router-view/>
     </v-main>
   </v-app>
 </template>
@@ -53,3 +47,13 @@ export default {
   })
 }
 </script>
+
+<style lang="scss" scoped>
+.com {
+  height: 937px;
+  background-color: white;
+}
+.main-img {
+  border-radius: 30px;
+}
+</style>
