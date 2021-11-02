@@ -27,7 +27,7 @@
                 dark
                 dense
                 color="#FFB4B4"
-                class="my-2 font-weight">
+                class="my-2 font-weight-black">
                 팔로우
             </v-btn></div>
             <!-- 인적 사항 부분 -->
