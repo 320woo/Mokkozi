@@ -7,21 +7,6 @@
           <div class="d-flex flex-wrap justify-center">
             <v-img max-width="400" max-height="200" src="@/assets/text_logo.png"></v-img>
           </div>
-<<<<<<< HEAD
-          <div>
-            <v-text-field label="아이디" outlined></v-text-field>
-            <v-text-field label="비밀번호" outlined></v-text-field>
-            <v-btn class="mb-3" width="100%" outlined color="#FF9292" @click="login">
-              로그인
-            </v-btn>
-            <v-btn class="mb-3" width="100%" outlined color="#FF9292">
-              <v-icon>fab fa-google</v-icon>Google 계정으로 로그인
-            </v-btn>
-            <v-btn width="100%" outlined color="#FF9292" @click="goToJoin">
-              아직 회원이 아니세요? 회원가입하기!
-            </v-btn>
-          </div>
-=======
           <v-form v-model="formValid">
             <v-text-field label="아이디"
             v-model="credentials.email"
@@ -43,7 +28,6 @@
               <v-icon>mdi-google</v-icon>Google 계정으로 로그인
             </v-btn>
           </v-form>
->>>>>>> 41398fd7ad4d5163e62514dc4b722db3915e194d
         </div>
       </v-col>
     </v-row>
@@ -71,7 +55,6 @@ export default {
       email: v => /.+@.+/.test(v) || '유효한 이메일을 입력해 주세요'
     }
   }),
-<<<<<<< HEAD
   methods: {
     goToJoin () {
       router.push('Join')
@@ -84,9 +67,6 @@ export default {
         console.log(resp)
       })
     }
-=======
-  created () {
->>>>>>> 41398fd7ad4d5163e62514dc4b722db3915e194d
 
   }
 }
