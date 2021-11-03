@@ -4,7 +4,7 @@
       <v-container>
         <v-row class="com" no-gutters>
           <!-- 소개 페이지 -->
-          <v-col class="d-none d-md-flex logo-page"> <!-- 창 크기에 따라 전시 or 비전시 -->
+          <v-col cols="5" class="d-none d-md-flex logo-page"> <!-- 창 크기에 따라 전시 or 비전시 -->
             <div class="pa-5 d-flex flex-wrap flex-column">
               <!-- 로고 이미지 -->
               <div class="mb-10">
@@ -27,7 +27,7 @@
           </v-col>
 
           <!-- 매번 바뀌는 페이지 -->
-          <v-col>
+          <v-col cols="7">
             <router-view/>
           </v-col>
         </v-row>

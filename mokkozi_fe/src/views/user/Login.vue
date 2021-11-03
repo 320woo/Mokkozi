@@ -24,8 +24,11 @@
             <v-btn class="mb-3" width="100%" outlined color="#FF9292" @click="login">
               로그인
             </v-btn>
-            <v-btn width="100%" outlined color="#FF9292">
+            <v-btn class="mb-3" width="100%" outlined color="#FF9292">
               <v-icon>mdi-google</v-icon>Google 계정으로 로그인
+            </v-btn>
+            <v-btn class="mb-3" width="100%" outlined color="#FF9292" @click="goToJoin">
+              아직 계정이 없다면? 회원가입 하세요!
             </v-btn>
           </v-form>
         </div>
