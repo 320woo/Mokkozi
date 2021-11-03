@@ -21,7 +21,7 @@
             outlined>
             </v-text-field>
 
-            <v-btn class="mb-3" width="100%" outlined color="#FF9292">
+            <v-btn class="mb-3" width="100%" outlined color="#FF9292" @click="login">
               로그인
             </v-btn>
             <v-btn width="100%" outlined color="#FF9292">
@@ -64,10 +64,8 @@ export default {
         url: 'http://localhost:8000/api/meet/user/login',
         method: 'POST',
         data: {
-          credentials: {
-            email: this.credentials.email,
-            password: this.credentials.password
-          }
+          email: this.credentials.email,
+          password: this.credentials.password
         }
       }).then(resp => {
         console.log(resp)
