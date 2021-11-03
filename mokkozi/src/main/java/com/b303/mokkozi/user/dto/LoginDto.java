@@ -1,4 +1,4 @@
-package com.b303.mokkozi.dto;
+package com.b303.mokkozi.user.dto;
 
 import lombok.*;
 
