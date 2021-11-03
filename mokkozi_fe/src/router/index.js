@@ -29,7 +29,22 @@ const routes = [
   {
     path: '/board',
     name: 'Board',
-    component: () => import('../components/Board.vue')
+    component: () => import('../views/board/Board.vue')
+  },
+  {
+    path: '/board2',
+    name: 'Board2',
+    component: () => import('../views/board/Board2.vue')
+  },
+  {
+    path: '/board3',
+    name: 'Board3',
+    component: () => import('../views/board/Board3.vue')
+  },
+  {
+    path: '/comment',
+    name: 'Comment',
+    component: () => import('../components/Comment.vue')
   },
   {
     path: '/login',

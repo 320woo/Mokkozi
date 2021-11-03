@@ -26,22 +26,19 @@
             </div>
           </v-col>
           <!-- 매번 바뀌는 페이지 -->
-          <v-col>
-            <!-- Hoem.vue -->
-            <router-view/>
+          <v-col class="router-view">
+          <!-- Hoem.vue -->
+              <router-view/>
           </v-col>
         </v-row>
       </v-container>
-
     </v-main>
   </v-app>
 </template>
 
 <script>
-
 export default {
   name: 'App',
-
   data: () => ({
     //
   })
@@ -52,8 +49,16 @@ export default {
 .com {
   height: 937px;
   background-color: white;
+  position: relative;
 }
 .main-img {
   border-radius: 30px;
+}
+.router-view {
+  max-height: 924px;
+  overflow-y: scroll;
+}
+.router-view::-webkit-scrollbar {
+  display: none;
 }
 </style>
