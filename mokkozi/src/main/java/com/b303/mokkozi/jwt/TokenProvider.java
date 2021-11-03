@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 public class TokenProvider implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
-    private static String AUTHORITIES_KEY = "auth";
-
     private final String secret;
     private final long tokenValidityInMilliseconds;
+
+    private static String AUTHORITIES_KEY = "auth";
 
     private Key key;
 
@@ -64,6 +64,7 @@ public class TokenProvider implements InitializingBean {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
+
         long now = (new Date()).getTime();
         // 토큰의 만료기한을 설정한다.
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
