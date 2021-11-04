@@ -1,18 +1,22 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <!-- 컴포넌트를 2개 넣어야 한다. -->
+  <v-container>
+    <v-row align="center">
+      <v-col>
+        <div class="pa-5 d-flex flex-wrap flex-column side-page">
+          오른쪽 페이지
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
   name: 'Home',
+
   components: {
-    HelloWorld
   }
 }
 </script>
