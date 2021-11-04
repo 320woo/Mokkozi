@@ -47,6 +47,11 @@ const routes = [
     component: () => import('../components/Comment.vue')
   },
   {
+    path: '/openvidu',
+    name: 'Openvidu',
+    component: () => import('../views/openvidu/Openvidu.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login
