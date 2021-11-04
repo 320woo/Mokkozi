@@ -10,13 +10,13 @@ export default ({
     streamManager: Object
   },
 
-  // watch: {
-  //   streamManager () {
-  //     this.streamManager.addVideoElement(this.$el)
-  //   }
-  // },
+  watch: {
+    streamManager () {
+      this.streamManager.addVideoElement(this.$el)
+    }
+  },
   mounted () {
-    this.streamManager.addVideoElement(this.$el)
+    this.streamManager.addVideoElement(this.$el).play()
   }
 })
 </script>
