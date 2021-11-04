@@ -19,9 +19,9 @@
 export default {
   data: () => ({
     links: [
-      'Home',
-      'About Us',
-      'Team'
+      '게시판',
+      '랜덤 미팅',
+      '공지사항'
     ]
   })
 }
@@ -31,7 +31,6 @@ export default {
 .top {
     position: fixed;
     left: auto;
-    right: 240px;
     top: 0;
     width: 37rem;
     z-index: 999;

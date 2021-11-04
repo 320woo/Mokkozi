@@ -31,11 +31,10 @@ export default {
 </script>
 <style scoped>
 .footer {
-    position: absolute;
+    position: fixed;
     top: auto;
-    bottom: 50px;
+    bottom: 0px;
     left: auto;
-    right: 240px;
     width: 37rem;
 }
 
