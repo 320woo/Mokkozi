@@ -2,6 +2,7 @@ package com.b303.mokkozi.board;
 
 import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.board.request.BoardListGetReq;
+import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -88,6 +90,17 @@ public class BoardServiceImpl implements BoardService {
 //        bl.setUser(user);
 //        bl.setBoard(board);
 //        boardLikeRepository.save(bl);
+    }
+
+    @Override
+    public Board modifyBoard(User user, BoardModifyPatchReq bmpr) {
+        Board board = boardRepository.findById(bmpr.getId()).orElseThrow(() -> new NoSuchElementException("not found"));
+        if(board.getUser().getId()==user.getId()){
+            board.setTitle(bmpr.getTitle());
+            board.setContent(bmpr.getContent());
+            boardRepository.save(board);
+            return board;
+        } else throw new AccessDeniedException("");
     }
 
 }
