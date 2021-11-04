@@ -41,6 +41,9 @@ dependencies {
 
 	// Swagger
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+	// AWS S3
+	compile group: 'org.springframework.cloud', name: 'spring-cloud-aws', version: '2.2.1.RELEASE', ext: 'pom'
 }
 
 test {

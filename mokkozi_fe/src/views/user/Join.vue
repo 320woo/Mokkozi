@@ -1,12 +1,18 @@
 <template>
     <v-container fluid>
-      <v-row justify="center" align="center" style="height: 937px; width: 500px;">
+      <v-row justify="center" align="center" style="height: 924px; width: 500px;">
         <v-col>
+          <h3>기본 정보 입력</h3>
           <v-form>
             <v-text-field
               label="이메일"
               v-model="signUpInfo.email"
               placeholder="이메일을 입력하세요."
+            ></v-text-field>
+            <v-text-field
+              label="닉네임"
+              v-model="signUpInfo.nickName"
+              placeholder="닉네임을 입력하세요."
             ></v-text-field>
             <v-text-field
               label="비밀번호"
@@ -43,11 +49,57 @@
                 label="성별"
               ></v-select>
               <v-file-input
+                v-model="signUpInfo.profile"
                 truncate-length="15"
+                accept="image/*"
+                prepend-icon="mdi-camera"
+                :rules="ProfileRules"
                 placeholder="프로필 이미지를 설정해 주세요"
-                show-size="100"
-              ></v-file-input>
-
+                show-size="1024"
+              >
+              <template v-slot:selection="{ text }">
+                <v-chip
+                  small
+                  label
+                  color="#FF9292"
+                >
+                  {{ text }}
+                </v-chip>
+              </template>
+              </v-file-input>
+              <v-menu
+              v-model="birthMenu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="signUpInfo.birth"
+                    label="생년월일"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="signUpInfo.birth"
+                  @input="birthMenu = false"
+                ></v-date-picker>
+              </v-menu>
+              <!-- 관심사 선택하기 -->
+              <v-col cols="12">
+                <h3>관심사 선택</h3>
+                <v-btn class="ma-2" elevation="2">애니</v-btn>
+                <v-btn class="ma-2" elevation="2">글 쓰기</v-btn>
+                <v-btn class="ma-2" elevation="2">자기계발</v-btn>
+                <v-btn class="ma-2" elevation="2">스포츠</v-btn>
+                <v-btn class="ma-2" elevation="2">재테크</v-btn>
+                <v-btn class="ma-2" elevation="2">그림 그리기</v-btn>
+              </v-col>
             </v-row>
           </v-form>
         </v-col>
@@ -68,13 +120,17 @@ export default {
       gender: '',
       nickName: '',
       birth: '',
-      profile: '',
-      type: ''
+      profile: [],
+      type: '사용자'
     },
     addr: '',
     extAddr: '',
     zcode: '',
-    genderItems: ['남', '여']
+    genderItems: ['남', '여'],
+    birthMenu: false,
+    ProfileRules: [
+      value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
+    ]
   }),
   methods: {
     daumPostCode () {
