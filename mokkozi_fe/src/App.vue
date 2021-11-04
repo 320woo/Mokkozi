@@ -1,11 +1,11 @@
 <template>
   <v-app>
     <v-main style="background-color: #FFE8E8;">
-      <v-container>
-        <v-row class="com">
+      <v-container class="com">
+        <v-row no-gutters>
           <!-- 소개 페이지 -->
-          <v-col class="d-none d-md-flex">
-            <div class="pa-5 d-flex justify-center flex-wrap flex-column side-page">
+          <v-col cols="6" class="d-none d-md-flex logo-page"> <!-- 창 크기에 따라 전시 or 비전시 -->
+            <div class="pa-5 d-flex flex-wrap flex-column">
               <!-- 로고 이미지 -->
               <div class="mb-10">
                 <v-img src="@/assets/logo.png" max-height="100" max-width="100" alt="로고 이미지"></v-img>
@@ -26,15 +26,13 @@
             </div>
           </v-col>
           <!-- 매번 바뀌는 페이지 -->
-          <v-col>
-            <!-- Hoem.vue -->
+          <v-col class="router-view" cols="6">
             <top></top>
-            <router-view class="mt-10"/>
+            <router-view/>
             <foot></foot>
           </v-col>
         </v-row>
       </v-container>
-
     </v-main>
   </v-app>
 </template>
@@ -51,8 +49,19 @@ export default {
 .com {
   height: 100%;
   background-color: white;
+  position: relative;
 }
 .main-img {
   border-radius: 30px;
+}
+.router-view {
+  max-height: 924px;
+  overflow-y: scroll;
+}
+.router-view::-webkit-scrollbar {
+  display: none;
+}
+.logo-page * {
+  margin : auto;
 }
 </style>

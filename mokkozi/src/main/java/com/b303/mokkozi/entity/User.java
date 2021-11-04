@@ -1,5 +1,6 @@
 package com.b303.mokkozi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ public class User extends BaseEntity{
     @Column(nullable = false)
     private String email;
 
+    @JsonIgnore // JSON 형식으로 해당 객체를 전달할 때, 이 필드는 제외된다.
     @Column(nullable = false)
     private String password;
 
