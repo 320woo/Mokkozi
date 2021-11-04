@@ -226,6 +226,47 @@ public class BoardController {
 //        }
     }
 
+    // 게시글 좋아요 취소
+    @DeleteMapping("/unlike")
+    @ApiOperation(value = "게시글 좋아요 취소", notes = "게시글 좋아요 기능을 취소한다.")
+    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
+            @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
+    public ResponseEntity<? extends BaseResponseBody> boardUnlike(
+            @RequestParam @ApiParam(value = "게시글 ID", required = true) Long boardId
+//            ,@ApiIgnore Authentication authentication
+    ) {
+//        if (authentication == null) {
+//            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+//        } else {
+//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+//            String userEmail = userDetails.getUserEmail();
+//            User user = userService.findByUserEmail(userEmail);
+//
+//            if (user != null) {
+
+        try{
+            User user = new User();
+            boardService.deleteBoardLike(user,boardId);
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        }catch (NoSuchElementException e){
+            e.printStackTrace();
+            return ResponseEntity.ok(BaseResponseBody.of(404, "게시글 없음."));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+        }
+
+//            }
+
+//        }
+    }
+
+    /* 게시글 좋아요 확인?
+    -> 이걸 GetMapping으로 따로 뺄지
+        아니면 게시글 상세조회에서 정보를 포함하여 함께 리턴할지
+    * */
+
+
     // 게시글 검색
     @GetMapping("/search/{type}")
     @ApiOperation(value = "게시글 목록 검색", notes = "게시글 목록을 검색한다.")

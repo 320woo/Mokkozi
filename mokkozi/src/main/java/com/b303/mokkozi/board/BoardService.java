@@ -24,4 +24,6 @@ public interface BoardService {
     void createBoardLike(User userEmail, Long boardId);
 
     Board modifyBoard(User user, BoardModifyPatchReq bmpr);
+
+    void deleteBoardLike(User user, Long boardId);
 }
