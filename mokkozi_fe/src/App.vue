@@ -16,7 +16,7 @@
                 </v-img>
               </div>
               <!-- 서비스 소개 문구 -->
-              <div>
+              <div style="text-align: center;">
                 <h3>새로운 AR 소개팅 서비스를 체험해 보세요</h3>
                 <br>
                 <p>쉽고 빠르게, 그리고 부담없이 마음에 드는 이성을 찾고 싶다면?<br>
@@ -27,8 +27,10 @@
           </v-col>
 
           <!-- 매번 바뀌는 페이지 -->
-          <v-col class="router-view" cols="7">
-            <router-view/>
+          <v-col class="router-view d-flex flex-row justify-center" cols="7">
+            <div class="justify-center">
+              <router-view  />
+            </div>
           </v-col>
         </v-row>
       </v-container>

@@ -5,27 +5,31 @@
           <v-form>
             <v-text-field
               label="이메일"
+              v-model="signUpInfo.email"
               placeholder="이메일을 입력하세요."
             ></v-text-field>
             <v-text-field
               label="비밀번호"
+              v-model="signUpInfo.password"
+              type="password"
               placeholder="최소 8자, 숫자와 특수문자 결합"
             ></v-text-field>
             <v-row no-gutters>
               <v-col cols="12">
                 <v-text-field
                 label="주소"
-                v-model="addr"
-                placeholder="주소를 입력하세요." readonly
+                v-model="signUpInfo.addr"
+                placeholder="'주소찾기'를 클릭해 주세요" readonly
                 ></v-text-field>
                 <v-text-field
                 label="상세주소"
-                v-model="extAddr"
+                v-model="signUpInfo.extAddr"
                 placeholder="상세 주소를 입력하세요."
                 ></v-text-field>
               </v-col>
               <v-col cols="8">
                 <v-btn
+                  class="mb-2"
                   rounded
                   color="#FF9292"
                   @click="daumPostCode"
@@ -33,6 +37,17 @@
                   주소찾기
                 </v-btn>
               </v-col>
+              <v-select
+                :items="genderItems"
+                v-model="signUpInfo.gender"
+                label="성별"
+              ></v-select>
+              <v-file-input
+                truncate-length="15"
+                placeholder="프로필 이미지를 설정해 주세요"
+                show-size="100"
+              ></v-file-input>
+
             </v-row>
           </v-form>
         </v-col>
@@ -45,10 +60,21 @@ export default {
   name: 'Join',
   props: {},
   data: () => ({
-    dialog: false,
+    signUpInfo: {
+      email: '',
+      password: '',
+      addr: '',
+      extAddr: '',
+      gender: '',
+      nickName: '',
+      birth: '',
+      profile: '',
+      type: ''
+    },
     addr: '',
     extAddr: '',
-    zcode: ''
+    zcode: '',
+    genderItems: ['남', '여']
   }),
   methods: {
     daumPostCode () {
@@ -78,7 +104,7 @@ export default {
           }
           // 우편번호와 주소 정보를 해당 필드에 넣는다.
           this.zcode = data.zonecode
-          this.addr = fullRoadAddr
+          this.signUpInfo.addr = fullRoadAddr
         }
       }).open()
     }
