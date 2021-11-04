@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container fluid style="height: 800px;">
       <v-row justify="center" align="center" style="height: 924px; width: 500px;">
         <v-col>
           <h3>기본 정보 입력</h3>
@@ -91,14 +91,36 @@
                 ></v-date-picker>
               </v-menu>
               <!-- 관심사 선택하기 -->
-              <v-col cols="12">
+              <v-col class="d-flex-column mx-5" cols="12">
                 <h3>관심사 선택</h3>
-                <v-btn class="ma-2" elevation="2">애니</v-btn>
-                <v-btn class="ma-2" elevation="2">글 쓰기</v-btn>
-                <v-btn class="ma-2" elevation="2">자기계발</v-btn>
-                <v-btn class="ma-2" elevation="2">스포츠</v-btn>
-                <v-btn class="ma-2" elevation="2">재테크</v-btn>
-                <v-btn class="ma-2" elevation="2">그림 그리기</v-btn>
+                <span id="애니" class="hobby" @click="changeHobby('애니', '애니')">애니</span>
+                <span id="글쓰기" class="hobby" @click="changeHobby('글쓰기', '글쓰기')">글쓰기</span>
+                <span id="자기계발" class="hobby" @click="changeHobby('자기계발', '자기계발')">자기계발</span>
+                <span id="재테크" class="hobby" @click="changeHobby('재테크', '재테크')">재테크</span>
+                <span id="그림그리기" class="hobby" @click="changeHobby('그림그리기', '그림그리기')">그림그리기</span>
+                <span id="봉사활동" class="hobby" @click="changeHobby('봉사활동', '봉사활동')">봉사활동</span>
+                <span id="댄스" class="hobby" @click="changeHobby('댄스', '댄스')">댄스</span>
+                <span id="IT" class="hobby" @click="changeHobby('IT', 'IT')">IT</span>
+                <span id="산책" class="hobby" @click="changeHobby('산책', '산책')">산책</span>
+                <span id="자전거타기" class="hobby" @click="changeHobby('자전거타기', '자전거타기')">자전거타기</span>
+                <span id="드라이브" class="hobby" @click="changeHobby('드라이브', '드라이브')">드라이브</span>
+                <span id="쇼핑" class="hobby" @click="changeHobby('쇼핑', '쇼핑')">쇼핑</span>
+                <span id="독서" class="hobby" @click="changeHobby('독서', '독서')">독서</span>
+                <span id="패션" class="hobby" @click="changeHobby('패션', '패션')">패션</span>
+                <span id="술" class="hobby" @click="changeHobby('술', '술')">술</span>
+                <span id="노래" class="hobby" @click="changeHobby('노래', '노래')">노래</span>
+                <span id="운동" class="hobby" @click="changeHobby('운동', '운동')">운동</span>
+                <span id="요리" class="hobby" @click="changeHobby('요리', '요리')">요리</span>
+                <span id="악기연주" class="hobby" @click="changeHobby('악기연주', '악기연주')">악기연주</span>
+                <span id="여행" class="hobby" @click="changeHobby('여행', '여행')">여행</span>
+                <span id="드라마" class="hobby" @click="changeHobby('드라마', '드라마')">드라마</span>
+                <span id="영화" class="hobby" @click="changeHobby('영화', '영화')">영화</span>
+                <span id="사진촬영" class="hobby" @click="changeHobby('사진촬영', '사진촬영')">사진촬영</span>
+                <span id="게임" class="hobby" @click="changeHobby('게임', '게임')">게임</span>
+                <span id="공연관람" class="hobby" @click="changeHobby('공연관람', '공연관람')">공연관람</span>
+                <span id="맛집탐방" class="hobby" @click="changeHobby('맛집탐방', '맛집탐방')">맛집탐방</span>
+                <span id="음악" class="hobby" @click="changeHobby('음악', '음악')">음악</span>
+                <span id="외국어" class="hobby" @click="changeHobby('외국어', '외국어')">외국어</span>
               </v-col>
             </v-row>
           </v-form>
@@ -121,7 +143,8 @@ export default {
       nickName: '',
       birth: '',
       profile: [],
-      type: '사용자'
+      type: '사용자',
+      hobby: []
     },
     addr: '',
     extAddr: '',
@@ -163,6 +186,23 @@ export default {
           this.signUpInfo.addr = fullRoadAddr
         }
       }).open()
+    },
+    changeHobby (id, hobbyName) {
+      const show = document.querySelector('#' + id)
+      // 이미 추가한 관심사인 경우
+      if (show.classList.contains('selected')) {
+        // 1. CSS 변경
+        show.classList.remove('selected')
+        // 2. hobby list 변경
+        this.signUpInfo.hobby.splice(this.signUpInfo.hobby.indexOf(hobbyName), 1)
+
+      // 아직 추가하지 않은 관심사인 경우
+      } else {
+        // 1. CSS 변경
+        show.className += ' selected'
+        // 2. hobby List 변경
+        this.signUpInfo.hobby.push(hobbyName)
+      }
     }
   }
 
@@ -170,5 +210,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.hobby {
+  border: 1px solid lightgrey;
+  background-color: white;
+  display: inline-block;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  -webkit-transition: 500ms;
+}
+.hobby:hover {
+  background-color: #FF9292;
+  -webkit-transition: 500ms;
+}
+.selected {
+  background-color: #FF9292;
+  border: 1px solid #FF9292;
+}
 </style>

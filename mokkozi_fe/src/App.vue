@@ -27,7 +27,7 @@
           </v-col>
 
           <!-- 매번 바뀌는 페이지 -->
-          <v-col class="router-view d-flex flex-row justify-center" cols="7">
+          <v-col class="router-view d-flex flex-row justify-center align-center" cols="7">
             <div class="justify-center">
               <router-view  />
             </div>
