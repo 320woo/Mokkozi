@@ -6,7 +6,10 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,5 +42,10 @@ public class User extends BaseEntity{
     private String profile; // 프로필 사진 url
 
     private Long penaltyCount;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserBoardLike> userBoardLikeList = new ArrayList<UserBoardLike>();
+
+
 
 }
