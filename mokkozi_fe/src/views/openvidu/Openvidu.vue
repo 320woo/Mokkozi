@@ -47,7 +47,7 @@ import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../../components/UserVideo'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 const OPENVIDU_SERVER_URL = 'https://' + 'k5b303.p.ssafy.io' + ':5443'
-const OPENVIDU_SERVER_SECRET = 'MOKKOZI_SECRET'
+const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
 export default {
   name: 'App',
   components: {
