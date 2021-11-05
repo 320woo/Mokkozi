@@ -29,7 +29,17 @@ const routes = [
   {
     path: '/board',
     name: 'Board',
-    component: () => import('../components/Board.vue')
+    component: () => import('../views/board/Board.vue')
+  },
+  {
+    path: '/comment',
+    name: 'Comment',
+    component: () => import('../components/Comment.vue')
+  },
+  {
+    path: '/openvidu',
+    name: 'Openvidu',
+    component: () => import('../views/openvidu/Openvidu.vue')
   },
   {
     path: '/login',

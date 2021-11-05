@@ -29,6 +29,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+	// WebRTC 클라이언트 의존성 추가
+	implementation('org.webjars.bower:webrtc-adapter:7.4.0')
+	// Kurento (미디어서버) 관련 의존성 추가
+	implementation('org.kurento:kurento-client:6.16.0')
+	implementation('org.kurento:kurento-utils-js:6.15.0')
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -41,6 +46,9 @@ dependencies {
 
 	// Swagger
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+	// AWS S3
+	compileOnly group: 'org.springframework.cloud', name: 'spring-cloud-aws', version: '2.2.1.RELEASE', ext: 'pom'
 }
 
 test {

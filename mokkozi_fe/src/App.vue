@@ -4,7 +4,7 @@
       <v-container>
         <v-row class="com" no-gutters>
           <!-- 소개 페이지 -->
-          <v-col class="d-none d-md-flex logo-page"> <!-- 창 크기에 따라 전시 or 비전시 -->
+          <v-col cols="5" class="d-none d-md-flex logo-page"> <!-- 창 크기에 따라 전시 or 비전시 -->
             <div class="pa-5 d-flex flex-wrap flex-column">
               <!-- 로고 이미지 -->
               <div class="mb-10">
@@ -16,7 +16,7 @@
                 </v-img>
               </div>
               <!-- 서비스 소개 문구 -->
-              <div>
+              <div style="text-align: center;">
                 <h3>새로운 AR 소개팅 서비스를 체험해 보세요</h3>
                 <br>
                 <p>쉽고 빠르게, 그리고 부담없이 마음에 드는 이성을 찾고 싶다면?<br>
@@ -27,21 +27,20 @@
           </v-col>
 
           <!-- 매번 바뀌는 페이지 -->
-          <v-col>
-            <router-view/>
+          <v-col class="router-view d-flex flex-row justify-center align-center" cols="7">
+            <div class="justify-center">
+              <router-view  />
+            </div>
           </v-col>
         </v-row>
       </v-container>
-
     </v-main>
   </v-app>
 </template>
 
 <script>
-
 export default {
   name: 'App',
-
   data: () => ({
     //
   })
@@ -52,10 +51,18 @@ export default {
 .com {
   height: 937px;
   background-color: white;
+  position: relative;
   border-radius: 15px;
 }
 .main-img {
   border-radius: 30px;
+}
+.router-view {
+  max-height: 924px;
+  overflow-y: scroll;
+}
+.router-view::-webkit-scrollbar {
+  display: none;
 }
 .logo-page * {
   margin : auto;

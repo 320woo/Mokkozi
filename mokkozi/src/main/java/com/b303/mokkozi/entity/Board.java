@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,5 +27,8 @@ public class Board extends BaseEntity{
     public void createdAt() {
         this.regDate = new Date();
     }
+
+    @OneToMany(mappedBy = "board")
+    private List<UserBoardLike> userBoardLikeList = new ArrayList<UserBoardLike>();
 
 }
