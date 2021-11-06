@@ -46,7 +46,7 @@ import axios from 'axios'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../../components/UserVideo'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
-const OPENVIDU_SERVER_URL = 'https://' + 'k5b303.p.ssafy.io' + ':8443'
+const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8443'
 const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
 export default {
   name: 'App',
@@ -147,7 +147,7 @@ export default {
     createSession (sessionId) {
       return new Promise((resolve, reject) => {
         axios
-          .get(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, '', {
+          .get(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, {
             auth: {
               username: 'OPENVIDUAPP',
               password: OPENVIDU_SERVER_SECRET
