@@ -32,14 +32,19 @@ const routes = [
     component: () => import('../views/board/Board.vue')
   },
   {
+    path: '/board2',
+    name: 'Board2',
+    component: () => import('../views/board/Board2.vue')
+  },
+  {
+    path: '/board3',
+    name: 'Board3',
+    component: () => import('../views/board/Board3.vue')
+  },
+  {
     path: '/comment',
     name: 'Comment',
     component: () => import('../components/Comment.vue')
-  },
-  {
-    path: '/openvidu',
-    name: 'Openvidu',
-    component: () => import('../views/openvidu/Openvidu.vue')
   },
   {
     path: '/login',
@@ -50,7 +55,13 @@ const routes = [
     path: '/join',
     name: 'Join',
     component: Join
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../components/File.vue')
   }
+
 ]
 
 const router = new VueRouter({

@@ -1,22 +1,22 @@
 <template>
   <v-app>
     <v-main style="background-color: #FFE8E8;">
-      <v-container>
-        <v-row class="com" no-gutters>
+      <v-container class="com">
+        <v-row no-gutters>
           <!-- 소개 페이지 -->
-          <v-col cols="5" class="d-none d-md-flex logo-page"> <!-- 창 크기에 따라 전시 or 비전시 -->
+          <v-col cols="6" class="d-none d-md-flex logo-page"> <!-- 창 크기에 따라 전시 or 비전시 -->
             <div class="pa-5 d-flex flex-wrap flex-column">
               <!-- 로고 이미지 -->
               <div class="mb-10">
-                <v-img src="@/assets/logo.png" max-height="200" max-width="200" alt="로고 이미지"></v-img>
+                <v-img src="@/assets/logo.png" max-height="100" max-width="100" alt="로고 이미지"></v-img>
               </div>
               <!-- 메인 이미지 -->
               <div class="mb-10">
-                <v-img class="main-img" src="@/assets/images/main.png"  alt="로고 이미지">
+                <v-img class="main-img" height="500" src="@/assets/images/main.png"  alt="메인 이미지">
                 </v-img>
               </div>
               <!-- 서비스 소개 문구 -->
-              <div style="text-align: center;">
+              <div>
                 <h3>새로운 AR 소개팅 서비스를 체험해 보세요</h3>
                 <br>
                 <p>쉽고 빠르게, 그리고 부담없이 마음에 드는 이성을 찾고 싶다면?<br>
@@ -25,12 +25,11 @@
               </div>
             </div>
           </v-col>
-
           <!-- 매번 바뀌는 페이지 -->
-          <v-col class="router-view d-flex flex-row justify-center align-center" cols="7">
-            <div class="justify-center">
-              <router-view  />
-            </div>
+          <v-col class="router-view" cols="6">
+            <top></top>
+            <router-view/>
+            <foot></foot>
           </v-col>
         </v-row>
       </v-container>
@@ -42,17 +41,15 @@
 export default {
   name: 'App',
   data: () => ({
-    //
   })
 }
 </script>
 
 <style lang="scss" scoped>
 .com {
-  height: 937px;
+  height: 100%;
   background-color: white;
   position: relative;
-  border-radius: 15px;
 }
 .main-img {
   border-radius: 30px;

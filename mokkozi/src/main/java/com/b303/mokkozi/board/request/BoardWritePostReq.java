@@ -11,8 +11,8 @@ import lombok.Setter;
 public class BoardWritePostReq {
 
     @ApiModelProperty(name = "게시글 Title", example = "게시글 제목")
-    private String title;
+    String title;
     @ApiModelProperty(name = "게시글 content", example = "게시글 내용")
-    private String content;
+    String content;
 
 }

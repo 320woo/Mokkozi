@@ -63,9 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .sameOrigin()
 
                 // 세션을 사용하지 않기 때문에 STATELESS로 설정
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 // 로그인 API, 회원가입 API의 경우 토큰이 없는 상태에서 요청이 들어오기 때문에, 모두 permitAll 처리 한다.
                 .and()
