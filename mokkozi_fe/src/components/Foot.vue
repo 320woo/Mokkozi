@@ -3,42 +3,23 @@
     :value="value"
     color="white"
     grow
-    class="footer justify-space-around"
+    class="footer"
     background-color="#FFB4B4"
   >
-    <router-link to="/" style="text-decoration: none; color:white">
-    <v-btn dark
-                dense
-                color="white"
-                text="text"
-                rounded="rounded"
-                class="my-2">Home
+    <v-btn>
+      <span>Home</span>
       <v-icon>mdi-history</v-icon>
     </v-btn>
-    </router-link>
 
-    <router-link to="/login" style="text-decoration: none; color:white">
-    <v-btn dark
-                dense
-                color="white"
-                text="text"
-                rounded="rounded"
-                class="my-2">Login
+    <v-btn>
+      <span>Login</span>
       <v-icon>mdi-heart</v-icon>
     </v-btn>
-    </router-link>
 
-    <router-link to="/login" style="text-decoration: none; color:white">
-    <v-btn dark
-                dense
-                color="white"
-                text="text"
-                rounded="rounded"
-                class="my-2">
+    <v-btn>
       <span>FAQ</span>
       <v-icon>mdi-map-marker</v-icon>
     </v-btn>
-    </router-link>
   </v-bottom-navigation>
 </template>
 <script>
