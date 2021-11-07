@@ -1,5 +1,6 @@
 package com.b303.mokkozi.comment;
 
+import com.b303.mokkozi.comment.request.CommentWritePostReq;
 import com.b303.mokkozi.entity.Comment;
 import com.b303.mokkozi.entity.User;
 
