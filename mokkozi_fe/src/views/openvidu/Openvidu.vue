@@ -27,7 +27,7 @@
           <h1 id="session-title">{{ mySessionId }}</h1>
           <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
         </div>
-        <div id="main-video" class="col-md-6">
+        <div id="main-video" class="col-md-6" v-if="videoState">
           <h3>메인 비디오</h3>
           <user-video :stream-manager="mainStreamManager"/>
         </div>
@@ -37,7 +37,13 @@
           <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/>
         </div>
       </div>
-      <div id="session-header">
+      <div id="session-header" v-if="session">
+        <v-btn v-if="videoState" color="#fdb4b5" class="white--text" @click="videoOnOff">Video OFF
+          <v-icon right dark>fas fa-video</v-icon>
+        </v-btn>
+        <v-btn v-if="!videoState" color="#fdb4b5" class="white--text" @click="videoOnOff">Video ON
+          <v-icon right dark>fas fa-video-slash</v-icon>
+        </v-btn>
           <h1 id="session-title">{{ mySessionId }}</h1>
           <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
         </div>
@@ -67,10 +73,15 @@ export default {
       publisher: undefined,
       subscribers: [],
       mySessionId: 'SessionA',
-      myUserName: 'Participant' + Math.floor(Math.random() * 100)
+      myUserName: 'Participant' + Math.floor(Math.random() * 100),
+      videoState: true
     }
   },
   methods: {
+    videoOnOff () {
+      this.videoState = !this.videoState
+      this.publisher.publishVideo(this.videoState)
+    },
     joinSession () {
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu()
