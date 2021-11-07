@@ -1,9 +1,8 @@
 <template>
-  <v-container fluid style="height: 800px;" class="board-container">
-    <h1 style="display:flex; justify-content:center">게시판</h1>
+  <v-container fluid style="height: 800px;">
     <br>
-    <v-icon style="position: fixed; color: #fdb4b5;" @click="BoardCreateClick">fas fa-plus-circle</v-icon>
-    <div class="background-div" v-for="image in images" :key="image.id">
+    <v-icon style="position: fixed; color: #fdb4b5;" @click="BackToBoardClick">fas fa-chevron-left</v-icon>
+    <div class="background-div">
       <div class="board-div">
         <v-card
           class="board-card"
@@ -55,7 +54,6 @@
             position="center"
             :src="image"
             style="margin-bottom: 0.2rem"
-            @click="BoardDetailClick"
           ></v-img>
 
           <v-card-text class="like-text">
@@ -64,11 +62,8 @@
              like
           </v-card-text>
 
-          <v-card-text @click="BoardDetailClick">
-            Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.
-          </v-card-text>
           <v-card-text>
-            Help
+            Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.
           </v-card-text>
           <v-card-text style="color: gray" @click="CommentClick">댓글 더 보기..</v-card-text>
           <div>
@@ -96,25 +91,11 @@
 </template>
 
 <script>
-import axios from 'axios'
-
-export default {
-  name: 'Board',
+export default ({
+  name: 'BoardDetail',
   components: {},
   data: () => ({
-    images: [
-      'https://images.dog.ceo/breeds/bulldog-english/murphy.jpg',
-      'https://images.dog.ceo/breeds/spaniel-japanese/n02085782_2690.jpg',
-      'https://images.dog.ceo/breeds/stbernard/n02109525_13702.jpg',
-      'https://images.dog.ceo/breeds/papillon/n02086910_933.jpg',
-      'https://images.dog.ceo/breeds/ovcharka-caucasian/IMG_20190611_152047.jpg',
-      'https://images.dog.ceo/breeds/terrier-toy/n02087046_2843.jpg',
-      'https://images.dog.ceo/breeds/cockapoo/Scout.jpg',
-      'https://cdn.vuetifyjs.com/images/cards/cooking.png',
-      '@/assets/images/main.png',
-      'https://dog.ceo/api/breeds/image/random'
-    ],
-    like: true
+    image: 'https://images.dog.ceo/breeds/bulldog-english/murphy.jpg'
   }),
   methods: {
     BoardUpdateClick () {
@@ -129,44 +110,14 @@ export default {
     UserNicknameClick () {
       this.$router.push({ name: 'BoardUpdate' }) // 유저 프로필로 이동
     },
-    BoardCreateClick () {
-      this.$router.push({ name: 'BoardCreate' })
-    },
-    BoardDetailClick () {
-      this.$router.push({ name: 'BoardDetail' })
-    },
-    CommentClick () {
-      this.$router.push({ name: 'Comment' })
-    },
-    BoardLike (boardId) {
-      axios({
-        url: 'api/meet/board/like',
-        method: 'POST',
-        data: {
-          boardId: boardId
-        }
-      })
-    },
-    Userfollow (userId) { // follow 신청
-      axios({
-        url: 'api/meet/user/follow',
-        method: 'POST',
-        data: {
-          userId: userId
-        }
-      })
+    BackToBoardClick () {
+      this.$router.push({ name: 'Board' })
     }
   }
-}
+})
 </script>
 
 <style scoped>
-  .board-container {
-    overflow-y: scroll;
-  }
-  .board-container::-webkit-scrollbar {
-    display: none;
-  }
   .background-div {
     padding: 0.5rem 5rem 0.5rem 5rem;
     text-align: center;
