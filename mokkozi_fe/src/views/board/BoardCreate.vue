@@ -97,7 +97,7 @@ export default {
       const formData = new FormData()
       formData.append('files', this.uploadImage)
       axios({
-        url: 'api/meet/board',
+        url: '/api/meet/board',
         method: 'POST',
         data: {
           content: this.content
