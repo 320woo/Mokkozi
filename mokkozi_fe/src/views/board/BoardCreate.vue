@@ -45,7 +45,6 @@
         <v-textarea
           class="textarea"
           filled
-          name="input-7-4"
           v-model="content"
           placeholder="내용을 입력하세요.."
         ></v-textarea>
@@ -82,10 +81,10 @@ export default {
   },
   methods: {
     UserImageClick () {
-      this.$router.push({ name: 'BoardUpdate' }) // 유저 프로필로 이동
+      this.$router.push({ name: 'Profile' })
     },
     UserNicknameClick () {
-      this.$router.push({ name: 'BoardUpdate' }) // 유저 프로필로 이동
+      this.$router.push({ name: 'Profile' })
     },
     BackToBoardClick () {
       this.$router.push({ name: 'Board' })
@@ -191,5 +190,9 @@ export default {
   }
   .textarea {
     min-height: 10rem;
+    overflow-y: scroll;
+  }
+  .textarea::-webkit-scrollbar {
+    display: none;
   }
 </style>

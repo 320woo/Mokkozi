@@ -121,13 +121,13 @@ export default {
       this.$router.push({ name: 'BoardUpdate' })
     },
     BoardReportClick () {
-      this.$router.push({ name: 'BoardUpdate' }) // 신고하는 페이지로 이동하도록 바꿔야함
+      this.$router.push({ name: 'Home' }) // 신고하는 페이지로 이동하도록 바꿔야함
     },
     UserImageClick () {
-      this.$router.push({ name: 'BoardUpdate' }) // 유저 프로필로 이동
+      this.$router.push({ name: 'Profile' })
     },
     UserNicknameClick () {
-      this.$router.push({ name: 'BoardUpdate' }) // 유저 프로필로 이동
+      this.$router.push({ name: 'Profile' })
     },
     BoardCreateClick () {
       this.$router.push({ name: 'BoardCreate' })

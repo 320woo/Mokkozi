@@ -26,7 +26,7 @@
             </div>
           </v-col>
           <!-- 매번 바뀌는 페이지 -->
-          <v-col class="router-view" cols="6">
+          <v-col cols="6">
             <top></top>
             <router-view/>
             <foot></foot>
@@ -53,13 +53,6 @@ export default {
 }
 .main-img {
   border-radius: 30px;
-}
-.router-view {
-  max-height: 924px;
-  overflow-y: scroll;
-}
-.router-view::-webkit-scrollbar {
-  display: none;
 }
 .logo-page * {
   margin : auto;

@@ -152,7 +152,7 @@ export default {
       this.$router.push({ name: 'Board' })
     },
     UserImageClick () {
-      this.$router.push({ name: 'BoardUpdate' }) // 유저 프로필로 이동
+      this.$router.push({ name: 'Profile' })
     }
   }
 }

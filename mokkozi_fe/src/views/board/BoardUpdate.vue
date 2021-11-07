@@ -88,10 +88,10 @@ export default {
   },
   methods: {
     UserImageClick () {
-      this.$router.push({ name: 'BoardUpdate' }) // 유저 프로필로 이동
+      this.$router.push({ name: 'Profile' })
     },
     UserNicknameClick () {
-      this.$router.push({ name: 'BoardUpdate' }) // 유저 프로필로 이동
+      this.$router.push({ name: 'Profile' })
     },
     BackToBoardClick () {
       this.$router.push({ name: 'Board' })
@@ -198,5 +198,9 @@ export default {
   }
   .textarea {
     min-height: 10rem;
+    overflow-y: scroll;
+  }
+  .textarea::-webkit-scrollbar {
+    display: none;
   }
 </style>
