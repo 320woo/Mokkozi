@@ -1,28 +1,36 @@
 <template>
     <v-footer class="top" color="#FFB4B4" padless="padless" elevation="4">
-        <v-row justify="center" no-gutters="no-gutters">
+        <v-row justify="center justify-space-around" no-gutters="no-gutters">
             <v-btn
                 dark
                 dense
-                v-for="link in links"
-                :key="link"
                 color="white"
                 text="text"
                 rounded="rounded"
-                class="my-2">
-                {{ link }}
-            </v-btn>
+                class="my-2 btn">
+            <router-link to="/board" style="text-decoration: none; color:white">게시판</router-link></v-btn>
+            <v-btn
+                dark
+                dense
+                color="white"
+                text="text"
+                rounded="rounded"
+                class="my-2 btn">
+            <router-link to="/" style="text-decoration: none; color:white">랜덤미팅</router-link></v-btn>
+            <v-btn
+                dark
+                dense
+                color="white"
+                text="text"
+                rounded="rounded"
+                class="my-2 btn">
+            <router-link to="/" style="text-decoration: none; color:white">뭘넣을가요</router-link></v-btn>
         </v-row>
     </v-footer>
 </template>
 <script>
 export default {
   data: () => ({
-    links: [
-      '게시판',
-      '랜덤 미팅',
-      '공지사항'
-    ]
   })
 }
 </script>
