@@ -32,9 +32,24 @@ const routes = [
     component: () => import('../views/board/Board.vue')
   },
   {
+    path: '/boardcreate',
+    name: 'BoardCreate',
+    component: () => import('../views/board/BoardCreate.vue')
+  },
+  {
+    path: '/boardupdate',
+    name: 'BoardUpdate',
+    component: () => import('../views/board/BoardUpdate.vue')
+  },
+  {
+    path: '/boarddetail',
+    name: 'BoardDetail',
+    component: () => import('../views/board/BoardDetail.vue')
+  },
+  {
     path: '/comment',
     name: 'Comment',
-    component: () => import('../components/Comment.vue')
+    component: () => import('../views/board/Comment.vue')
   },
   {
     path: '/openvidu',
@@ -50,7 +65,13 @@ const routes = [
     path: '/join',
     name: 'Join',
     component: Join
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../components/File.vue')
   }
+
 ]
 
 const router = new VueRouter({
