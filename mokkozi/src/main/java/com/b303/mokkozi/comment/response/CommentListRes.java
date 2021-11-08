@@ -1,6 +1,5 @@
 package com.b303.mokkozi.comment.response;
 
-import com.b303.mokkozi.comment.dto.CommentDto;
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
