@@ -27,7 +27,7 @@
           <h1 id="session-title">{{ mySessionId }}</h1>
           <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
         </div>
-        <div id="main-video" class="col-md-6">
+        <div id="main-video" class="col-md-6" v-if="videoState">
           <h3>메인 비디오</h3>
           <user-video :stream-manager="mainStreamManager"/>
         </div>
@@ -37,6 +37,16 @@
           <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/>
         </div>
       </div>
+      <div id="session-header" v-if="session">
+        <v-btn v-if="videoState" color="#fdb4b5" class="white--text" @click="videoOnOff">Video OFF
+          <v-icon right dark>fas fa-video</v-icon>
+        </v-btn>
+        <v-btn v-if="!videoState" color="#fdb4b5" class="white--text" @click="videoOnOff">Video ON
+          <v-icon right dark>fas fa-video-slash</v-icon>
+        </v-btn>
+          <h1 id="session-title">{{ mySessionId }}</h1>
+          <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
+        </div>
     </div>
   </div>
 </template>
@@ -45,9 +55,11 @@
 import axios from 'axios'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../../components/UserVideo'
+
 axios.defaults.headers.post['Content-Type'] = 'application/json'
-const OPENVIDU_SERVER_URL = 'https://' + 'k5b303.p.ssafy.io' + ':5443'
-const OPENVIDU_SERVER_SECRET = 'MOKKOZI_SECRET'
+const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8443'
+const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
+
 export default {
   name: 'App',
   components: {
@@ -61,10 +73,15 @@ export default {
       publisher: undefined,
       subscribers: [],
       mySessionId: 'SessionA',
-      myUserName: 'Participant' + Math.floor(Math.random() * 100)
+      myUserName: 'Participant' + Math.floor(Math.random() * 100),
+      videoState: true
     }
   },
   methods: {
+    videoOnOff () {
+      this.videoState = !this.videoState
+      this.publisher.publishVideo(this.videoState)
+    },
     joinSession () {
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu()
@@ -94,7 +111,7 @@ export default {
         this.session.connect(token, { clientData: this.myUserName })
           .then(() => {
             // --- Get your own camera stream with the desired properties ---
-            let publisher = this.OV.initPublisher(undefined, {
+            const publisher = this.OV.initPublisher(undefined, {
               audioSource: undefined, // The source of audio. If undefined default microphone
               videoSource: undefined, // The source of video. If undefined default webcam
               publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
@@ -108,6 +125,7 @@ export default {
             this.publisher = publisher
             // --- Publish your stream ---
             this.session.publish(this.publisher)
+            console.log('getToken 성공', publisher)
           })
           .catch(error => {
             console.log('There was an error connecting to the session:', error.code, error.message)
@@ -141,20 +159,24 @@ export default {
      *   3) The Connection.token must be consumed in Session.connect() method
      */
     getToken (mySessionId) {
+      console.log('getToken sessionId: ', mySessionId)
       return this.createSession(mySessionId).then(sessionId => this.createToken(sessionId))
     },
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-session
     createSession (sessionId) {
+      console.log('createSession sessionId: ', sessionId)
       return new Promise((resolve, reject) => {
         axios
-          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, JSON.stringify({
-            customSessionId: sessionId
-          }), {
-            auth: {
-              username: 'OPENVIDUAPP',
-              password: OPENVIDU_SERVER_SECRET
-            }
-          })
+          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
+            JSON.stringify({
+              customSessionId: sessionId
+            }),
+            {
+              auth: {
+                username: 'OPENVIDUAPP',
+                password: OPENVIDU_SERVER_SECRET
+              }
+            })
           .then(response => response.data)
           .then(data => resolve(data.id))
           .catch(error => {
@@ -172,6 +194,7 @@ export default {
     },
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-connection
     createToken (sessionId) {
+      console.log('createToken sessionId: ', sessionId)
       return new Promise((resolve, reject) => {
         axios
           .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
