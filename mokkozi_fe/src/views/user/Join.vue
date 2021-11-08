@@ -1,6 +1,6 @@
 <template>
-    <v-container fluid style="height: 800px;">
-      <v-row justify="center" align="center" style="height: 924px; width: 500px;">
+    <v-container fluid>
+      <v-row justify="center" align="center" style="width: 600px; height: 700px; overflow-y: auto;">
         <v-col>
           <h3>기본 정보 입력</h3>
           <v-form>
@@ -91,7 +91,7 @@
                 ></v-date-picker>
               </v-menu>
               <!-- 관심사 선택하기 -->
-              <v-col class="d-flex-column mx-5" cols="12">
+              <v-col class="d-flex-column mx-5" cols="10">
                 <h3>관심사 선택</h3>
                 <span id="애니" class="hobby" @click="changeHobby('애니', '애니')">애니</span>
                 <span id="글쓰기" class="hobby" @click="changeHobby('글쓰기', '글쓰기')">글쓰기</span>
@@ -131,6 +131,7 @@
 
 <script>
 export default {
+  components: {},
   name: 'Join',
   props: {},
   data: () => ({

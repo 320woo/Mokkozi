@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
     <!-- row의 height를 지정해야만 align을 통해 start, center, end로 배치할 수 있다. -->
-    <v-row justify="center" align="center" style="height: 937px; width: 500px;">
+    <v-row justify="center" align="center">
       <v-col class="pa-4">
-        <div class="login-box" elevation="1" outlined style="height: 400px;">
+        <div class="login-box" elevation="1" outlined>
           <div class="d-flex flex-wrap justify-center">
             <v-img max-width="400" max-height="200" src="@/assets/text_logo.png"></v-img>
           </div>
