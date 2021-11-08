@@ -1,14 +1,20 @@
 <template>
     <v-container fluid>
-      <v-row justify="center" align="center" style="width: 600px; height: 700px; overflow-y: auto;">
+      <v-row justify="center" align="center" style="width: 600px; height: 750px; overflow-y: auto;">
         <v-col>
           <h3>기본 정보 입력</h3>
-          <v-form>
-            <v-text-field
+          <v-form v-model="valid" @submit.prevent="submit">
+            <!-- 이메일 입력란 -->
+            <ValidationProvider rules="required|max:10" v-slot="{ errors }">
+              <v-text-field
               label="이메일"
               v-model="signUpInfo.email"
+              :error-messages="errors"
               placeholder="이메일을 입력하세요."
+              required
             ></v-text-field>
+            </ValidationProvider>
+
             <v-text-field
               label="닉네임"
               v-model="signUpInfo.nickName"
@@ -17,8 +23,8 @@
             <v-text-field
               label="비밀번호"
               v-model="signUpInfo.password"
-              type="password"
               placeholder="최소 8자, 숫자와 특수문자 결합"
+              type="password"
             ></v-text-field>
             <v-row no-gutters>
               <v-col cols="12">
@@ -91,7 +97,7 @@
                 ></v-date-picker>
               </v-menu>
               <!-- 관심사 선택하기 -->
-              <v-col class="d-flex-column mx-5" cols="10">
+              <v-col class="d-flex-column mx-5 mb-5" cols="10">
                 <h3>관심사 선택</h3>
                 <span id="애니" class="hobby" @click="changeHobby('애니', '애니')">애니</span>
                 <span id="글쓰기" class="hobby" @click="changeHobby('글쓰기', '글쓰기')">글쓰기</span>
@@ -122,6 +128,14 @@
                 <span id="음악" class="hobby" @click="changeHobby('음악', '음악')">음악</span>
                 <span id="외국어" class="hobby" @click="changeHobby('외국어', '외국어')">외국어</span>
               </v-col>
+              <v-col>
+                <v-btn
+                  type="submit"
+                  elevation="2"
+                  :disabled="valid"
+                  color = "#FF9292"
+                >회원가입</v-btn>
+              </v-col>
             </v-row>
           </v-form>
         </v-col>
@@ -130,6 +144,13 @@
 </template>
 
 <script>
+import { ValidationProvider, extend } from 'vee-validate'
+
+extend('required', {
+  validate: value => value.length === 0,
+  message: 'This is required'
+})
+
 export default {
   components: {},
   name: 'Join',
@@ -145,13 +166,18 @@ export default {
       birth: '',
       profile: [],
       type: '사용자',
-      hobby: []
+      hobby: [],
     },
+    valid: false,
     addr: '',
     extAddr: '',
     zcode: '',
     genderItems: ['남', '여'],
     birthMenu: false,
+
+    rules: {
+      emailRules: [v => !v || '이메일을 입력해 주세요.'],
+    },
     ProfileRules: [
       value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
     ]
@@ -204,6 +230,9 @@ export default {
         // 2. hobby List 변경
         this.signUpInfo.hobby.push(hobbyName)
       }
+    },
+    submit () {
+      alert('제출합니다.')
     }
   }
 
