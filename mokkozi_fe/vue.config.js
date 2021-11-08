@@ -3,6 +3,7 @@ module.exports = {
     'vuetify'
   ],
   devServer: {
+    https: true,
     port: 3000,
     open: true,
     proxy: {
