@@ -64,7 +64,7 @@ export default {
     },
     login () {
       axios({
-        url: 'http://localhost:8443/api/meet/user/login',
+        url: 'http://localhost:8000/api/meet/user/login',
         method: 'POST',
         data: {
           email: this.credentials.email,
