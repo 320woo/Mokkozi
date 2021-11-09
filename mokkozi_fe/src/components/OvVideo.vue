@@ -10,14 +10,15 @@ export default ({
     streamManager: Object
   },
 
-  // watch: {
-  //   streamManager () {
-  //     this.streamManager.addVideoElement(this.$el)
-  //   }
-  // },
+  watch: {
+    streamManager () {
+      this.streamManager.addVideoElement(this.$el)
+    }
+  },
   mounted () {
-    console.log('this.streamManager.addVideoElement(this.$el): ', this.streamManager.addVideoElement(this.$el))
-    // this.streamManager.addVideoElement(this.$el).play()
+    console.log('영상 출력하기 위해 받은 값 streamManager', this.streamManager)
+    console.log('비디오 출력을 위해 Element에 추가해주는 값: ', this.streamManager.addVideoElement(this.$el))
+    this.streamManager.addVideoElement(this.$el)
   }
 })
 </script>

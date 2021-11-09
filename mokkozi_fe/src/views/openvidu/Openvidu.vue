@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container fluid style="height: 800px;" class="meeting-container">
     <div id="main-container" class="container">
       <div id="join" v-if="!session">
         <div id="img-div"><img src="https://images.dog.ceo/breeds/spaniel-japanese/n02085782_2690.jpg" /></div>
@@ -46,9 +46,21 @@
         </v-btn>
           <h1 id="session-title">{{ mySessionId }}</h1>
           <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
-        </div>
+      </div>
+      <div id="session-header" v-if="session">
+        <v-btn v-if="audioState" color="#fdb4b5" class="white--text" @click="audioOnOff">Audio OFF
+          <v-icon right dark>fas fa-microphone</v-icon>
+        </v-btn>
+        <v-btn v-if="!audioState" color="#fdb4b5" class="white--text" @click="audioOnOff">Video ON
+          <v-icon right dark>fas fa-microphone-slash</v-icon>
+        </v-btn>
+          <h1 id="session-title">{{ mySessionId }}</h1>
+          <v-btn id="buttonLeaveSession" color="#fdb4b5" class="white--text" @click="leaveSession">Exit
+            <v-icon right dark>fas fa-external-link-alt</v-icon>
+          </v-btn>
+      </div>
     </div>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -57,7 +69,7 @@ import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../../components/UserVideo'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
-const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8443'
+const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8447'
 const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
 
 export default {
@@ -74,13 +86,18 @@ export default {
       subscribers: [],
       mySessionId: 'SessionA',
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
-      videoState: true
+      videoState: true,
+      audioState: true
     }
   },
   methods: {
     videoOnOff () {
       this.videoState = !this.videoState
       this.publisher.publishVideo(this.videoState)
+    },
+    audioOnOff () {
+      this.audioState = !this.audioState
+      this.publisher.publishAudio(this.audioState)
     },
     joinSession () {
       // --- Get an OpenVidu object ---
@@ -91,6 +108,7 @@ export default {
       // On every new Stream received...
       this.session.on('streamCreated', ({ stream }) => {
         const subscriber = this.session.subscribe(stream)
+        console.log('subscriber객체 들어있는 것', subscriber) // 삭제 예정
         this.subscribers.push(subscriber)
       })
       // On every Stream destroyed...
@@ -102,12 +120,13 @@ export default {
       })
       // On every asynchronous exception...
       this.session.on('exception', ({ exception }) => {
-        console.warn(exception)
+        console.warn('예외 처리', exception)
       })
       // --- Connect to the session with a valid user token ---
       // 'getToken' method is simulating what your server-side should do.
       // 'token' parameter should be retrieved and returned by your own backend
       this.getToken(this.mySessionId).then(token => {
+        console.log('getToken 후에 받아온 token값', token)
         this.session.connect(token, { clientData: this.myUserName })
           .then(() => {
             // --- Get your own camera stream with the desired properties ---
@@ -116,19 +135,19 @@ export default {
               videoSource: undefined, // The source of video. If undefined default webcam
               publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
               publishVideo: true, // Whether you want to start publishing with your video enabled or not
-              resolution: '640x480', // The resolution of your video
+              resolution: '480x320', // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-              mirror: false // Whether to mirror your local video or not
+              mirror: true // Whether to mirror your local video or not
             })
             this.mainStreamManager = publisher
             this.publisher = publisher
             // --- Publish your stream ---
             this.session.publish(this.publisher)
-            console.log('getToken 성공', publisher)
+            console.log('session.connect 성공 후 publisher', publisher) // 삭제 예정
           })
           .catch(error => {
-            console.log('There was an error connecting to the session:', error.code, error.message)
+            console.log('session.connect 실패.. There was an error connecting to the session:', error.code, error.message)
           })
       })
       window.addEventListener('beforeunload', this.leaveSession)
@@ -159,12 +178,12 @@ export default {
      *   3) The Connection.token must be consumed in Session.connect() method
      */
     getToken (mySessionId) {
-      console.log('getToken sessionId: ', mySessionId)
+      console.log('getToken함수 실행할 때 들어가는 sessionId: ', mySessionId)
       return this.createSession(mySessionId).then(sessionId => this.createToken(sessionId))
     },
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-session
     createSession (sessionId) {
-      console.log('createSession sessionId: ', sessionId)
+      console.log('createSession함수 실행할 때 들어가는 sessionId: ', sessionId) // 삭제 예정
       return new Promise((resolve, reject) => {
         axios
           .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
@@ -194,7 +213,7 @@ export default {
     },
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-connection
     createToken (sessionId) {
-      console.log('createToken sessionId: ', sessionId)
+      console.log('createToken함수 실행 시 들어가는 sessionId: ', sessionId) // 삭제 예정
       return new Promise((resolve, reject) => {
         axios
           .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
@@ -211,3 +230,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .meeting-container {
+    overflow-y: scroll;
+  }
+  .meeting-container::-webkit-scrollbar {
+    display: none;
+  }
+</style>
