@@ -1,7 +1,6 @@
 package com.b303.mokkozi.board;
 
 import com.b303.mokkozi.board.dto.BoardDto;
-import com.b303.mokkozi.board.request.BoardListGetReq;
 import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.board.response.BoardListRes;
@@ -32,7 +31,7 @@ public class BoardController {
     @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> getBoardList(
-            @RequestBody @ApiParam(value = "게시글 페이지 정보", required = true) BoardListGetReq boardListGetReq
+            @RequestParam @ApiParam(value = "게시글 페이지 Index",defaultValue = "1") int page
 //            ,@ApiIgnore Authentication authentication
     ) {
 //        if (authentication == null) {
@@ -44,7 +43,7 @@ public class BoardController {
 //
 //            if (user != null) {
         try{
-            Page<BoardDto> boardList = boardService.getBoardList(boardListGetReq);
+            Page<BoardDto> boardList = boardService.getBoardList(page);
             return ResponseEntity.ok(BoardListRes.of(200, "게시글 목록 조회 완료.", boardList));
         }catch (NoSuchElementException e){
             e.printStackTrace();

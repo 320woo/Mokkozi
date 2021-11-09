@@ -1,7 +1,6 @@
 package com.b303.mokkozi.board;
 
 import com.b303.mokkozi.board.dto.BoardDto;
-import com.b303.mokkozi.board.request.BoardListGetReq;
 import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.entity.Board;
@@ -28,10 +27,10 @@ public class BoardServiceImpl implements BoardService {
     UserBoardLikeRepository ublRepository;
 
         @Override
-        public Page<BoardDto> getBoardList(BoardListGetReq blgr) {
+        public Page<BoardDto> getBoardList(int pageIdx) {
 
-            int size = blgr.getSize();
-            int page = blgr.getPage() <= 0 ? 0 : blgr.getPage() - 1;
+            int size = 15;
+            int page = pageIdx <= 0 ? 0 : pageIdx - 1;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
