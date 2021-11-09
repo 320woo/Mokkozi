@@ -11,17 +11,12 @@ import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import io.swagger.annotations.*;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Api(value = "게시판 API", tags = { "Board." })
 @RestController
@@ -53,7 +48,7 @@ public class BoardController {
             return ResponseEntity.ok(BoardListRes.of(200, "게시글 목록 조회 완료.", boardList));
         }catch (NoSuchElementException e){
             e.printStackTrace();
-            return ResponseEntity.ok(BaseResponseBody.of(404, "게시글 결과 없음."));
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "게시글 결과 없음."));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
@@ -84,7 +79,7 @@ public class BoardController {
             Board board = boardService.getBoardDetail(boardId);
             return ResponseEntity.ok(BoardRes.of(200, "게시글 상세 조회 완료.", board));
         }catch (NoSuchElementException e){
-            return ResponseEntity.ok(BaseResponseBody.of(404, "게시글 결과 없음."));
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "게시글 결과 없음."));
         }catch (Exception e){
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
         }
@@ -114,7 +109,7 @@ public class BoardController {
         User user = new User();
         try{
             Board board = boardService.createBoard(user,bwpr);
-            return ResponseEntity.status(200).body(BoardWritePostRes.of(200, "게시글 작성 완료", board));
+            return ResponseEntity.ok(BoardWritePostRes.of(200, "게시글 작성 완료", board));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
@@ -147,7 +142,7 @@ public class BoardController {
             Board board = boardService.modifyBoard(user,bmpr);
             return ResponseEntity.ok(BoardRes.of(200, "게시글 수정 완료.", board));
         }catch (NoSuchElementException e){
-            return ResponseEntity.ok(BaseResponseBody.of(404, "게시글 결과 없음."));
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "게시글 결과 없음."));
         }catch (Exception e){
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
         }
@@ -215,7 +210,7 @@ public class BoardController {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }catch (NoSuchElementException e){
             e.printStackTrace();
-            return ResponseEntity.ok(BaseResponseBody.of(404, "게시글 없음."));
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "게시글 없음."));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
@@ -250,7 +245,7 @@ public class BoardController {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }catch (NoSuchElementException e){
             e.printStackTrace();
-            return ResponseEntity.ok(BaseResponseBody.of(404, "게시글 없음."));
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "게시글 없음."));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
@@ -289,7 +284,7 @@ public class BoardController {
             return ResponseEntity.ok(BoardListRes.of(200, "게시글 검색 완료.", boardList));
         }catch (NullPointerException |NoSuchElementException e){
             e.printStackTrace();
-            return ResponseEntity.ok(BaseResponseBody.of(404, "게시글 검색 결과 없음."));
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "게시글 검색 결과 없음."));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
