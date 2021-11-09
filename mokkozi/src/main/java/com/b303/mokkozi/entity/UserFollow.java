@@ -1,6 +1,8 @@
 package com.b303.mokkozi.entity;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -10,14 +12,21 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserFollow extends BaseEntity{
 
     @ManyToOne
-    @JoinColumn(name="user_follower")
-    private User userFollower;
+    @JoinColumn(name="from_user_id")
+    private User fromUser;
 
     @ManyToOne
-    @JoinColumn(name="user_following")
-    private User userFollowing;
+    @JoinColumn(name="to_user_id")
+    private User toUser;
+
+    @Builder
+    UserFollow(User fromUser,User toUser){
+        this.fromUser = fromUser;
+        this.toUser = toUser;
+    }
 
 }
