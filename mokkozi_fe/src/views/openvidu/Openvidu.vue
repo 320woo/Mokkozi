@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid style="height: 800px;" class="meeting-container">
-    <div id="main-container" class="container">
+  <v-container fluid style="height: 800px; width: 600px; padding: 0px">
+    <div id="main-container">
       <div id="join" v-if="!session">
         <div id="img-div"><img src="https://images.dog.ceo/breeds/spaniel-japanese/n02085782_2690.jpg" /></div>
         <div id="join-dialog" class="jumbotron vertical-center">
@@ -19,45 +19,64 @@
             </p>
           </div>
         </div>
-        <video src="" id="test-video"></video>
       </div>
-
-      <div id="session" v-if="session">
-        <div id="session-header">
-          <h1 id="session-title">{{ mySessionId }}</h1>
-          <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
-        </div>
-        <div id="main-video" class="col-md-6" v-if="videoState">
-          <h3>메인 비디오</h3>
+      <div v-if="session" style="500px; padding: 40px 0px 0px 0px">
+        <h2 id="session-title">{{ mySessionId }}번 {{ myUserName }}님의 방</h2>
+        <div id="main-video" style="position: relative;">
           <user-video :stream-manager="mainStreamManager"/>
+          <div class="box-div">
+            <!-- <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/> -->
+            박스
+          </div>
+          <v-icon v-if="videoState" class="video-icon" right dark @click="videoOnOff">fas fa-video</v-icon>
+          <v-icon v-else class="video-icon" right dark @click="videoOnOff">fas fa-video-slash</v-icon>
+          <v-icon v-if="audioState" class="audio-icon" right dark @click="audioOnOff">fas fa-microphone-slash</v-icon>
+          <v-icon v-else class="audio-icon" right dark @click="audioOnOff">fas fa-microphone</v-icon>
+          <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-external-link-alt</v-icon>
         </div>
+
         <div id="video-container" class="col-md-6">
-          <h3>같은 방 사람들</h3>
-          <user-video :stream-manager="publisher" @click.native="updateMainVideoStreamManager(publisher)"/>
-          <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/>
+          <!-- <h3>같은 방 사람들</h3> -->
+          <!-- <user-video :stream-manager="publisher" @click.native="updateMainVideoStreamManager(publisher)"/> -->
+          <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
         </div>
-      </div>
-      <div id="session-header" v-if="session">
-        <v-btn v-if="videoState" color="#fdb4b5" class="white--text" @click="videoOnOff">Video OFF
-          <v-icon right dark>fas fa-video</v-icon>
-        </v-btn>
-        <v-btn v-if="!videoState" color="#fdb4b5" class="white--text" @click="videoOnOff">Video ON
-          <v-icon right dark>fas fa-video-slash</v-icon>
-        </v-btn>
-          <h1 id="session-title">{{ mySessionId }}</h1>
-          <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
-      </div>
-      <div id="session-header" v-if="session">
-        <v-btn v-if="audioState" color="#fdb4b5" class="white--text" @click="audioOnOff">Audio OFF
-          <v-icon right dark>fas fa-microphone</v-icon>
-        </v-btn>
-        <v-btn v-if="!audioState" color="#fdb4b5" class="white--text" @click="audioOnOff">Video ON
-          <v-icon right dark>fas fa-microphone-slash</v-icon>
-        </v-btn>
-          <h1 id="session-title">{{ mySessionId }}</h1>
-          <v-btn id="buttonLeaveSession" color="#fdb4b5" class="white--text" @click="leaveSession">Exit
-            <v-icon right dark>fas fa-external-link-alt</v-icon>
-          </v-btn>
+        <!-- 채팅 부분 -->
+        <div id="chat-div" style="height:300px; overflow:scroll; ">
+          <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-header>
+              채팅
+              <template v-slot:actions>
+                <v-icon color="primary">
+                  fas fa-comment
+                </v-icon>
+              </template>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content v-for="(message, i) in messages" :key="i">
+              <div v-if="message.from == myUserName" class="my-massage">
+                <v-avatar color="brown" size="32">
+                  <span class="white--text text-h5">KG</span>
+                </v-avatar>
+                <span class="font-weight-bold" style="margin: 0px 3px">{{ message.from }}</span>
+                <span>{{ message.content }}</span>
+              </div>
+              <div v-else class="your-message">
+                <v-avatar color="pink" size="32">
+                  <span class="white--text text-h5">WH</span>
+                </v-avatar>
+                <span>{{ message.from }}</span>
+                <span>{{ message.content }}</span>
+              </div>
+            </v-expansion-panel-content>
+            <v-expansion-panel-content>
+              <div>
+                <input style="width: 528px" v-model="message" type="text" placeholder="내용을 입력해주세요.." @keydown.enter="sendMessage">
+                <v-icon style="width: 24px">fas fa-location-arrow</v-icon>
+              </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        </div>
       </div>
     </div>
   </v-container>
@@ -84,10 +103,13 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'SessionA',
+      mySessionId: 'kwang',
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
       videoState: true,
-      audioState: true
+      audioState: true,
+      isSpeak: false,
+      message: '',
+      messages: []
     }
   },
   methods: {
@@ -105,10 +127,27 @@ export default {
       // --- Init a session ---
       this.session = this.OV.initSession()
       // --- Specify the actions when events take place in the session ---
+
+      // 메세지를 받는 부분(채팅)
+      this.session.on('signal:chat', (event) => {
+        const eventData = JSON.parse(event.data)
+        this.messages.push(eventData)
+        console.log('메세지 내용 출력', this.messages)
+        // setTimeout(() => {
+        //   const chatDiv = document.getElementById('chat-div')
+        //   chatDiv.scrollTo({
+        //     top: chatDiv.scrollHeight,
+        //     behavior: 'smooth'
+        //   })
+        // }, 50)
+      })
+
       // On every new Stream received...
       this.session.on('streamCreated', ({ stream }) => {
         const subscriber = this.session.subscribe(stream)
         console.log('subscriber객체 들어있는 것', subscriber) // 삭제 예정
+        subscriber.stream.videoDimensions.height = 240 // 비디오 높이
+        subscriber.stream.videoDimensions.width = 320 // 비디오넓이
         this.subscribers.push(subscriber)
       })
       // On every Stream destroyed...
@@ -135,7 +174,7 @@ export default {
               videoSource: undefined, // The source of video. If undefined default webcam
               publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
               publishVideo: true, // Whether you want to start publishing with your video enabled or not
-              resolution: '480x320', // The resolution of your video
+              resolution: '600x400', // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
               mirror: true // Whether to mirror your local video or not
@@ -226,6 +265,20 @@ export default {
           .then(data => resolve(data.token))
           .catch(error => reject(error.response))
       })
+    },
+
+    // 메세지 보내는 함수(채팅)
+    sendMessage () {
+      const messageData = {
+        content: this.message,
+        from: this.myUserName
+      }
+      this.message = ''
+      this.session.signal({
+        data: JSON.stringify(messageData), // Any string (optional)
+        to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+        type: 'chat' // The type of message (optional)
+      })
     }
   }
 }
@@ -237,5 +290,40 @@ export default {
   }
   .meeting-container::-webkit-scrollbar {
     display: none;
+  }
+  .box-div {
+    position: absolute;
+    background-color: red;
+    height: 200px;
+    width: 200px;
+    bottom: 30px;
+    right: 0px;
+  }
+  .video-icon {
+    position: absolute;
+    width: 30px;
+    bottom: 120px;
+    left: 0px;
+  }
+  .audio-icon {
+    position: absolute;
+    width: 30px;
+    bottom: 80px;
+    left: 0px;
+  }
+  .exit-icon {
+    position: absolute;
+    width: 30px;
+    bottom: 40px;
+    left: 0px;
+  }
+  #chat-div::-webkit-scrollbar {
+    display: none;
+  }
+  .my-massage {
+    float: left;
+  }
+  .your-massage {
+    float: right;
   }
 </style>
