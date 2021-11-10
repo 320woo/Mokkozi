@@ -23,33 +23,31 @@
       <div v-if="session" style="500px; padding: 40px 0px 0px 0px">
         <h2 id="session-title">{{ mySessionId }}번 {{ myUserName }}님의 방</h2>
         <div id="main-video" style="position: relative;">
-          <user-video :stream-manager="mainStreamManager"/>
+          <user-video :stream-manager="mainStreamManager" />
           <div class="box-div">
             <!-- <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/> -->
-            박스
+            <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/>
           </div>
           <v-icon v-if="videoState" class="video-icon" right dark @click="videoOnOff">fas fa-video</v-icon>
           <v-icon v-else class="video-icon" right dark @click="videoOnOff">fas fa-video-slash</v-icon>
-          <v-icon v-if="audioState" class="audio-icon" right dark @click="audioOnOff">fas fa-microphone-slash</v-icon>
-          <v-icon v-else class="audio-icon" right dark @click="audioOnOff">fas fa-microphone</v-icon>
+          <v-icon v-if="audioState" class="audio-icon" right dark @click="audioOnOff">fas fa-microphone</v-icon>
+          <v-icon v-else class="audio-icon" right dark @click="audioOnOff">fas fa-microphone-slash</v-icon>
           <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-external-link-alt</v-icon>
         </div>
-
-        <div id="video-container" class="col-md-6">
-          <!-- <h3>같은 방 사람들</h3> -->
-          <!-- <user-video :stream-manager="publisher" @click.native="updateMainVideoStreamManager(publisher)"/> -->
-          <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
-        </div>
-        <!-- 채팅 부분 -->
-        <div id="chat-div" style="height:300px; overflow:scroll; ">
+        <div id="chat-div" style="height:300px; overflow:scroll;">
           <v-expansion-panels>
           <v-expansion-panel>
-            <v-expansion-panel-header>
+            <v-expansion-panel-header class="font-weight-bold" style="font-size: 20px; height: 60px" @click="CountMessage">
               채팅
               <template v-slot:actions>
-                <v-icon color="primary">
-                  fas fa-comment
-                </v-icon>
+                <v-badge
+                  color="green"
+                  :content="messageLength"
+                >
+                  <v-icon color="#FFB4B4">
+                    fas fa-comment
+                  </v-icon>
+                </v-badge>
               </template>
             </v-expansion-panel-header>
             <v-expansion-panel-content v-for="(message, i) in messages" :key="i">
@@ -60,11 +58,11 @@
                 <span class="font-weight-bold" style="margin: 0px 3px">{{ message.from }}</span>
                 <span>{{ message.content }}</span>
               </div>
-              <div v-else class="your-message">
+              <div v-else class="your-massage">
                 <v-avatar color="pink" size="32">
                   <span class="white--text text-h5">WH</span>
                 </v-avatar>
-                <span>{{ message.from }}</span>
+                <span class="font-weight-bold" style="margin: 0px 3px">{{ message.from }}</span>
                 <span>{{ message.content }}</span>
               </div>
             </v-expansion-panel-content>
@@ -109,7 +107,9 @@ export default {
       audioState: true,
       isSpeak: false,
       message: '',
-      messages: []
+      messages: [],
+      messageLength: '0',
+      chatOpen: false
     }
   },
   methods: {
@@ -133,21 +133,25 @@ export default {
         const eventData = JSON.parse(event.data)
         this.messages.push(eventData)
         console.log('메세지 내용 출력', this.messages)
-        // setTimeout(() => {
-        //   const chatDiv = document.getElementById('chat-div')
-        //   chatDiv.scrollTo({
-        //     top: chatDiv.scrollHeight,
-        //     behavior: 'smooth'
-        //   })
-        // }, 50)
+        if (!this.chatOpen) {
+          this.message = 0
+          this.messageLength++
+        }
+        // 스크롤이 자동으로 맞춰서 내려가게 한다
+        setTimeout(() => {
+          const chatDiv = document.getElementById('chat-div')
+          chatDiv.scrollTo({
+            top: chatDiv.scrollHeight,
+            behavior: 'smooth'
+          })
+        }, 50)
       })
 
       // On every new Stream received...
       this.session.on('streamCreated', ({ stream }) => {
         const subscriber = this.session.subscribe(stream)
         console.log('subscriber객체 들어있는 것', subscriber) // 삭제 예정
-        subscriber.stream.videoDimensions.height = 240 // 비디오 높이
-        subscriber.stream.videoDimensions.width = 320 // 비디오넓이
+        console.log('video 크기 변경', subscriber.stream.streamManager) // 삭제 예정
         this.subscribers.push(subscriber)
       })
       // On every Stream destroyed...
@@ -198,11 +202,13 @@ export default {
       this.mainStreamManager = undefined
       this.publisher = undefined
       this.subscribers = []
+      this.messages = []
       this.OV = undefined
       window.removeEventListener('beforeunload', this.leaveSession)
     },
     updateMainVideoStreamManager (stream) {
       if (this.mainStreamManager === stream) return
+      this.subscribers.splice(0, 1, this.mainStreamManager)
       this.mainStreamManager = stream
     },
     /**
@@ -279,6 +285,13 @@ export default {
         to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
         type: 'chat' // The type of message (optional)
       })
+    },
+    CountMessage () {
+      this.chatOpen = !this.chatOpen
+      if (this.chatOpen === true) {
+        this.messageLength = '0'
+      }
+      console.log(this.chatOpen)
     }
   }
 }
@@ -293,9 +306,9 @@ export default {
   }
   .box-div {
     position: absolute;
-    background-color: red;
-    height: 200px;
-    width: 200px;
+    // background-color: red;
+    height: 120px;
+    width: 180px;
     bottom: 30px;
     right: 0px;
   }
@@ -321,9 +334,15 @@ export default {
     display: none;
   }
   .my-massage {
-    float: left;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
   }
   .your-massage {
-    float: right;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
   }
 </style>
