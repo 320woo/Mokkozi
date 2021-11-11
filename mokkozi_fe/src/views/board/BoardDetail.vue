@@ -1,7 +1,7 @@
 <template>
   <v-container fluid style="height: 800px;">
     <br>
-    <v-icon style="position: fixed; color: #fdb4b5;" @click="BackToBoardClick">fas fa-chevron-left</v-icon>
+    <v-icon style="position: fixed; color: #FFB4B4;" @click="BackToBoardClick">fas fa-chevron-left</v-icon>
     <div class="background-div">
       <div class="board-div">
         <v-card
@@ -69,7 +69,7 @@
           <div>
             <input style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem" type="text" placeholder="댓글 달기">
             <v-btn
-              color="#fdb4b5"
+              color="#FFB4B4"
               width="4rem"
               height="1.25rem"
             >
@@ -78,7 +78,7 @@
           </div>
           <v-card-actions style="padding: 0.2rem 0rem">
             <v-btn
-              color="#fdb4b5"
+              color="#FFB4B4"
               @click="Userfollow"
             >
               Follow
