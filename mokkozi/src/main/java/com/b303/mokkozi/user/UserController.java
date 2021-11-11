@@ -6,8 +6,8 @@ import com.b303.mokkozi.jwt.TokenProvider;
 import com.b303.mokkozi.user.dto.TokenDto;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.CredentialPostReq;
-import com.b303.mokkozi.user.response.UserFollowRes;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
+import com.b303.mokkozi.user.response.UserFollowRes;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -66,10 +66,18 @@ public class UserController {
         // Spring Security에 해당 authenticaion 객체를 저장한다.
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        // 사용자 닉네임과 프로필 경로를 함께 보낸다.
+        Optional<User> user = userService.findByEmail(credentials.getEmail());
+
         // 생성한 authenticaion 객체를 이용하여 JWT 토큰을 발급받는다.
         logger.info("UserController.login 76 : 토큰 발급 완료! : {}", authentication);
-        return ResponseEntity.ok(TokenDto.of(200, "로그인에 성공하였습니다. 토큰 발급 완료", tokenProvider.createToken(authentication, "user")));
+        return ResponseEntity.ok(TokenDto
+                .of(200, "로그인에 성공하였습니다. 토큰 발급 완료",
+                        tokenProvider.createToken(authentication, "user"),
+                        user.get().getNickname(),
+                        user.get().getProfile()));
     }
+
 
     @PostMapping("/join")
     @ApiOperation(value = "회원가입", notes = "회원 가입에 필요한 정보를 입력하고 회원가입한다.")
@@ -181,4 +189,5 @@ public class UserController {
         logger.info("테스트합니다.");
         logger.info("Authentication.getName() : {}", authentication.getName());
         return null;
+    }
 }

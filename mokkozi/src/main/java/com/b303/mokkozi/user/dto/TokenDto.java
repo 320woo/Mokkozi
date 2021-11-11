@@ -12,8 +12,10 @@ import lombok.*;
 public class TokenDto extends BaseResponseBody {
 
     private String token;
+    private String nickName;
+    private String profile;
 
-    public static TokenDto of(Integer statusCode, String message, String token) {
+    public static TokenDto of(Integer statusCode, String message, String token, String nickName, String profile) {
         TokenDto res = new TokenDto();
         res.setStatusCode(statusCode);
         res.setMessage(message);
