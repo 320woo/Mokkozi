@@ -1,6 +1,5 @@
 package com.b303.mokkozi.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -32,13 +31,14 @@ public class SwaggerConfig {
                 .build()
                 .securityContexts(newArrayList(securityContext()))
                 .securitySchemes(newArrayList(apiKey()))
-//                .apiInfo(apiInfo())
+                .apiInfo(apiInfo())
                 ;
     }
 
     private ApiKey apiKey() {
         return new ApiKey("JWT", "jwt", "header");
     }
+
 
     private SecurityContext securityContext() {
         return SecurityContext.builder()

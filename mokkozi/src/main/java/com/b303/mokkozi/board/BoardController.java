@@ -37,12 +37,12 @@ public class BoardController {
     public ResponseEntity<? extends BaseResponseBody> getBoardList(
 
             @RequestParam @ApiParam(value = "게시글 페이지 Index", defaultValue = "0") int page
-            , @ApiIgnore Authentication authentication
+//            , @ApiIgnore Authentication authentication
     ) {
 
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+//            User user = userDetails.getUser();
 //            if(user!=null){}
             Page<BoardDto> boardList = boardService.getBoardList(page);
             return ResponseEntity.ok(BoardListRes.of(200, "게시글 목록 조회 완료.", boardList));
@@ -139,11 +139,11 @@ public class BoardController {
             @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> deleteBoard(
             @RequestParam @ApiParam(value = "게시글 ID", required = true) Long boardId
-            ,@ApiIgnore Authentication authentication
+//            ,@ApiIgnore Authentication authentication
     ) {
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+//            User user = userDetails.getUser();
             boardService.deleteBoard(boardId);
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "게시글 삭제 완료"));
         } catch (AuthenticationException | NullPointerException e) {
