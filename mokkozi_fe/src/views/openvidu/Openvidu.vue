@@ -57,7 +57,7 @@ import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../../components/UserVideo'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
-const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8443'
+const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8447'
 const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
 
 export default {
@@ -119,7 +119,11 @@ export default {
               resolution: '640x480', // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-              mirror: false // Whether to mirror your local video or not
+              mirror: false, // Whether to mirror your local video or not
+              filter: {
+        type: "FaceOverlayFilter",
+        options: {}
+    }
             })
             this.mainStreamManager = publisher
             this.publisher = publisher
@@ -174,7 +178,7 @@ export default {
               kurentoOptions : {
                 allowedFilters: [
                   "GStreamerFilter",
-                  "ZBarFilter"
+                  "FaceOverlayFilter"
                 ]
               }
             }),
@@ -187,6 +191,7 @@ export default {
           .then(response => response.data)
           .then(data => resolve(data.id))
           .catch(error => {
+            console.log(error)
             if (error.response.status === 409) {
               resolve(sessionId)
             } else {
