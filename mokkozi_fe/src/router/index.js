@@ -70,6 +70,11 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: () => import('../components/File.vue')
+  },
+  {
+    path: '/matching',
+    name: 'Matching',
+    component: () => import('../views/matching/Matching.vue')
   }
 
 ]

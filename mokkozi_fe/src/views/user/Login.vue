@@ -71,7 +71,8 @@ export default {
           password: this.credentials.password
         }
       }).then(resp => {
-        console.log(resp)
+        this.$store.dispatch("setJwt", resp.data.token )
+        router.push("Matching")
       })
     }
 
