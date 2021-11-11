@@ -1,7 +1,6 @@
 package com.b303.mokkozi.board;
 
 import com.b303.mokkozi.board.dto.BoardDto;
-import com.b303.mokkozi.board.request.BoardListGetReq;
 import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.board.response.BoardListRes;
@@ -36,6 +35,7 @@ public class BoardController {
     @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> getBoardList(
+
             @RequestParam @ApiParam(value = "게시글 페이지 Index", defaultValue = "0") int page
             , @ApiIgnore Authentication authentication
     ) {

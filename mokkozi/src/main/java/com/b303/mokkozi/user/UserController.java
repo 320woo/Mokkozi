@@ -2,6 +2,7 @@ package com.b303.mokkozi.user;
 
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.User;
+import com.b303.mokkozi.jwt.CustomUserDetails;
 import com.b303.mokkozi.jwt.TokenProvider;
 import com.b303.mokkozi.user.dto.TokenDto;
 import com.b303.mokkozi.user.dto.UserFollowDto;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -108,14 +110,14 @@ public class UserController {
             ,@ApiIgnore Authentication authentication
     ) {
 
-        //Jwt를 통해 나의 정보 get
-        String userName = authentication.getName();
-
         try{
-            User fromUser = new User();
-            userService.createFollow(fromUser,toUserEmail);
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+            User user = userDetails.getUser();
+            userService.createFollow(user,toUserEmail);
             return ResponseEntity.ok(BaseResponseBody.of(200, "팔로우 성공"));
-        }catch (NullPointerException | NoSuchElementException e){
+        } catch (AuthenticationException | NullPointerException e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+        }catch (NoSuchElementException e){
             e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 사용자입니다."));
         }catch (Exception e){
@@ -132,12 +134,14 @@ public class UserController {
             ,@ApiIgnore Authentication authentication
     ) {
 
-        //Jwt를 통해 나의 정보 get
-
         try{
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+            User user = userDetails.getUser();
             userService.deleteFollow(followId);
             return ResponseEntity.ok(BaseResponseBody.of(200, "언팔로우 성공"));
-        }catch (NullPointerException | NoSuchElementException e){
+        } catch (AuthenticationException | NullPointerException e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+        }catch (NoSuchElementException e){
             e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 정보입니다."));
         }catch (Exception e){
@@ -155,10 +159,13 @@ public class UserController {
     ){
         //Jwt를 통해 나의 정보 get
         try{
-            User user = new User();
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+            User user = userDetails.getUser();
             List<UserFollowDto> followers = userService.getFollowers(user);
             return ResponseEntity.ok(UserFollowRes.of(200, "팔로워 목록 조회 성공",followers));
-        }catch (NullPointerException | NoSuchElementException e){
+        } catch (AuthenticationException | NullPointerException e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+        } catch (NoSuchElementException e){
             e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 정보입니다."));
         }catch (Exception e){
@@ -176,10 +183,13 @@ public class UserController {
     ){
         //Jwt를 통해 나의 정보 get
         try{
-            User user = new User();
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+            User user = userDetails.getUser();
             List<UserFollowDto> following = userService.getFollowing(user);
             return ResponseEntity.ok(UserFollowRes.of(200, "팔로워 목록 조회 성공",following));
-        }catch (NullPointerException | NoSuchElementException e){
+        } catch (AuthenticationException | NullPointerException e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+        } catch (NoSuchElementException e){
             e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 정보입니다."));
         }catch (Exception e){
