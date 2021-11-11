@@ -1,12 +1,14 @@
 <template>
-  <!-- <div> -->
+
+<!-- <div> -->
   <video @play="onPlay()" autoplay :width="videoWidth" :height="videoHeight"/>
   <!-- <canvas id="overlay" /> -->
   <!-- </div> -->
+
 </template>
 
 <script>
-import * as faceapi from 'face-api.js'
+// import * as faceapi from 'face-api.js'
 export default ({
   name: 'OvVideo',
   data: () => ({
@@ -16,8 +18,7 @@ export default ({
   props: {
     streamManager: Object
   },
-
-  watch: {
+ watch: {
     streamManager () {
       this.streamManager.addVideoElement(this.$el)
     }
@@ -27,6 +28,7 @@ export default ({
     this.streamManager.addVideoElement(this.$el)
     // this.streamManager.addVideoElement(this.$el).play()
     // this.streamManager.stream.applyFilter("FaceOverlayFilter",{})
+
     // .then(filter => {
     //   filter.execMethod(
     //     "setOverlayedImage",{
@@ -37,6 +39,17 @@ export default ({
     //             "heightPercent":"1.0F"
     //     });
     // });
+
+    // streamManager.addEventListener("play",()=>{
+    //   if(document.querySelector("canvas")){
+    //     document.querySelector("canvas").remove();
+    //   }
+    //   const canvas = faceapi.createCanvasFromMedia(this.streamManager.stream);
+    //   // videoGrid.append(canvas);
+
+
+
+    // })
   },
   methods: {
     videoWidthSelect () {
