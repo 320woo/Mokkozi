@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -104,10 +105,11 @@ public class UserController {
     @ApiOperation(value = "팔로우", notes = "다른 사용자를 팔로우할 수 있다.")
     @ApiResponses({@ApiResponse(code = 200, message = "팔로우 성공"), @ApiResponse(code = 500, message = "팔로우 실패")})
     public ResponseEntity<? extends BaseResponseBody>  follow(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail
-//            ,Authentication
+            ,@ApiIgnore Authentication authentication
     ) {
 
         //Jwt를 통해 나의 정보 get
+        String userName = authentication.getName();
 
         try{
             User fromUser = new User();
@@ -127,7 +129,7 @@ public class UserController {
     @ApiOperation(value = "팔로우 취소", notes = "다른 사용자를 팔로우 취소할 수 있다.")
     @ApiResponses({@ApiResponse(code = 200, message = "언팔로우 성공"), @ApiResponse(code = 500, message = "언팔로우 실패")})
     public ResponseEntity<? extends BaseResponseBody>  deleteFollow(@RequestParam @ApiParam(value = "팔로우 ID", required = true) Long followId
-//            ,Authentication
+            ,@ApiIgnore Authentication authentication
     ) {
 
         //Jwt를 통해 나의 정보 get
@@ -149,7 +151,7 @@ public class UserController {
     @ApiOperation(value = "팔로워 목록 ", notes = "팔로워 정보를 리스트로 반환")
     @ApiResponses({@ApiResponse(code = 200, message = "팔로워 목록 조회 성공"), @ApiResponse(code = 500, message = "팔로워 목록 조회 실패")})
     public ResponseEntity<? extends BaseResponseBody> getFollowers(
-//            Authentication
+            @ApiIgnore Authentication authentication
     ){
         //Jwt를 통해 나의 정보 get
         try{
@@ -170,7 +172,7 @@ public class UserController {
     @ApiOperation(value = "팔로잉 목록 ", notes = "팔로잉 정보를 리스트로 반환")
     @ApiResponses({@ApiResponse(code = 200, message = "팔로워 목록 조회 성공"), @ApiResponse(code = 500, message = "팔로잉 목록 조회 실패")})
     public ResponseEntity<? extends BaseResponseBody> getFollowing(
-//            Authentication
+            @ApiIgnore Authentication authentication
     ){
         //Jwt를 통해 나의 정보 get
         try{
