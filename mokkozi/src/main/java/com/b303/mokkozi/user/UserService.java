@@ -3,6 +3,7 @@ package com.b303.mokkozi.user;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserFollow;
 import com.b303.mokkozi.user.dto.UserFollowDto;
+import com.b303.mokkozi.user.request.JoinInfoPostReq;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,4 +18,6 @@ public interface UserService {
     List<UserFollowDto> getFollowers(User user);
 
     List<UserFollowDto> getFollowing(User user);
+
+    public User join(JoinInfoPostReq info);
 }

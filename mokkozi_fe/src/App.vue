@@ -27,7 +27,7 @@
           </v-col>
           <!-- 매번 바뀌는 페이지 -->
           <v-col class="d-flex flex-row justify-center align-center" cols="7">
-            <top></top>
+          <top></top>
             <main>
               <router-view/>
             </main>
@@ -40,11 +40,13 @@
 </template>
 
 <script>
-export default {
+export default ({
+  components: {},
   name: 'App',
   data: () => ({
+
   })
-}
+})
 </script>
 
 <style lang="scss" scoped>
