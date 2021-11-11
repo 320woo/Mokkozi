@@ -69,6 +69,8 @@ public class UserController {
         // 사용자 닉네임과 프로필 경로를 함께 보낸다.
         Optional<User> user = userService.findByEmail(credentials.getEmail());
 
+        logger.info("UserController.login 72 : 사용자 정보 : {}", user);
+
         // 생성한 authenticaion 객체를 이용하여 JWT 토큰을 발급받는다.
         logger.info("UserController.login 76 : 토큰 발급 완료! : {}", authentication);
         return ResponseEntity.ok(TokenDto
