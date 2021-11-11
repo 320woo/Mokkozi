@@ -39,7 +39,7 @@ public class User extends BaseEntity{
     private String active; // 대기, 활동, 탈퇴, 정지, 거부
 
     @Column(nullable = false)
-    private Long type; // 0: 관리자, 1: 사용자
+    private String role; // 0: 관리자, 1: 사용자
 
     private String profile; // 프로필 사진 url
 

@@ -33,7 +33,7 @@ public class TokenProvider implements InitializingBean {
     private final long tokenValidityInMilliseconds;
 
     private static String secret;
-    private static String AUTHORITIES_KEY = "auth";
+    private static String AUTHORITIES_KEY = "role";
 
     private Key key;
 
@@ -56,38 +56,17 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);    // 새로운 key를 생성한다.
     }
 
-    // Authentication 객체의 권한 정보를 이용하여 토큰을 생성하는 메소드
-    // Authentication : 인증 요청에 대한 토큰을 의미하거나, 인증 메서드에 의해 인증 권한이 부여된 토큰을 의미한다.
     /* stream : Java8부터 추가된 기능으로, 기존에 자바 컬렉션이나 배열의 원소를 가공할 때, for문, foreach문으로 원소 하나씩 골라내서
     가공했다면, Stream을 이용하여 람다함수 형식으로 간결하게 개별 원소에 대한 처리가 가능해졌다.
     stream().map()은 요소들을 특정조건에 해당하는 값으로 변환해 준다. ex) 대,소문자 변형 작업
     */
-    public String createToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
-
-        // 토큰의 만료기한을 설정한다.
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
-
-        // 토큰을 생성하여 return한다.
-        return Jwts.builder()
-                // 아래의 내용은 registered claim을 설정하는 과정이다.
-                // claim은? JWT내 payload에 들어가는 데이터의 형태이다. 하나의 claim은 key-value 쌍으로 이루어져 있다.
-                // claim의 종류로는 registered claim, public claim, private claim이 존재한다.
-                .setClaims(claims)                      // jwt 안에 들어가는 정보
-                .setIssuer("mokkozi.com")               // 해당 토큰을 발급한 곳의 정보
-                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())) // 해당 토큰의 생성일
-                .signWith(key, SignatureAlgorithm.HS512)// 서명
-                .setExpiration(validity)                // 해당 토큰의 만료일
-                .compact();                             // 이를 조합하여 JWT를 만들고, 해당하는 String을 반환한다.
-    }
-
     /**
      * JWT 토큰을 이용하여, body에 담겨 있는 payload를 확인한다.
      * @param token
      * @return Authentication
      */
     public Authentication getAuthentication(String token) {
+        logger.info("TokenProvider.getAuthentication() 69 : 함수 시작");
         Claims claims = Jwts
                 .parserBuilder()
                 .setSigningKey(key)
@@ -101,8 +80,48 @@ public class TokenProvider implements InitializingBean {
                         .collect(Collectors.toList());
 
         User user = new User();
-        return new UsernamePasswordAuthenticationToken(user, token, authorities);
+        // 토큰에서 사용자 이메일, 권한 정보(role) 불러오기
+        logger.info("TokenProvider.getAuthentication() 84 : 토큰에 들어있는 이메일 정보 : {}", claims.get("email", String.class));
+        logger.info("TokenProvider.getAuthentication() 85 : 토큰에 들어있는 권한 정보 : {}", claims.get("role", String.class));
+
+        user.setEmail(claims.get("email", String.class));
+
+        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+        // 사용자 role에 따라 권한 다르게
+        if (claims.get("role").equals("user")) {
+            customUserDetails.roles.add(new SimpleGrantedAuthority("user"));
+        } else {
+            customUserDetails.roles.add(new SimpleGrantedAuthority("admin"));
+        }
+
+        return new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
     }
+
+    public String createToken(Authentication authentication, String authorities) {
+        // 사용자의 권한 정보를 불러온다.
+        // 아래 코드는 권한을 자동으로 생성해주는 것.
+//        String authorities = authentication.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.joining(","));
+
+        // 토큰의 만료기한을 설정한다.
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+
+        // 토큰을 생성하여 return한다.
+        return Jwts.builder()
+                // 아래의 내용은 registered claim을 설정하는 과정이다.
+                // claim은? JWT내 payload에 들어가는 데이터의 형태이다. 하나의 claim은 key-value 쌍으로 이루어져 있다.
+                // claim의 종류로는 registered claim, public claim, private claim이 존재한다.
+                .claim("email", authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities)    // 토큰의 권한 정보
+                .setIssuer("mokkozi.com")               // 해당 토큰을 발급한 곳의 정보
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())) // 해당 토큰의 생성일
+                .signWith(key, SignatureAlgorithm.HS512)// 서명
+                .setExpiration(validity)                // 해당 토큰의 만료일
+                .compact();                             // 이를 조합하여 JWT를 만들고, 해당하는 String을 반환한다.
+    }
+
 
     // 토큰을 파라미터로 받아 파싱한 후, 문제가 발생하면 return false, 문제가 없으면 return true
     public boolean validateToken(String token) {

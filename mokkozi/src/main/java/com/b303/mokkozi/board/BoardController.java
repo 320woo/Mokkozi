@@ -11,8 +11,6 @@ import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import io.swagger.annotations.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +43,7 @@ public class BoardController {
 //            User user = userService.findByUserEmail(userEmail);
 //
 //            if (user != null) {
+
         try{
             Page<BoardDto> boardList = boardService.getBoardList(boardListGetReq);
             return ResponseEntity.ok(BoardListRes.of(200, "게시글 목록 조회 완료.", boardList));

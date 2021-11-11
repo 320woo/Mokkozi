@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService{
         user.setGender(info.getGender());
         user.setBirth(info.getBirth());
         user.setProfile(info.getProfile());
-        user.setType(1L);
+        user.setRole("user");
         user.setActive("대기");
         user.setPenaltyCount(0L);
 

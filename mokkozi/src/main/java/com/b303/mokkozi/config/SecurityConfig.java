@@ -34,43 +34,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-//    @Override
-//    public void configure(WebSecurity web) {
-//        web.ignoring()
-//                .antMatchers(
-//                        "/h2-console/**"
-//                        ,"/favicon.ico"
-//                        ,"/error"
-//                );
-//    }
-
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                // CORS에 대한 preflight 요청 허용
+                .cors()
+                .and()
+
                 // token을 사용하는 방식이기 때문에 csrf를 disable합니다.
                 .csrf().disable()
 
                 // 401 UnAuthorized와 403 Forbidden Error에 대한 예외 처리를 우리가 만든 클래스를 통해 처리할 수 있도록 등록한다.
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)      // 401 Error
+                .accessDeniedHandler(jwtAccessDeniedHandler)                // 403 Error
 
-                // enable h2-console
-//                .and()
-//                .headers()
-//                .frameOptions()
-//                .sameOrigin()
-
-                // 세션을 사용하지 않기 때문에 STATELESS로 설정
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                // 로그인 API, 회원가입 API의 경우 토큰이 없는 상태에서 요청이 들어오기 때문에, 모두 permitAll 처리 한다.
+                // 이제부터 수행하는 경우는 HttpServletRequest에 Authentication Token이 포함된 경우이다.
+                // 단, 로그인 API, 회원가입 API의 경우 토큰이 없는 상태에서 요청이 들어오기 때문에, 모두 permitAll 처리 한다.
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/meet/user/login").permitAll()
                 .antMatchers("/api/meet/user/join").permitAll()
+                // Swagger와 관련된 URL은 모두 예외 처리.
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**").permitAll()
                 .anyRequest().authenticated()
 
