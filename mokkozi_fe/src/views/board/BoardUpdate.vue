@@ -51,12 +51,12 @@
         ></v-textarea>
         <div style="float: right;">
           <v-btn
-            color="#fdb4b5"
+            color="#FFB4B4"
             @click="BoardUpdate">
             수정
           </v-btn>
           <v-btn
-            color="#fdb4b5"
+            color="#FFB4B4"
             @click="BoardDelete">
             삭제
           </v-btn>

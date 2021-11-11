@@ -54,7 +54,7 @@ export default {
     top: auto;
     bottom: 0px;
     left: auto;
-    width: 37rem;
+    width: 600px;
 }
 
 .footer-text {

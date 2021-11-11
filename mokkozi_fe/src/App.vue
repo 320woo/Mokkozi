@@ -28,7 +28,9 @@
           <!-- 매번 바뀌는 페이지 -->
           <v-col class="d-flex flex-row justify-center align-center" cols="7">
             <top></top>
-            <router-view/>
+            <main>
+              <router-view/>
+            </main>
             <foot></foot>
           </v-col>
         </v-row>

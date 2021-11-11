@@ -129,7 +129,7 @@
         <div>
             <input style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem" type="text" placeholder="댓글 달기">
             <v-btn
-              color="#fdb4b5"
+              color="#FFB4B4"
               width="4rem"
               height="1.25rem"
             >
