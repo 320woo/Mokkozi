@@ -2,7 +2,7 @@
   <v-container fluid style="height: 800px;" class="board-container">
     <h1 style="display:flex; justify-content:center">게시판</h1>
     <br>
-    <v-icon style="position: fixed; color: #fdb4b5;" @click="BoardCreateClick">fas fa-plus-circle</v-icon>
+    <v-icon style="position: fixed; color: #FFB4B4;" @click="BoardCreateClick">fas fa-plus-circle</v-icon>
     <div class="background-div" v-for="image in images" :key="image.id">
       <div class="board-div">
         <v-card
@@ -74,7 +74,7 @@
           <div>
             <input style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem" type="text" placeholder="댓글 달기">
             <v-btn
-              color="#fdb4b5"
+              color="#FFB4B4"
               width="4rem"
               height="1.25rem"
             >
@@ -83,7 +83,7 @@
           </div>
           <v-card-actions style="padding: 0.2rem 0rem">
             <v-btn
-              color="#fdb4b5"
+              color="#FFB4B4"
               @click="Userfollow"
             >
               Follow

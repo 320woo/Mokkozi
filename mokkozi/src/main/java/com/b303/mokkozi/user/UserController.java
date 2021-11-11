@@ -6,6 +6,7 @@ import com.b303.mokkozi.jwt.TokenProvider;
 import com.b303.mokkozi.user.dto.TokenDto;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.CredentialPostReq;
+import com.b303.mokkozi.user.request.JoinInfoPostReq;
 import com.b303.mokkozi.user.response.UserFollowRes;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,28 +52,50 @@ public class UserController {
     @ApiResponses({@ApiResponse(code = 200, message = "로그인 성공"), @ApiResponse(code = 500, message = "로그인 실패")})
     public ResponseEntity<? extends BaseResponseBody> login(@RequestBody @ApiParam(value = "회원의 로그인 정보(아이디와 패스워드)", required = true) CredentialPostReq credentials) {
 
-        logger.info("사용자 이메일 정보 {}", credentials.getEmail());
-        logger.info("사용자 비밀번호 정보 {}", credentials.getPassword());
+        // ID, PW가 담긴 토큰 발급
+        logger.info("UserController.login 65 : 이메일: {}, 비밀번호: {}", credentials.getEmail(), credentials.getPassword());
+        logger.info("UserController.login 66 : Authenticaion 토큰 생성. 이 과정에서 해당 사용자가 존재하는지, 비밀번호는 맞는지를 확인합니다.");
+        // 아이디 또는 비밀번호가 맞지 않는 경우 에러 메시지를 출력한다. (Logger 형태)
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword());
 
-        // 제일 먼저 사용자 아이디가 유효한지 확인한다.
+        // 이 토큰을 이용해서 Authenticaion 객체 생성
+        logger.info("UserController.login 69 : Authenticaion 객체 생성");
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        // Spring Security에 해당 authenticaion 객체를 저장한다.
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 사용자 닉네임과 프로필 경로를 함께 보낸다.
         Optional<User> user = userService.findByEmail(credentials.getEmail());
-        if (user.isPresent()) {
-            // 해당 사용자의 패스워드가 일치하면? 토큰 발급해서 return
-            if (passwordEncoder.matches(credentials.getPassword(), user.get().getPassword())) {
-                // TokenProvider 객체 생성
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.get().getId(), user.get().getPassword());
 
-                Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-                return ResponseEntity.ok(TokenDto.of(200, "로그인에 성공하였습니다.", tokenProvider.createToken(authentication)));
-            }
-            // 비밀번호가 일치하지 않는 경우
-            else {
-                return ResponseEntity.status(403).body(BaseResponseBody.of(403, "비밀번호가 일치하지 않습니다."));
-            }
+        logger.info("UserController.login 72 : 사용자 정보 : {}", user);
+
+        // 생성한 authenticaion 객체를 이용하여 JWT 토큰을 발급받는다.
+        logger.info("UserController.login 76 : 토큰 발급 완료! : {}", authentication);
+        return ResponseEntity.ok(TokenDto
+                .of(200, "로그인에 성공하였습니다. 토큰 발급 완료",
+                        tokenProvider.createToken(authentication, "user"),
+                        user.get().getNickname(),
+                        user.get().getProfile()));
+    }
+
+
+    @PostMapping("/join")
+    @ApiOperation(value = "회원가입", notes = "회원 가입에 필요한 정보를 입력하고 회원가입한다.")
+    @ApiResponses({@ApiResponse(code = 200, message = "회원가입 성공"), @ApiResponse(code = 500, message = "회원가입 실패")})
+    public ResponseEntity<? extends BaseResponseBody> join(@RequestBody @ApiParam(value="회원가입 시 필요한 정보") JoinInfoPostReq joinInfo) {
+        logger.info("회원가입 시 받아온 정보는 {}", joinInfo.toString());
+
+        // 사용자가 입력한 암호를 한번 인코딩해야 한다.
+        joinInfo.setPassword(passwordEncoder.encode(joinInfo.getPassword()));
+
+        try {
+            User result = userService.join(joinInfo);
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "회원가입 성공."));
         }
-        // 해당 아이디가 없는 경우..
-        else {
-            return ResponseEntity.status(406).body(BaseResponseBody.of(406, "회원이 존재하지 않습니다."));
+        catch (Exception e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "회원가입 실패."));
         }
     }
 
@@ -162,4 +186,10 @@ public class UserController {
         }
     }
 
+    @PostMapping("/test")
+    public ResponseEntity<? extends BaseResponseBody> test(Authentication authentication) {
+        logger.info("테스트합니다.");
+        logger.info("Authentication.getName() : {}", authentication.getName());
+        return null;
+    }
 }

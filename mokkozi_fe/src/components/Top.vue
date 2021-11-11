@@ -16,7 +16,7 @@
                 text="text"
                 rounded="rounded"
                 class="my-2 btn">
-            <router-link to="/" style="text-decoration: none; color:white">랜덤미팅</router-link></v-btn>
+            <router-link to="/matching" style="text-decoration: none; color:white">랜덤미팅</router-link></v-btn>
             <v-btn
                 dark
                 dense
@@ -40,7 +40,7 @@ export default {
     position: fixed;
     left: auto;
     top: 0;
-    width: 37rem;
+    width: 600px;
     z-index: 999;
     }
 </style>

@@ -42,6 +42,7 @@ public class BoardController {
 //            User user = userService.findByUserEmail(userEmail);
 //
 //            if (user != null) {
+
         try{
             Page<BoardDto> boardList = boardService.getBoardList(page);
             return ResponseEntity.ok(BoardListRes.of(200, "게시글 목록 조회 완료.", boardList));
