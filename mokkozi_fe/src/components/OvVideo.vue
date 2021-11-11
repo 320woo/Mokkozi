@@ -1,28 +1,34 @@
 <template>
+
 <!-- <div> -->
-  <video autoplay/>
-  <!-- <canvas id="overlay" />
-  </div> -->
+  <video @play="onPlay()" autoplay :width="videoWidth" :height="videoHeight"/>
+  <!-- <canvas id="overlay" /> -->
+  <!-- </div> -->
+
 </template>
 
 <script>
 // import * as faceapi from 'face-api.js'
 export default ({
   name: 'OvVideo',
-
+  data: () => ({
+    videoWidth: '100%',
+    videoHeight: '100%'
+  }),
   props: {
     streamManager: Object
   },
-
-  // watch: {
-  //   streamManager () {
-  //     this.streamManager.addVideoElement(this.$el)
-  //   }
-  // },
-
+ watch: {
+    streamManager () {
+      this.streamManager.addVideoElement(this.$el)
+    }
+  },
   mounted () {
-    console.log('this.streamManager.addVideoElement(this.$el): ', this.streamManager.addVideoElement(this.$el))
-    //             this.streamManager.stream.applyFilter("FaceOverlayFilter")
+    this.videoWidthSelect()
+    this.streamManager.addVideoElement(this.$el)
+    // this.streamManager.addVideoElement(this.$el).play()
+    // this.streamManager.stream.applyFilter("FaceOverlayFilter",{})
+
     // .then(filter => {
     //   filter.execMethod(
     //     "setOverlayedImage",{
@@ -33,12 +39,66 @@ export default ({
     //             "heightPercent":"1.0F"
     //     });
     // });
-    // console.log("manager",this.streamManager.stream)
-    // console.log("stream",this.streamManager.stream)
+
+    // streamManager.addEventListener("play",()=>{
+    //   if(document.querySelector("canvas")){
+    //     document.querySelector("canvas").remove();
+    //   }
+    //   const canvas = faceapi.createCanvasFromMedia(this.streamManager.stream);
+    //   // videoGrid.append(canvas);
+
+
+
+    // })
+  },
+  methods: {
+    videoWidthSelect () {
+      if (this.streamManager.stream.connection.role === 'SUBSCRIBER') {
+        this.videoWidth = '30%'
+        this.videoHeight = '30%'
+      }
     },
-  methods:{
+    onPlay (event) {
+      if (this.streamManager.paused || this.streamManager.ended)
+      { return setTimeout(() => onPlay()) }
+      const minConfidence = 0.3
+      const maxResult = 100
+      const options = new faceapi.SsdMobilenetv1Options({ minConfidence, maxResult })
 
+      // const result = faceapi.detectSingleFace(videoEl, options)
+
+      const displaySize = {width:this.streamManager.width,height:this.streamManager.height}
+
+      // console.log(result)
+
+      // if (result) {
+      //   const canvas = document.getElementById('overlay')
+      //   const dims = faceapi.matchDimensions(canvas, displaySize)
+      //   faceapi.draw.drawDetections(canvas, faceapi.resizeResults(result, dims))
+      // }
+      // setTimeout(() => onPlay())
+      // const canvas = document.getElementById('overlay')
+      // console.log(canvas);
+      // console.log(this.streamManager)
+      // faceapi.matchDimensions(canvas, displaySize,true);
+      // setInterval(async ()=>{
+      //   const detections = await faceapi
+      //   .detectAllFaces(this.streamManager,options)
+      //   .withFaceLandmarks();
+      //   const resizedDetections = faceapi.resizeResults(detections,displaySize);
+      //   canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
+      //   faceapi.draw.drawDetections(canvas,resizedDetections);
+      //   faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+      // },100);
+    }
+  },
+  created () {
+    // 모델 로드
+    Promise.all([
+      faceapi.nets.ssdMobilenetv1.loadFromUri('/weights'),
+      faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
+      faceapi.nets.faceRecognitionNet.loadFromUri('/weights')
+    ]).then()
   }
-
 })
 </script>

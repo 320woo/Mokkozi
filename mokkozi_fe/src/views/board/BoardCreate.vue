@@ -49,7 +49,7 @@
           placeholder="내용을 입력하세요.."
         ></v-textarea>
         <v-btn
-          color="#fdb4b5"
+          color="#FFB4B4"
           style="float: right;"
           @click="createBoard">
           작성

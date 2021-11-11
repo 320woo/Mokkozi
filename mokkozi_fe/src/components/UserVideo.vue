@@ -4,7 +4,7 @@
     <!-- <canvas id="overlay" /> -->
     <!-- <div>{{playCanvas}}</div> -->
     <div><p>{{ clientData }}</p></div>
-</div>
+  </div>
 </template>
 
 <script>

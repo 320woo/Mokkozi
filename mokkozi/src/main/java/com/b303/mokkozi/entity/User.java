@@ -3,6 +3,7 @@ package com.b303.mokkozi.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@ToString
 public class User extends BaseEntity{
 
     @Column(nullable = false)
@@ -37,7 +39,7 @@ public class User extends BaseEntity{
     private String active; // 대기, 활동, 탈퇴, 정지, 거부
 
     @Column(nullable = false)
-    private Long type; // 0: 관리자, 1: 사용자
+    private String role; // 0: 관리자, 1: 사용자
 
     private String profile; // 프로필 사진 url
 
