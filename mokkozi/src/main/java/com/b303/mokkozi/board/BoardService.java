@@ -1,7 +1,6 @@
 package com.b303.mokkozi.board;
 
 import com.b303.mokkozi.board.dto.BoardDto;
-import com.b303.mokkozi.board.request.BoardListGetReq;
 import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.entity.Board;
@@ -11,7 +10,7 @@ import org.springframework.data.domain.Page;
 import java.util.NoSuchElementException;
 
 public interface BoardService {
-    Page<BoardDto> getBoardList(BoardListGetReq boardListGetReq);
+    Page<BoardDto> getBoardList(int boardListGetReq);
 
     Board createBoard(User user, BoardWritePostReq bwpr);
 
