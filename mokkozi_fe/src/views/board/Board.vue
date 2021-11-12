@@ -124,25 +124,28 @@ export default {
       'https://dog.ceo/api/breeds/image/random'
     ],
     boardList: [],
-    limit: 0, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
+    limit: 1, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
     like: true,
     commentContent: ''
   }),
   created () {
     // infinite scroll
-    async function getTopicFromApi() {
-          try {
-              const init = await fetch(`/api/idol/uwasa/pages/0`, {method: "GET"})
-              const data = await init.json()
-              return data
-          } catch(exc) {
-              console.error(exc)
-          }
-      }
-      getTopicFromApi().then(data => {
-          console.log("fromAPI", data)
-          this.boardList = data
-      })
+    // async function getTopicFromApi() {
+    //       try {
+    //           const init = await fetch(`/api/idol/uwasa/pages/0`, {method: "GET"})
+    //           const data = await init.json()
+    //           return data
+    //       } catch(exc) {
+    //           console.error(exc)
+    //       }
+    //   }
+    //   getTopicFromApi().then(data => {
+    //       console.log("fromAPI", data)
+    //       this.boardList = data
+    //   })
+  },
+  mounted () {
+    this.getBoardList()
   },
   methods: {
     // infinite scroll
@@ -153,6 +156,7 @@ export default {
       }).then(data => {
         setTimeout(() => {
           if(data.length) {
+            console.log("게시판 데이터", data)
             this.boardList = this.boardList.concat(data)
             $state.loaded()
             this.limit += 1
@@ -185,8 +189,8 @@ export default {
     boardCreateClick () {
       this.$router.push({ name: 'BoardCreate' })
     },
-    boardDetailClick () {
-      this.$router.push({ name: 'BoardDetail' })
+    boardDetailClick (boardId) {
+      this.$router.push({ name: 'BoardDetail', params: boardId })
     },
     commentClick () {
       this.$router.push({ name: 'Comment' })
@@ -194,14 +198,11 @@ export default {
     // 게시물 리스트 불러오기
     getBoardList () {
       axios({
-        url: 'http://localhost:8000/api/meet/board',
+        url: `http://localhost:8000/api/meet/board?page=${this.limit}`,
         method: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          page: 1
-        }
       }).then(res => {
         console.log('게시물 불러오기 성공', res)
       }).catch(err => {

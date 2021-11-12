@@ -130,6 +130,13 @@ export default ({
         }
       }).then(res => {
         console.log('게시물 불러오기', res)
+        this.board = res.data.board
+        // active: "1"
+        // content: "세번째 게시물 작성!"
+        // id: 7
+        // regDate: "2021-11-12 22:30:51"
+        // title: null
+        // userEmail: "test@naver.com"
       }).catch(err => {
         console.log('게시물 불러오기 실패', err)
       })
