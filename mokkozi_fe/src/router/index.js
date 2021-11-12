@@ -42,7 +42,7 @@ const routes = [
     component: () => import('../views/board/BoardUpdate.vue')
   },
   {
-    path: '/boarddetail',
+    path: '/board/:boardId',
     name: 'BoardDetail',
     component: () => import('../views/board/BoardDetail.vue')
   },
