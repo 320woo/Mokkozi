@@ -11,6 +11,8 @@ import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.jwt.CustomUserDetails;
 import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,8 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/meet/board")
 public class BoardController {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     BoardService boardService;
@@ -92,10 +96,9 @@ public class BoardController {
             @RequestBody @ApiParam(value = "게시글 정보", required = true) BoardWritePostReq bwpr
             , @ApiIgnore Authentication authentication
     ) {
-
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
+
             Board board = boardService.createBoard(user, bwpr);
             return ResponseEntity.ok(BoardWritePostRes.of(200, "게시글 작성 완료", board));
         } catch (AuthenticationException | NullPointerException e) {
