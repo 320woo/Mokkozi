@@ -1,7 +1,5 @@
 package com.b303.mokkozi.user;
 
-import com.b303.mokkozi.board.dto.BoardDto;
-import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserFollow;
 import com.b303.mokkozi.user.dto.UserFollowDto;
@@ -38,7 +36,7 @@ public class UserServiceImpl implements UserService{
         user.setGender(info.getGender());
         user.setBirth(info.getBirth());
         user.setProfile(info.getProfile());
-        user.setRole("user");
+        user.setRole(info.getRole());
         user.setActive("대기");
         user.setPenaltyCount(0L);
 

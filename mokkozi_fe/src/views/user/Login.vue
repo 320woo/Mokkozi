@@ -74,7 +74,7 @@ export default {
         console.log("로그인 반환 정보 : ", resp)
         this.$store.dispatch("setJwt", resp.data.token)
         this.$store.dispatch("setNickname", resp.data.nickName)
-        this.$sotre.dispatch("setProfile", resp.data.profile)
+        this.$store.dispatch("setProfile", resp.data.profile)
         router.push("Matching")
       })
     }
