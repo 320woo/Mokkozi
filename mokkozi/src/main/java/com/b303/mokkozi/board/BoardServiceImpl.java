@@ -16,6 +16,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -26,32 +27,37 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     UserBoardLikeRepository ublRepository;
 
-        @Override
-        public Page<BoardDto> getBoardList(int pageIdx) {
 
-            int size = 10;
-            int page = pageIdx <= 0 ? 0 : pageIdx - 1;
+    @Override
+    public Page<BoardDto> getBoardList(User user, int pageIdx) {
+
+        int size = 10;
+        int page = pageIdx <= 0 ? 0 : pageIdx - 1;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
-            Page<Board> pageTuts = boardRepository.findAll(pageable);
-            Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(),m.getContent(),m.getRegDate(),m.getActive(),m.getUser().getEmail()));
+        Page<Board> pageTuts = boardRepository.findAll(pageable);
+        Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
 
-            return boardList;
+        return boardList;
     }
 
     @Autowired
     UserRepository userRepository;
 
     @Override
-    public Board createBoard(User user, BoardWritePostReq bwpr) {
+    public BoardDto createBoard(User user, BoardWritePostReq bwpr) {
 //            User user1 = userRepository.getById((long)1);
-            Board board = new Board();
-            board.setTitle(bwpr.getTitle());
-            board.setContent(bwpr.getContent());
-            board.setUser(user);
-            board.setActive("1");
-            return boardRepository.save(board);
+        Board board = new Board();
+        board.setTitle(bwpr.getTitle());
+        board.setContent(bwpr.getContent());
+        board.setUser(user);
+        board.setActive("1");
+        board = boardRepository.save(board);
+
+        boolean boardLike = ublRepository.findByUserIdAndBoardId(user.getId(), board.getId()).isPresent();
+
+        return new BoardDto(board, boardLike);
 
     }
 
@@ -62,32 +68,32 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board getBoardDetail(Long boardId) {
+    public BoardDto getBoardDetail(User user, Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("not found"));
-        return board;
+        boolean boardLike = ublRepository.findByUserIdAndBoardId(user.getId(), board.getId()).isPresent();
+        return new BoardDto(board, boardLike);
     }
 
     @Override
-    public Page<BoardDto> searchBoardList(String type,String keyword, int pageIdx) {
+    public Page<BoardDto> searchBoardList(User user, String type, String keyword, int pageIdx) {
 
-            int size = 10;
-            Pageable pageable = PageRequest.of(pageIdx,size,Sort.by(Sort.Direction.DESC,"id"));
-            if(type.equals("writer")){
-                Page<Board> pageTuts = boardRepository.findByUserIdContaining(pageable,keyword);
-                Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(),m.getContent(),m.getRegDate(),m.getActive(),m.getUser().getEmail()));
-                return boardList;
-            }else if(type.equals("title")){
-                Page<Board> pageTuts = boardRepository.findByTitleContaining(pageable,keyword);
-                Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(),m.getContent(),m.getRegDate(),m.getActive(),m.getUser().getEmail()));
-                return boardList;
-            }else if(type.equals("tag")){
-                //태그..?
-                //Page<Board> pageTuts = boardRepository.findByTitleContaining(pageable,keyword);
-            }
+        int size = 10;
+        Pageable pageable = PageRequest.of(pageIdx, size, Sort.by(Sort.Direction.DESC, "id"));
+        if (type.equals("writer")) {
+            Page<Board> pageTuts = boardRepository.findByUserIdContaining(pageable, keyword);
+            Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
+            return boardList;
+        } else if (type.equals("title")) {
+            Page<Board> pageTuts = boardRepository.findByTitleContaining(pageable, keyword);
+            Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
+            return boardList;
+        } else if (type.equals("tag")) {
+            //태그..?
+            //Page<Board> pageTuts = boardRepository.findByTitleContaining(pageable,keyword);
+        }
 
 
-
-            return null;
+        return null;
     }
 
     @Override
@@ -100,19 +106,24 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board modifyBoard(User user, BoardModifyPatchReq bmpr) {
+    public BoardDto modifyBoard(User user, BoardModifyPatchReq bmpr) {
         Board board = boardRepository.findById(bmpr.getId()).orElseThrow(() -> new NoSuchElementException("not found"));
-        if(board.getUser().getId()==user.getId()){
+        if (board.getUser().getId() == user.getId()) {
+
             board.setTitle(bmpr.getTitle());
             board.setContent(bmpr.getContent());
-            boardRepository.save(board);
-            return board;
+            board = boardRepository.save(board);
+
+            boolean boardLike = ublRepository.findByUserIdAndBoardId(user.getId(), board.getId()).isPresent();
+
+            return new BoardDto(board, boardLike);
+
         } else throw new AccessDeniedException("");
     }
 
     @Override
     public void deleteBoardLike(User user, Long boardId) {
-        UserBoardLike ubl = ublRepository.findByUserIdAndBoardId(user.getId(),boardId).orElseThrow(() -> new NoSuchElementException("not found"));
+        UserBoardLike ubl = ublRepository.findByUserIdAndBoardId(user.getId(), boardId).orElseThrow(() -> new NoSuchElementException("not found"));
         ublRepository.delete(ubl);
     }
 

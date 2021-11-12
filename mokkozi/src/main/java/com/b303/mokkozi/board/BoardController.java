@@ -1,12 +1,9 @@
 package com.b303.mokkozi.board;
 
 import com.b303.mokkozi.board.dto.BoardDto;
-import com.b303.mokkozi.board.request.BoardListGetReq;
 import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
-import com.b303.mokkozi.board.response.BoardListRes;
-import com.b303.mokkozi.board.response.BoardRes;
-import com.b303.mokkozi.board.response.BoardWritePostRes;
+import com.b303.mokkozi.board.dto.BoardListDto;
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
@@ -44,8 +41,8 @@ public class BoardController {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
             User user = userDetails.getUser();
 //            if(user!=null){}
-            Page<BoardDto> boardList = boardService.getBoardList(page);
-            return ResponseEntity.ok(BoardListRes.of(200, "게시글 목록 조회 완료.", boardList));
+            Page<BoardDto> boardList = boardService.getBoardList(user,page);
+            return ResponseEntity.ok(BoardListDto.of(200, "게시글 목록 조회 완료.", boardList));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e) {
@@ -71,8 +68,8 @@ public class BoardController {
         try {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
             User user = userDetails.getUser();
-            Board board = boardService.getBoardDetail(boardId);
-            return ResponseEntity.ok(BoardRes.of(200, "게시글 상세 조회 완료.", board));
+            BoardDto board = boardService.getBoardDetail(user,boardId);
+            return ResponseEntity.ok(BoardDto.of(200, "게시글 상세 조회 완료.", board));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e) {
@@ -96,8 +93,8 @@ public class BoardController {
         try {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
             User user = userDetails.getUser();
-            Board board = boardService.createBoard(user, bwpr);
-            return ResponseEntity.ok(BoardWritePostRes.of(200, "게시글 작성 완료", board));
+            BoardDto board = boardService.createBoard(user, bwpr);
+            return ResponseEntity.ok(BoardDto.of(200, "게시글 작성 완료", board));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (Exception e) {
@@ -119,8 +116,8 @@ public class BoardController {
         try {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
             User user = userDetails.getUser();
-            Board board = boardService.modifyBoard(user, bmpr);
-            return ResponseEntity.ok(BoardRes.of(200, "게시글 수정 완료.", board));
+            BoardDto board = boardService.modifyBoard(user, bmpr);
+            return ResponseEntity.ok(BoardDto.of(200, "게시글 수정 완료.", board));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e) {
@@ -229,8 +226,8 @@ public class BoardController {
         try {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
             User user = userDetails.getUser();
-            Page<BoardDto> boardList = boardService.searchBoardList(type, keyword, pageIdx);
-            return ResponseEntity.ok(BoardListRes.of(200, "게시글 검색 완료.", boardList));
+            Page<BoardDto> boardList = boardService.searchBoardList(user,type, keyword, pageIdx);
+            return ResponseEntity.ok(BoardListDto.of(200, "게시글 검색 완료.", boardList));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e) {
