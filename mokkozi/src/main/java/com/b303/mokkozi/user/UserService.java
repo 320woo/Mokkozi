@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    public Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(String email);
+
+    User userUpdate(User user);
 
     void createFollow(User fromUser, String toUserEmail);
 
@@ -19,5 +21,5 @@ public interface UserService {
 
     List<UserFollowDto> getFollowing(User user);
 
-    public User join(JoinInfoPostReq info);
+    User join(JoinInfoPostReq info);
 }

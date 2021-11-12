@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService{
         return userRepository.findByEmail(email);
     }
 
+    @Override
+    public User userUpdate(User user) {
+        return userRepository.save(user);
+    }
+
     public User join(JoinInfoPostReq info) {
         // 1. DB에 저장하기 위한 엔티티 객체 생성
         User user = new User();
