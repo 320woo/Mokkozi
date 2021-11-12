@@ -176,6 +176,7 @@
 import { required, email } from 'vee-validate/dist/rules'
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate'
 import axios from 'axios'
+import router from '../../router'
 
 extend('emailValidate', {
   ...email,
@@ -282,7 +283,7 @@ export default {
             hobby: this.joinInfo.hobby,
           }
         }).then(resp => {
-          console.log(resp)
+          router.push("/Login")
         })
       // this.$refs.observer.validate().then(
 
