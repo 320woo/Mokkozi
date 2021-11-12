@@ -10,17 +10,17 @@
             <form @submit.prevent="submit">
               <!-- 이메일 입력란 -->
               <ValidationProvider name="이메일" rules="required|emailValidate" v-slot="{ errors }">
-                <v-text-field,
+                <v-text-field
                 label="이메일"
                 v-model="joinInfo.email"
                 :error-messages="errors"
                 placeholder="이메일을 입력하세요."
                 required
-              ></v-text-field>
+                ></v-text-field>
               </ValidationProvider>
 
               <!-- 닉네임 -->
-              <ValidationProvider name="닉네임" rules="required" v-slot="{ errors }">`
+              <ValidationProvider name="닉네임" rules="required" v-slot="{ errors }">
                 <v-text-field
                   label="닉네임"
                   v-model="joinInfo.nickName"
@@ -282,9 +282,9 @@ export default {
             role: this.joinInfo.role,
             hobby: this.joinInfo.hobby,
           }
-        }).then(resp => {
+        }).then(
           router.push("/Login")
-        })
+        )
       // this.$refs.observer.validate().then(
 
       // )

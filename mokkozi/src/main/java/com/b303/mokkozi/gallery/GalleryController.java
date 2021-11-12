@@ -124,6 +124,6 @@ public class GalleryController {
             return ResponseEntity.status(500).body(BaseResponseBody.of(500, "대표 프로필 업로드 실패. file_path Null"));
         }
 
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "대표 프로필 업로드 성공!"));;
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "대표 프로필 업로드 성공!"));
     }
 }
