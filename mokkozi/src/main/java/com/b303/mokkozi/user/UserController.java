@@ -8,7 +8,6 @@ import com.b303.mokkozi.user.dto.TokenDto;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.CredentialPostReq;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
-import com.b303.mokkozi.user.response.UserFollowRes;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -162,7 +161,7 @@ public class UserController {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
             User user = userDetails.getUser();
             List<UserFollowDto> followers = userService.getFollowers(user);
-            return ResponseEntity.ok(UserFollowRes.of(200, "팔로워 목록 조회 성공",followers));
+            return ResponseEntity.ok(UserFollowDto.UserFollowListDto.of(200, "팔로워 목록 조회 성공",followers));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e){
@@ -186,7 +185,7 @@ public class UserController {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
             User user = userDetails.getUser();
             List<UserFollowDto> following = userService.getFollowing(user);
-            return ResponseEntity.ok(UserFollowRes.of(200, "팔로워 목록 조회 성공",following));
+            return ResponseEntity.ok(UserFollowDto.UserFollowListDto.of(200, "팔로워 목록 조회 성공",following));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e){
