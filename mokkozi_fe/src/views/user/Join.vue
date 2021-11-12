@@ -10,7 +10,7 @@
             <form @submit.prevent="submit">
               <!-- 이메일 입력란 -->
               <ValidationProvider name="이메일" rules="required|emailValidate" v-slot="{ errors }">
-                <v-text-field
+                <v-text-field,
                 label="이메일"
                 v-model="joinInfo.email"
                 :error-messages="errors"
@@ -20,7 +20,7 @@
               </ValidationProvider>
 
               <!-- 닉네임 -->
-              <ValidationProvider name="닉네임" rules="required" v-slot="{ errors }">
+              <ValidationProvider name="닉네임" rules="required" v-slot="{ errors }">`
                 <v-text-field
                   label="닉네임"
                   v-model="joinInfo.nickName"

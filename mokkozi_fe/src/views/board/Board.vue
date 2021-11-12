@@ -130,19 +130,22 @@ export default {
   }),
   created () {
     // infinite scroll
-    async function getTopicFromApi() {
-          try {
-              const init = await fetch(`/api/idol/uwasa/pages/0`, {method: "GET"})
-              const data = await init.json()
-              return data
-          } catch(exc) {
-              console.error(exc)
-          }
-      }
-      getTopicFromApi().then(data => {
-          console.log("fromAPI", data)
-          this.boardList = data
-      })
+    // async function getTopicFromApi() {
+    //       try {
+    //           const init = await fetch(`/api/idol/uwasa/pages/0`, {method: "GET"})
+    //           const data = await init.json()
+    //           return data
+    //       } catch(exc) {
+    //           console.error(exc)
+    //       }
+    //   }
+    //   getTopicFromApi().then(data => {
+    //       console.log("fromAPI", data)
+    //       this.boardList = data
+    //   })
+  },
+  mounted () {
+    this.getBoardList()
   },
   methods: {
     // infinite scroll
@@ -194,14 +197,11 @@ export default {
     // 게시물 리스트 불러오기
     getBoardList () {
       axios({
-        url: 'http://localhost:8000/api/meet/board',
+        url: `http://localhost:8000/api/meet/board/list?page=${0}`,
         method: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          page: 1
-        }
       }).then(res => {
         console.log('게시물 불러오기 성공', res)
       }).catch(err => {

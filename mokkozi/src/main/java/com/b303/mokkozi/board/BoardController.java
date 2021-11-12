@@ -34,32 +34,17 @@ public class BoardController {
     BoardService boardService;
 
     //게시글 목록 조회
-    @GetMapping("")
+    @GetMapping("/list")
     @ApiOperation(value = "게시글 목록 조회", notes = "게시글 목록을 조회한다.")
     @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> getBoardList(
-
-            @RequestParam @ApiParam(value = "게시글 페이지 Index", defaultValue = "0") int page
-//            , @ApiIgnore Authentication authentication
-    ) {
-
-        try {
-//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-//            User user = userDetails.getUser();
-//            if(user!=null){}
-            Page<BoardDto> boardList = boardService.getBoardList(page);
-            return ResponseEntity.ok(BoardListRes.of(200, "게시글 목록 조회 완료.", boardList));
-        } catch (AuthenticationException | NullPointerException e) {
-            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "게시글 결과 없음."));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
-        }
-
+            @RequestParam @ApiParam(value = "게시글 페이지 Index", defaultValue = "0") int page,
+            @ApiIgnore Authentication authentication) {
+        User user = (User) authentication.getDetails();
+        Page<BoardDto> boardList = boardService.getBoardList(page);
+        logger.info("BoardController.getBoardList 46 : 목록 반환합니다.");
+        return ResponseEntity.ok(BoardListRes.of(200, "게시글 목록 조회 완료.", boardList));
     }
 
     //게시글 상세조회
