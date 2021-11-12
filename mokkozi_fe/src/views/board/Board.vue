@@ -124,7 +124,7 @@ export default {
       'https://dog.ceo/api/breeds/image/random'
     ],
     boardList: [],
-    limit: 0, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
+    limit: 1, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
     like: true,
     commentContent: ''
   }),
@@ -151,11 +151,12 @@ export default {
     // infinite scroll
     infiniteHandler($state) {
       const EACH_LEN = 30
-      fetch("http://localhost:8000/api/meet/board/", {method: "get"}).then(resp => {
+      fetch(`http://localhost:8000/api/meet/board?pages=${this.limit}`, {method: "get"}).then(resp => {
         return resp.json()
       }).then(data => {
         setTimeout(() => {
           if(data.length) {
+            console.log("게시판 데이터", data)
             this.boardList = this.boardList.concat(data)
             $state.loaded()
             this.limit += 1
@@ -188,8 +189,8 @@ export default {
     boardCreateClick () {
       this.$router.push({ name: 'BoardCreate' })
     },
-    boardDetailClick () {
-      this.$router.push({ name: 'BoardDetail' })
+    boardDetailClick (boardId) {
+      this.$router.push({ name: 'BoardDetail', params: boardId })
     },
     commentClick () {
       this.$router.push({ name: 'Comment' })
@@ -197,7 +198,7 @@ export default {
     // 게시물 리스트 불러오기
     getBoardList () {
       axios({
-        url: `http://localhost:8000/api/meet/board/list?page=${0}`,
+        url: `http://localhost:8000/api/meet/board?page=${this.limit}`,
         method: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
