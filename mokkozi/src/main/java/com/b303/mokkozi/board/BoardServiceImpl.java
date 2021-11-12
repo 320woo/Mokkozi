@@ -29,7 +29,7 @@ public class BoardServiceImpl implements BoardService {
         @Override
         public Page<BoardDto> getBoardList(int pageIdx) {
 
-            int size = 15;
+            int size = 10;
             int page = pageIdx <= 0 ? 0 : pageIdx - 1;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
@@ -70,7 +70,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Page<BoardDto> searchBoardList(String type,String keyword, int pageIdx) {
 
-            int size = 15;
+            int size = 10;
             Pageable pageable = PageRequest.of(pageIdx,size,Sort.by(Sort.Direction.DESC,"id"));
             if(type.equals("writer")){
                 Page<Board> pageTuts = boardRepository.findByUserIdContaining(pageable,keyword);
