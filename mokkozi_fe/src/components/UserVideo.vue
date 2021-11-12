@@ -2,7 +2,7 @@
   <div v-if="streamManager">
     <ov-video :stream-manager="streamManager"/>
     <!-- <canvas id="overlay" /> -->
-    <!-- <div>{{playCanvas}}</div> -->
+    <div class="test_video"></div>
     <div><p>{{ clientData }}</p></div>
   </div>
 </template>
@@ -33,11 +33,11 @@ export default {
       const { clientData } = this.getConnectionData()
       return clientData
     },
-    // playCanvas(){
-    //   const canvas = document.getElementById('overlay')
-    //   canvas = this.onPlay()
-    //   return canvas
-    // }
+    videoTest(){
+      const canvas = document.getElementById('overlay')
+      canvas = this.onPlay()
+      return canvas
+    }
   },
 }
 </script>
