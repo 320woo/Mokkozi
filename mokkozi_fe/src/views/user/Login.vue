@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import router from '../../router'
 import axios from 'axios'
 
 export default {
@@ -60,7 +59,7 @@ export default {
   }),
   methods: {
     goToJoin () {
-      router.push('Join')
+      this.$router.push('Join')
     },
     login () {
       axios({
@@ -75,7 +74,7 @@ export default {
         this.$store.dispatch("setJwt", resp.data.token)
         this.$store.dispatch("setNickname", resp.data.nickName)
         this.$store.dispatch("setProfile", resp.data.profile)
-        router.push("Matching")
+        this.$router.push("Matching")
       })
     }
 

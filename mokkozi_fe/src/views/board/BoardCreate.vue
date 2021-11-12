@@ -9,15 +9,15 @@
         >
           <v-card-title style="display:flex; justify-content:space-between">
             <div>
-              <v-avatar size="36px" @click="UserImageClick">
+              <v-avatar size="36px" @click="userImageClick">
               <img
                 alt="Avatar"
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="UserNicknameClick">MOKKOZI</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">MOKKOZI</span>
             </div>
-            <v-icon @click="BackToBoardClick">fas fa-chevron-left</v-icon>
+            <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
           <template slot="progress">
             <v-progress-linear
@@ -80,31 +80,35 @@ export default {
     }
   },
   methods: {
-    UserImageClick () {
+    userImageClick () {
       this.$router.push({ name: 'Profile' })
     },
-    UserNicknameClick () {
+    userNicknameClick () {
       this.$router.push({ name: 'Profile' })
     },
-    BackToBoardClick () {
+    backToBoardClick () {
       this.$router.push({ name: 'Board' })
     },
     // 게시글 작성 요청
     // Swagger로 보면 title과 content가 필요하지만 content만 있으면 될 듯?
     // 사진 보내는 url 필요, FormData() 이용
     createBoard () {
-      const formData = new FormData()
-      formData.append('files', this.uploadImage)
+      // const formData = new FormData()
+      // formData.append('files', this.uploadImage)
       axios({
-        url: '/api/meet/board',
+        url: 'http://localhost:8000/api/meet/board',
         method: 'POST',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
         data: {
           content: this.content
         }
       }).then(res => {
-        console.log(res)
+        console.log('게시물 작성', res)
+        this.$router.push({ name: 'Board' })
       }).catch(err => {
-        console.log(err)
+        console.log('게시물 작성 실패', err)
       })
     }
   }
