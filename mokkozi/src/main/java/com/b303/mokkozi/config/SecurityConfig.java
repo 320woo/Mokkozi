@@ -4,6 +4,8 @@ import com.b303.mokkozi.jwt.JwtAccessDeniedHandler;
 import com.b303.mokkozi.jwt.JwtAuthenticationEntryPoint;
 import com.b303.mokkozi.jwt.JwtSecurityConfig;
 import com.b303.mokkozi.jwt.TokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +20,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public SecurityConfig(
             TokenProvider tokenProvider,
@@ -36,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+        logger.info("SecurityConfig.configure 43 : 함수 시작합니다.");
         httpSecurity
                 // CORS에 대한 preflight 요청 허용
                 .cors()
@@ -58,7 +63,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Swagger와 관련된 URL은 모두 예외 처리.
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**").permitAll()
                 .anyRequest().authenticated()
-
                 // 마지막으로, JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig 클래스도 적용해준다.
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider));

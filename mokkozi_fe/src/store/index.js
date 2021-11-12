@@ -12,7 +12,8 @@ export default new Vuex.Store({
     user: {
       nickname: '',
       profile: '',
-    }
+    },
+    role: '',
   },
   // Actions에서 commit() 함수를 통해 호출. state를 직접적으로 수정한다.
   mutations: {

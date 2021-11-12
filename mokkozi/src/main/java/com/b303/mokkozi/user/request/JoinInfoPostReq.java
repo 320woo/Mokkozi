@@ -36,6 +36,9 @@ public class JoinInfoPostReq {
     @ApiModelProperty(name = "사용자 프로필 파일", example = "filepath")
     private String profile;
 
+    @ApiModelProperty(name = "권한 정보", example = "admin / user")
+    private String role;
+
     @ApiModelProperty(name = "사용자가 선택한 관심사", example = "['등산', '영화']")
     private ArrayList<String> hobby;
 
