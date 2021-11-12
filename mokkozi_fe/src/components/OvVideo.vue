@@ -1,10 +1,6 @@
 <template>
-
-<!-- <div> -->
-  <video @play="onPlay()" autoplay :width="videoWidth" :height="videoHeight"/>
-  <!-- <canvas id="overlay" /> -->
-  <!-- </div> -->
-
+  <!-- <video autoplay :width="videoWidth" :height="videoHeight"/> -->
+  <div class="test_video"></div>
 </template>
 
 <script>
@@ -18,6 +14,11 @@ export default ({
   props: {
     streamManager: Object
   },
+  data(){
+    return(){
+      video:Object
+    }
+  },
  watch: {
     streamManager () {
       this.streamManager.addVideoElement(this.$el)
@@ -25,20 +26,21 @@ export default ({
   },
   mounted () {
     this.videoWidthSelect()
-    this.streamManager.addVideoElement(this.$el)
-    // this.streamManager.addVideoElement(this.$el).play()
-    // this.streamManager.stream.applyFilter("FaceOverlayFilter",{})
+    // this.streamManager.addVideoElement(this.$el).then((stream)=>{
 
-    // .then(filter => {
-    //   filter.execMethod(
-    //     "setOverlayedImage",{
-    //             "uri":"https://cdn.pixabay.com/photo/2013/07/12/14/14/derby-148046_960_720.png",
-    //             "offsetXPercent":"-0.2F",
-    //             "offsetYPercent":"-0.8F",
-    //             "widthPercent":"1.3F",
-    //             "heightPercent":"1.0F"
-    //     });
-    // });
+    // })
+    const video = document.createElement("video");
+
+    navigator.mediaDevices.getUserMedia({
+      video:true,
+      audio:true,
+    }).then((stream)=>{
+      this.streamManager.addVideoElement()
+    })
+
+    const testVideo = document.querySelector('.test_video')
+    testVideo.append(this.streamManager)
+    this.streamManager
 
     // streamManager.addEventListener("play",()=>{
     //   if(document.querySelector("canvas")){
