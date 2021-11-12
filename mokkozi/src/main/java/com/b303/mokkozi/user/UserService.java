@@ -20,4 +20,6 @@ public interface UserService {
     List<UserFollowDto> getFollowing(User user);
 
     public User join(JoinInfoPostReq info);
+
+    List<User> getRandomUser(User user);
 }
