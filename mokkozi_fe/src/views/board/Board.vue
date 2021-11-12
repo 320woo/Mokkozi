@@ -148,7 +148,7 @@ export default {
     // infinite scroll
     infiniteHandler($state) {
       const EACH_LEN = 30
-      fetch("http://localhost:8000/api/meet/board/", {method: "get"}).then(resp => {
+      fetch(`http://localhost:8000/api/meet/board?pages=${this.limit}`, {method: "get"}).then(resp => {
         return resp.json()
       }).then(data => {
         setTimeout(() => {
