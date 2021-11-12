@@ -1,12 +1,14 @@
 package com.b303.mokkozi.jwt;
 
 import com.b303.mokkozi.entity.User;
+import com.b303.mokkozi.user.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,6 +38,9 @@ public class TokenProvider implements InitializingBean {
     private static String AUTHORITIES_KEY = "role";
 
     private Key key;
+
+    @Autowired
+    UserService userService;
 
     // Constructor. 토큰의 secret key와 만료기한 값을 불러와서, TokenProvider의 클래스 변수에 저장한다.
     public TokenProvider(
@@ -79,12 +84,12 @@ public class TokenProvider implements InitializingBean {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        User user = new User();
         // 토큰에서 사용자 이메일, 권한 정보(role) 불러오기
         logger.info("TokenProvider.getAuthentication() 84 : 토큰에 들어있는 이메일 정보 : {}", claims.get("email", String.class));
         logger.info("TokenProvider.getAuthentication() 85 : 토큰에 들어있는 권한 정보 : {}", claims.get("role", String.class));
 
-        user.setEmail(claims.get("email", String.class));
+        // 유저 객체 이메일 통해 찾기
+        User user = userService.findByEmail(claims.get("email", String.class)).get();
 
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
         // 사용자 role에 따라 권한 다르게
@@ -94,7 +99,10 @@ public class TokenProvider implements InitializingBean {
             customUserDetails.roles.add(new SimpleGrantedAuthority("admin"));
         }
 
-        return new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        result.setDetails(user);
+
+        return result;
     }
 
     public String createToken(Authentication authentication, String authorities) {
