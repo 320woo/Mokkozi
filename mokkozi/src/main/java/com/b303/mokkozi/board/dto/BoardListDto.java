@@ -1,6 +1,5 @@
-package com.b303.mokkozi.board.response;
+package com.b303.mokkozi.board.dto;
 
-import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -10,12 +9,12 @@ import org.springframework.data.domain.Page;
 @Getter
 @Setter
 @ApiModel("BoardListResponse")
-public class BoardListRes extends BaseResponseBody {
+public class BoardListDto extends BaseResponseBody {
 
     private Page<BoardDto> boardList;
 
-    public static BoardListRes of(Integer statusCode, String message, Page<BoardDto> boardList) {
-        BoardListRes res = new BoardListRes();
+    public static BoardListDto of(Integer statusCode, String message, Page<BoardDto> boardList) {
+        BoardListDto res = new BoardListDto();
         res.setStatusCode(statusCode);
         res.setMessage(message);
         res.setBoardList(boardList);

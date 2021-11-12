@@ -10,20 +10,20 @@ import org.springframework.data.domain.Page;
 import java.util.NoSuchElementException;
 
 public interface BoardService {
+    
+    Page<BoardDto> getBoardList(User user,int page);
 
-    Page<BoardDto> getBoardList(int page);
-
-    Board createBoard(User user, BoardWritePostReq bwpr);
+    BoardDto createBoard(User user, BoardWritePostReq bwpr);
 
     void deleteBoard(Long boardId) throws NoSuchElementException;
 
-    Board getBoardDetail(Long boardId) throws NoSuchElementException;
+    BoardDto getBoardDetail(User user, Long boardId) throws NoSuchElementException;
 
-    Page<BoardDto> searchBoardList(String type,String keyword, int pageIdx);
+    Page<BoardDto> searchBoardList(User user,String type,String keyword, int pageIdx);
 
     void createBoardLike(User userEmail, Long boardId);
 
-    Board modifyBoard(User user, BoardModifyPatchReq bmpr);
+    BoardDto modifyBoard(User user, BoardModifyPatchReq bmpr);
 
     void deleteBoardLike(User user, Long boardId);
 }
