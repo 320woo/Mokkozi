@@ -20,6 +20,8 @@ public class TokenDto extends BaseResponseBody {
         res.setStatusCode(statusCode);
         res.setMessage(message);
         res.setToken(token);
+        res.setNickName(nickName);
+        res.setProfile(profile);
         return res;
     }
 }

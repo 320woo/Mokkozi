@@ -9,15 +9,15 @@
         >
           <v-card-title style="display:flex; justify-content:space-between">
             <div>
-              <v-avatar size="36px" @click="UserImageClick">
+              <v-avatar size="36px" @click="userImageClick">
               <img
                 alt="Avatar"
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="UserNicknameClick">MOKKOZI</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">MOKKOZI</span>
             </div>
-            <v-icon @click="BackToBoardClick">fas fa-chevron-left</v-icon>
+            <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
           <template slot="progress">
             <v-progress-linear
@@ -52,12 +52,12 @@
         <div style="float: right;">
           <v-btn
             color="#FFB4B4"
-            @click="BoardUpdate">
+            @click="boardUpdate">
             수정
           </v-btn>
           <v-btn
             color="#FFB4B4"
-            @click="BoardDelete">
+            @click="boardDelete">
             삭제
           </v-btn>
         </div>
@@ -86,33 +86,66 @@ export default {
       return URL.createObjectURL(this.uploadImage)
     }
   },
+  mounted () {
+    getSelectBoard()
+  },
   methods: {
-    UserImageClick () {
+    userImageClick () {
       this.$router.push({ name: 'Profile' })
     },
-    UserNicknameClick () {
+    userNicknameClick () {
       this.$router.push({ name: 'Profile' })
     },
-    BackToBoardClick () {
+    backToBoardClick () {
       this.$router.push({ name: 'Board' })
     },
-    BoardUpdate (boardId) { // 이미지 업데이트 부분 필요
+    // 게시물 불러오기
+    getSelectBoard (boardId) {
       axios({
-        url: '/api/meet/board',
+        url: `http://localhost:8000/api/meet/board/${boardId}`,
+        methods: 'GET',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        }
+      }).then(res => {
+        console.log('게시물 불러오기', res)
+      }).catch(err => {
+        console.log('게시물 불러오기 실패', err)
+      })
+    },
+    // 게시물 수정
+    boardUpdate (boardId) { // 이미지 업데이트 부분 필요
+      axios({
+        url: 'http://localhost:8000/api/meet/board',
         methods: 'PATCH',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
         data: {
           id: boardId,
           content: this.content
         }
+      }).then(res => {
+        console.log('게시물 수정', res)
+      }).catch(err => {
+        console.log('게시물 수정 실패', err)
       })
     },
-    BoardDelete (boardId) {
+    // 게시물 삭제
+    boardDelete (boardId) {
       axios({
-        url: '/api/meet/board',
+        url: 'http://localhost:8000/api/meet/board',
         methods: 'DELETE',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
         data: {
           id: boardId
         }
+      }).then(res => {
+        console.log('게시물 삭제', res)
+      }).catch(err => {
+        console.log('게시물 삭제 실패', err)
       })
     }
   }

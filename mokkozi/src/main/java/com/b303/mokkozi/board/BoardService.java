@@ -10,7 +10,8 @@ import org.springframework.data.domain.Page;
 import java.util.NoSuchElementException;
 
 public interface BoardService {
-    Page<BoardDto> getBoardList(User user,int boardListGetReq);
+    
+    Page<BoardDto> getBoardList(User user,int page);
 
     BoardDto createBoard(User user, BoardWritePostReq bwpr);
 

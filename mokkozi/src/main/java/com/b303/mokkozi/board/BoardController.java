@@ -9,6 +9,8 @@ import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.jwt.CustomUserDetails;
 import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/meet/board")
 public class BoardController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     BoardService boardService;
 
@@ -33,15 +37,18 @@ public class BoardController {
     @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> getBoardList(
+
             @RequestParam @ApiParam(value = "게시글 페이지 Index", defaultValue = "0") int page
             , @ApiIgnore Authentication authentication
     ) {
+        logger.info("BoardController.getBoardList 46 : 함수 시작.");
 
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
+            logger.info("BoardController.getBoardList 50 : User : {}", user.getEmail());
 //            if(user!=null){}
             Page<BoardDto> boardList = boardService.getBoardList(user,page);
+            logger.info("BoardController.getBoardList 53 : boardList : {}", boardList);
             return ResponseEntity.ok(BoardListDto.of(200, "게시글 목록 조회 완료.", boardList));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
@@ -66,8 +73,7 @@ public class BoardController {
     ) {
 
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
             BoardDto board = boardService.getBoardDetail(user,boardId);
             return ResponseEntity.ok(BoardDto.of(200, "게시글 상세 조회 완료.", board));
         } catch (AuthenticationException | NullPointerException e) {
@@ -89,10 +95,8 @@ public class BoardController {
             @RequestBody @ApiParam(value = "게시글 정보", required = true) BoardWritePostReq bwpr
             , @ApiIgnore Authentication authentication
     ) {
-
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
             BoardDto board = boardService.createBoard(user, bwpr);
             return ResponseEntity.ok(BoardDto.of(200, "게시글 작성 완료", board));
         } catch (AuthenticationException | NullPointerException e) {
@@ -114,8 +118,7 @@ public class BoardController {
     ) {
 
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
             BoardDto board = boardService.modifyBoard(user, bmpr);
             return ResponseEntity.ok(BoardDto.of(200, "게시글 수정 완료.", board));
         } catch (AuthenticationException | NullPointerException e) {
@@ -139,8 +142,8 @@ public class BoardController {
             ,@ApiIgnore Authentication authentication
     ) {
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
+
             boardService.deleteBoard(boardId);
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "게시글 삭제 완료"));
         } catch (AuthenticationException | NullPointerException e) {
@@ -166,8 +169,8 @@ public class BoardController {
     ) {
 
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
+
             boardService.createBoardLike(user, boardId);
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         } catch (AuthenticationException | NullPointerException e) {
@@ -192,8 +195,8 @@ public class BoardController {
             ,@ApiIgnore Authentication authentication
     ) {
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
+
             boardService.deleteBoardLike(user, boardId);
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         } catch (AuthenticationException | NullPointerException e) {
@@ -224,8 +227,7 @@ public class BoardController {
             ,@ApiIgnore Authentication authentication
     ) {
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
             Page<BoardDto> boardList = boardService.searchBoardList(user,type, keyword, pageIdx);
             return ResponseEntity.ok(BoardListDto.of(200, "게시글 검색 완료.", boardList));
         } catch (AuthenticationException | NullPointerException e) {

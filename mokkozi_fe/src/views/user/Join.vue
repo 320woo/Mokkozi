@@ -204,7 +204,7 @@ export default {
       gender: '남',
       birth: '1995-04-12',
       profile: [],
-      type: '사용자',
+      role: '사용자',
       hobby: [],
     },
     zcode: '',
@@ -278,7 +278,7 @@ export default {
             gender: this.joinInfo.gender,
             birth: this.joinInfo.birth,
             profile: this.joinInfo.profile.name, // S3 업로드의 경우 별도로 진행해야 한다.
-            type: this.joinInfo.type,
+            role: this.joinInfo.role,
             hobby: this.joinInfo.hobby,
           }
         }).then(resp => {
