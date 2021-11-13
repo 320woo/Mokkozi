@@ -12,13 +12,13 @@
         >
           <v-card-title style="display:flex; justify-content:space-between; margin-bottom: 0.2rem">
             <div>
-              <v-avatar size="36px" @click="userImageClick()">
+              <v-avatar size="36px" @click="userImageClick(board.userEmail)">
               <img
                 alt="Avatar"
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">{{ board.nickName }}</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(board.userEmail)">{{ board.nickName }}</span>
             </div>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -107,7 +107,6 @@ export default {
   data: () => ({
     boardList: [],
     limit: 0, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
-    like: false,
     commentContent: ''
   }),
   created () {
@@ -155,11 +154,11 @@ export default {
     boardReportClick (boardId) {
       this.$router.push({ name: 'Home', params: { boardId: boardId }}) // 신고하는 페이지로 이동하도록 바꿔야함
     },
-    userImageClick () {
-      this.$router.push({ name: 'Profile' })
+    userImageClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
-    userNicknameClick () {
-      this.$router.push({ name: 'Profile' })
+    userNicknameClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
     boardCreateClick () {
       this.$router.push({ name: 'BoardCreate' })
@@ -213,6 +212,12 @@ export default {
         },
       }).then(res => {
         console.log('좋아요 성공', res)
+        this.boardList.filter((board) => {
+          if (board.id === boardId) {
+            board.boardLike = !board.boardLike
+          }
+          return board
+        })
       }).catch(err => {
         console.log('좋아요 실패', err)
       })
@@ -227,6 +232,12 @@ export default {
         },
       }).then(res => {
         console.log('좋아요 취소 성공', res)
+        this.boardList.filter((board) => {
+          if (board.id === boardId) {
+            board.boardLike = !board.boardLike
+          }
+          return board
+        })
       }).catch(err => {
         console.log('좋아요 취소 실패', err)
       })
