@@ -1,10 +1,11 @@
 <template>
-  <!-- <video autoplay :width="videoWidth" :height="videoHeight"/> -->
-  <div class="test_video"></div>
+  <!-- <div class="test_video"> -->
+  <video autoplay :width="videoWidth" :height="videoHeight"/>
+  <!-- </div> -->
 </template>
 
 <script>
-// import * as faceapi from 'face-api.js'
+import * as faceapi from 'face-api.js'
 export default ({
   name: 'OvVideo',
   data: () => ({
@@ -14,11 +15,6 @@ export default ({
   props: {
     streamManager: Object
   },
-  data(){
-    return{
-      video:Object
-    }
-  },
  watch: {
     streamManager () {
       this.streamManager.addVideoElement(this.$el)
@@ -26,21 +22,20 @@ export default ({
   },
   mounted () {
     this.videoWidthSelect()
-    // this.streamManager.addVideoElement(this.$el).then((stream)=>{
+    this.streamManager.addVideoElement(this.$el).then((stream)=>{
+
+    })
+    // const video = document.createElement("video");
+
+    // navigator.mediaDevices.getUserMedia({
+    //   video:true,
+    //   audio:true,
+    // }).then((stream)=>{
+    //   this.streamManager.addVideoElement(this.video)
+    //   this.addVideoStream(stream);
 
     // })
-    const video = document.createElement("video");
 
-    navigator.mediaDevices.getUserMedia({
-      video:true,
-      audio:true,
-    }).then((stream)=>{
-      this.streamManager.addVideoElement()
-    })
-
-    const testVideo = document.querySelector('.test_video')
-    testVideo.append(this.streamManager)
-    this.streamManager
 
     // streamManager.addEventListener("play",()=>{
     //   if(document.querySelector("canvas")){
@@ -60,38 +55,59 @@ export default ({
         this.videoHeight = '30%'
       }
     },
-    onPlay (event) {
-      if (this.streamManager.paused || this.streamManager.ended)
-      { return setTimeout(() => onPlay()) }
-      const minConfidence = 0.3
-      const maxResult = 100
-      const options = new faceapi.SsdMobilenetv1Options({ minConfidence, maxResult })
+    addVideoStream (video, stream) {
+      video.srcObject = stream;
+      video.addEventListener("loadedmetadata",()=>{
+        // video.play();
+      });
 
-      // const result = faceapi.detectSingleFace(videoEl, options)
 
-      const displaySize = {width:this.streamManager.width,height:this.streamManager.height}
 
-      // console.log(result)
+      const testVideo = document.querySelector('.test_video')
+      testVideo.append(this.video)
+      this.streamManager.addVideoElement(this.video);
+      this.video.enabled = true;
+      video.addEventListener("play",()=>{
+        if (document.querySelector("canvas")) {
+        document.querySelector("canvas").remove();
+        }
 
-      // if (result) {
-      //   const canvas = document.getElementById('overlay')
-      //   const dims = faceapi.matchDimensions(canvas, displaySize)
-      //   faceapi.draw.drawDetections(canvas, faceapi.resizeResults(result, dims))
-      // }
-      // setTimeout(() => onPlay())
-      // const canvas = document.getElementById('overlay')
-      // console.log(canvas);
-      // console.log(this.streamManager)
-      // faceapi.matchDimensions(canvas, displaySize,true);
-      // setInterval(async ()=>{
-      //   const detections = await faceapi
-      //   .detectAllFaces(this.streamManager,options)
-      //   .withFaceLandmarks();
-      //   const resizedDetections = faceapi.resizeResults(detections,displaySize);
-      //   canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
-      //   faceapi.draw.drawDetections(canvas,resizedDetections);
-      //   faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
-      // },100);
+        const canvas = faceapi.createCanvasFromMedia(this.video);
+
+
+      })
+
+      // if (this.streamManager.paused || this.streamManager.ended)
+      // { return setTimeout(() => onPlay()) }
+      // const minConfidence = 0.3
+      // const maxResult = 100
+      // const options = new faceapi.SsdMobilenetv1Options({ minConfidence, maxResult })
+
+      // // const result = faceapi.detectSingleFace(videoEl, options)
+
+      // const displaySize = {width:this.streamManager.width,height:this.streamManager.height}
+
+      // // console.log(result)
+
+      // // if (result) {
+      // //   const canvas = document.getElementById('overlay')
+      // //   const dims = faceapi.matchDimensions(canvas, displaySize)
+      // //   faceapi.draw.drawDetections(canvas, faceapi.resizeResults(result, dims))
+      // // }
+      // // setTimeout(() => onPlay())
+      // // const canvas = document.getElementById('overlay')
+      // // console.log(canvas);
+      // // console.log(this.streamManager)
+      // // faceapi.matchDimensions(canvas, displaySize,true);
+      // // setInterval(async ()=>{
+      // //   const detections = await faceapi
+      // //   .detectAllFaces(this.streamManager,options)
+      // //   .withFaceLandmarks();
+      // //   const resizedDetections = faceapi.resizeResults(detections,displaySize);
+      // //   canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
+      // //   faceapi.draw.drawDetections(canvas,resizedDetections);
+      // //   faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+      // // },100);
     }
   },
   created () {

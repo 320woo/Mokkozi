@@ -109,7 +109,7 @@ export default {
     getSelectBoard (boardId) {
       axios({
         url: `http://localhost:8000/api/meet/board/${boardId}`,
-        methods: 'GET',
+        method: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         }
@@ -126,13 +126,14 @@ export default {
     boardUpdate (boardId) { // 이미지 업데이트 부분 필요
       axios({
         url: 'http://localhost:8000/api/meet/board',
-        methods: 'PATCH',
+        method: 'PATCH',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
         data: {
           id: boardId,
-          content: this.content
+          content: this.content,
+          title: "타이틀"
         }
       }).then(res => {
         console.log('게시물 수정', res)
@@ -143,14 +144,11 @@ export default {
     // 게시물 삭제
     boardDelete (boardId) {
       axios({
-        url: 'http://localhost:8000/api/meet/board',
-        methods: 'DELETE',
+        url: `http://localhost:8000/api/meet/board?boardId=${boardId}`,
+        method: 'DELETE',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          boardId: boardId
-        }
       }).then(res => {
         console.log('게시물 삭제', res)
       }).catch(err => {

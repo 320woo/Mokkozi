@@ -143,7 +143,7 @@ public class BoardController {
     ) {
         try {
             User user = (User) authentication.getDetails();
-
+            logger.info("BoardController.boardId 146 : boardId : {}", boardId);
             boardService.deleteBoard(boardId);
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "게시글 삭제 완료"));
         } catch (AuthenticationException | NullPointerException e) {

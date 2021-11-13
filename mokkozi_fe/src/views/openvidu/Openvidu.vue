@@ -233,14 +233,7 @@ export default {
         axios
           .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
             JSON.stringify({
-              type: "WEBRTC",
               customSessionId: sessionId,
-              kurentoOptions : {
-                allowedFilters: [
-                  "GStreamerFilter",
-                  "FaceOverlayFilter"
-                ]
-              }
             }),
             {
               auth: {
