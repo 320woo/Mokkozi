@@ -306,51 +306,51 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .meeting-container {
-    overflow-y: scroll;
-  }
-  .meeting-container::-webkit-scrollbar {
-    display: none;
-  }
-  .box-div {
-    position: absolute;
-    // background-color: red;
-    height: 120px;
-    width: 180px;
-    bottom: 30px;
-    right: 0px;
-  }
-  .video-icon {
-    position: absolute;
-    width: 30px;
-    bottom: 120px;
-    left: 0px;
-  }
-  .audio-icon {
-    position: absolute;
-    width: 30px;
-    bottom: 80px;
-    left: 0px;
-  }
-  .exit-icon {
-    position: absolute;
-    width: 30px;
-    bottom: 40px;
-    left: 0px;
-  }
-  #chat-div::-webkit-scrollbar {
-    display: none;
-  }
-  .my-massage {
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-  }
-  .your-massage {
-    display: flex;
-    flex-direction: row;
-    justify-content: end;
-    align-items: center;
-  }
+.meeting-container {
+  overflow-y: scroll;
+}
+.meeting-container::-webkit-scrollbar {
+  display: none;
+}
+.box-div {
+  position: absolute;
+  // background-color: red;
+  height: 120px;
+  width: 180px;
+  bottom: 30px;
+  right: 0px;
+}
+.video-icon {
+  position: absolute;
+  width: 30px;
+  bottom: 120px;
+  left: 0px;
+}
+.audio-icon {
+  position: absolute;
+  width: 30px;
+  bottom: 80px;
+  left: 0px;
+}
+.exit-icon {
+  position: absolute;
+  width: 30px;
+  bottom: 40px;
+  left: 0px;
+}
+#chat-div::-webkit-scrollbar {
+  display: none;
+}
+.my-massage {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+}
+.your-massage {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+}
 </style>

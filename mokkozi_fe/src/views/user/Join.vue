@@ -79,7 +79,7 @@
                   ></v-select>
                 </ValidationProvider>
                 <v-file-input
-                  v-model="joinInfo.profile"
+                  v-model="joinInfo.imgFile"
                   truncate-length="15"
                   accept="image/*"
                   prepend-icon="mdi-camera"
@@ -178,6 +178,8 @@ import { ValidationObserver, ValidationProvider, extend } from 'vee-validate'
 import axios from 'axios'
 import router from '../../router'
 
+const API_BASE_URL = 'http://localhost:8000/api'
+
 extend('emailValidate', {
   ...email,
   message: '이메일을 입력해 주세요.'
@@ -204,7 +206,7 @@ export default {
       extAddress: '101-1106',
       gender: '남',
       birth: '1995-04-12',
-      profile: [],
+      imgFile: [],
       role: '사용자',
       hobby: [],
     },
@@ -267,9 +269,20 @@ export default {
     join () {
       console.log("회원가입 요청합니다.")
 
+      const formData = new FormData()
+
+      formData.append("file", this.joinInfo.imgFile)
+      formData.append("email", this.joinInfo.email)
+      this.joinInfo.imgFile = formData
+
+      console.log("formData 정보: ", formData)
+
       axios({
-          url: 'http://localhost:8000/api/meet/user/join',
+          url: API_BASE_URL + '/meet/user/join',
           method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
           data: {
             email: this.joinInfo.email,
             nickname: this.joinInfo.nickName,
@@ -278,16 +291,28 @@ export default {
             extAddress: this.joinInfo.extAddress,
             gender: this.joinInfo.gender,
             birth: this.joinInfo.birth,
-            profile: this.joinInfo.profile.name, // S3 업로드의 경우 별도로 진행해야 한다.
             role: this.joinInfo.role,
-            hobby: this.joinInfo.hobby,
+            hobby: this.joinInfo.hobby
           }
-        }).then(
-          router.push("/Login")
-        )
-      // this.$refs.observer.validate().then(
+      }).then(resp => {
 
-      // )
+        if (resp.data.statusCode == 200) {
+          console.log("회원가입 완료! ", resp)
+          // 프로필 이미지 등록 시작합니다.
+          axios({
+            url: API_BASE_URL + '/meet/gallery/myProfile',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            data: this.joinInfo.imgFile
+          }).then(
+            router.push("/Login")
+          )
+        }
+
+
+      })
     }
   }
 

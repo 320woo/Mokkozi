@@ -59,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/meet/user/login").permitAll()
                 .antMatchers("/api/meet/user/join").permitAll()
+                .antMatchers("/api/meet/gallery/myProfile").permitAll()
                 // Swagger와 관련된 URL은 모두 예외 처리.
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**").permitAll()
                 .anyRequest().authenticated()

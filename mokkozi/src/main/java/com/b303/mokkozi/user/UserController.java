@@ -2,6 +2,7 @@ package com.b303.mokkozi.user;
 
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.User;
+import com.b303.mokkozi.entity.UserInterest;
 import com.b303.mokkozi.jwt.CustomUserDetails;
 import com.b303.mokkozi.jwt.TokenProvider;
 import com.b303.mokkozi.user.dto.TokenDto;
@@ -87,7 +88,8 @@ public class UserController {
     @PostMapping("/join")
     @ApiOperation(value = "회원가입", notes = "회원 가입에 필요한 정보를 입력하고 회원가입한다.")
     @ApiResponses({@ApiResponse(code = 200, message = "회원가입 성공"), @ApiResponse(code = 500, message = "회원가입 실패")})
-    public ResponseEntity<? extends BaseResponseBody> join(@RequestBody @ApiParam(value="회원가입 시 필요한 정보") JoinInfoPostReq joinInfo) {
+    public ResponseEntity<? extends BaseResponseBody> join(
+            @RequestBody @ApiParam(value="회원가입 시 필요한 정보") JoinInfoPostReq joinInfo) {
         logger.info("회원가입 시 받아온 정보는 {}", joinInfo.toString());
 
         // 사용자가 입력한 암호를 한번 인코딩해야 한다.
@@ -95,6 +97,10 @@ public class UserController {
 
         try {
             User result = userService.join(joinInfo);
+            // 관심사를 등록한다.
+            List<UserInterest> res = userService.createUserInterest(joinInfo, result);
+            logger.info("UseController.join 102 : 관심사 등록 결과 : {}", res);
+
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "회원가입 성공."));
         }
         catch (Exception e) {

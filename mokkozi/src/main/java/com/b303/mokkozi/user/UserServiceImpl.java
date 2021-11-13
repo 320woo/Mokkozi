@@ -2,11 +2,13 @@ package com.b303.mokkozi.user;
 
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserFollow;
+import com.b303.mokkozi.entity.UserInterest;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -17,6 +19,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserInterestRepository userInterestRepository;
 
     @Autowired
     UserFollowRepository userFollowRepository;
@@ -40,13 +45,27 @@ public class UserServiceImpl implements UserService{
         user.setAddress(info.getAddress() + " " + info.getExtAddress());
         user.setGender(info.getGender());
         user.setBirth(info.getBirth());
-        user.setProfile(info.getProfile());
         user.setRole(info.getRole());
         user.setActive("대기");
         user.setPenaltyCount(0L);
 
         // 2. DB에 저장
         User result = userRepository.save(user);
+        return result;
+    }
+
+    @Override
+    public List<UserInterest> createUserInterest(JoinInfoPostReq info, User user) {
+        List<UserInterest> result = new ArrayList<>();
+
+        for (String hobby:info.getHobby()) {
+            UserInterest userInterest = new UserInterest();
+            userInterest.setUser(user);
+            userInterest.setInterest(hobby);
+
+            userInterestRepository.save(userInterest);
+            result.add(userInterest);
+        }
         return result;
     }
 
