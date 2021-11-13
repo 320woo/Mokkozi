@@ -1,0 +1,108 @@
+<template>
+  <div class="text-center">
+    <v-dialog
+      v-model="dialog"
+      width="800px"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color="#FFB4B4"
+          dark
+          v-bind="attrs"
+          v-on="on"
+        >
+          유저신고
+        </v-btn>
+      </template>
+
+      <v-card>
+        <v-card-title style="display:flex; justify-content:space-between;" class="white">
+          <span>사용자 신고하기</span>
+          <v-btn color="white" icon>
+            <v-icon style="color: #FFB4B4;" @click="dialog = false">fas fa-times-circle</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-divider></v-divider>
+        <div style="margin: 24px; padding: 15px; display:flex; justify-content:start; align-items: center; border-style: solid; border-width: 1px;">
+          <v-avatar size="150px" @click="userImageClick(board.userEmail)">
+            <img alt="Avatar" src="@/assets/logo.png">
+          </v-avatar>
+          <div style="margin-left: 20px;">
+            <h3>'공항도둑' 사용자 신고</h3>
+            <p>이 사용자를 신고하는 이유를 선택해 주세요.</p>
+          </div>
+        </div>
+        <p id="reason1" class="reason" @click="selectReason('reason1', '혐오성/음란한 사진')">혐오성/음란한 사진</p>
+        <p id="reason2" class="reason" @click="selectReason('reason2', '사진도용')">사진도용</p>
+        <p id="reason3" class="reason" @click="selectReason('reason3', '금전요구사기')">금전요구사기</p>
+        <p id="reason4" class="reason" @click="selectReason('reason4', '허위 프로필 정보')">허위 프로필 정보</p>
+        <p id="reason5" class="reason" @click="selectReason('reason5', '성매매')">성매매</p>
+        <p id="reason6" class="reason" @click="selectReason('reason6', '성희롱')">성희롱</p>
+        <v-divider style="margin-top: 21px"></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="#FFB4B4"
+            @click="dialog = false"
+          >
+            신고
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ReportUser',
+  data: () => ({
+    dialog: false,
+    reason: '',
+  }),
+  props: {
+    open: {
+      type: Boolean
+    }
+  },
+  methods: {
+    selectReason (id, reason) { // 하나만 선택할 수 있도록 바꿔야 한다
+      const show = document.querySelector('#' + id)
+      // 이미 선택한 이유가 있는 경우
+      if (show.classList.contains('selected')) {
+        // 1. CSS 변경
+        show.classList.remove('selected')
+        // 2. reason 변경
+        this.reason = reason
+      // 선택한 이유가 없는 경우
+      } else {
+        // 1. CSS 변경
+        show.className += ' selected'
+        // 2. hobby List 변경
+        this.reason = reason
+      }
+    },
+  }
+}
+</script>
+
+<style scoped>
+  .reason {
+  border: 1px solid lightgrey;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+  -webkit-transition: 500ms;
+  margin: 3px 24px;
+  }
+  .reason:hover {
+    background-color: #FF9292;
+    cursor: pointer;
+    -webkit-transition: 500ms;
+  }
+  .selected {
+    background-color: #FF9292;
+    border: 1px solid #FF9292;
+  }
+</style>
