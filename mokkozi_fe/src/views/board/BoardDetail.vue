@@ -11,13 +11,13 @@
         >
           <v-card-title style="display:flex; justify-content:space-between; margin-bottom: 0.2rem">
             <div>
-              <v-avatar size="36px" @click="userImageClick">
+              <v-avatar size="36px" @click="userImageClick(board.userEmail)">
               <img
                 alt="Avatar"
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">{{ board.nickName }}</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(board.userEmail)">{{ board.nickName }}</span>
             </div>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -33,7 +33,7 @@
                   <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                  <v-list-item-title style="cursor: pointer;" @click="boardReportClick(board.id)">신고하기</v-list-item-title>
+                  <report-board />
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -57,7 +57,7 @@
           ></v-img>
 
           <v-card-text class="like-text">
-            <i v-if="board.boardLike" class="fas fa-heart" style="color:red" @click="boardLike(board.id)"></i>
+            <i v-if="like" class="fas fa-heart" style="color:red" @click="boardUnLike(board.id)"></i>
             <i v-else class="far fa-heart" style="color:red" @click="boardLike(board.id)"></i>
              like
           </v-card-text>
@@ -98,24 +98,24 @@ export default ({
   data: () => ({
     image: 'https://images.dog.ceo/breeds/bulldog-english/murphy.jpg',
     commentContent: '',
-    board: {}
+    board: {},
+    like: false
   }),
   mounted () {
-    console.log(this.boardId)
     this.getSelectBoard(this.boardId)
   },
   methods: {
-    boardUpdateClick () {
-      this.$router.push({ name: 'BoardUpdate' })
+    boardUpdateClick (boardId) {
+      this.$router.push({ name: 'BoardUpdate', params: { boardId: boardId }})
     },
     boardReportClick () {
       this.$router.push({ name: 'Home' }) // 신고하는 페이지로 이동하도록 바꿔야함
     },
-    userImageClick () {
-      this.$router.push({ name: 'Profile' })
+    userImageClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
-    userNicknameClick () {
-      this.$router.push({ name: 'Profile' })
+    userNicknameClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
     backToBoardClick () {
       this.$router.push({ name: 'Board' })
@@ -131,6 +131,7 @@ export default ({
       }).then(res => {
         console.log('게시물 불러오기', res)
         this.board = res.data
+        this.like = res.date.boardLike
       }).catch(err => {
         console.log('게시물 불러오기 실패', err)
       })
@@ -156,16 +157,14 @@ export default ({
     // 좋아요
     boardLike (boardId) {
       axios({
-        url: 'http://localhost:8000/api/meet/board/like',
+        url: `http://localhost:8000/api/meet/board/like?boardId=${boardId}`,
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          boardId: boardId
-        }
       }).then(res => {
         console.log('좋아요 성공', res)
+        this.like = !this.like
       }).catch(err => {
         console.log('좋아요 실패', err)
       })
@@ -173,16 +172,14 @@ export default ({
     // 좋아요 취소
     boardUnLike (boardId) {
       axios({
-        url: 'http://localhost:8000/api/meet/board/unlike',
+        url: `http://localhost:8000/api/meet/board/unlike?boardId=${boardId}`,
         method: 'DELETE',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          boardId: boardId
-        }
       }).then(res => {
         console.log('좋아요 취소 성공', res)
+        this.like = !this.like
       }).catch(err => {
         console.log('좋아요 취소 실패', err)
       })

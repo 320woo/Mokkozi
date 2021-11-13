@@ -19,12 +19,12 @@ export default {
     streamManager: Object
   },
     created(){
-    //모델 로드
-          Promise.all([
-  faceapi.nets.ssdMobilenetv1.loadFromUri("/weights"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("/weights"),
-  faceapi.nets.faceRecognitionNet.loadFromUri("/weights"),
-]).then();
+//     //모델 로드
+//           Promise.all([
+//   faceapi.nets.ssdMobilenetv1.loadFromUri("/weights"),
+//   faceapi.nets.faceLandmark68Net.loadFromUri("/weights"),
+//   faceapi.nets.faceRecognitionNet.loadFromUri("/weights"),
+// ]).then();
   },
   methods: {
     getConnectionData () {

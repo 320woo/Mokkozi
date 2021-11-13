@@ -33,9 +33,6 @@ public class JoinInfoPostReq {
     @ApiModelProperty(name = "생년월일", example = "1995-04-12")
     private Date birth;
 
-    @ApiModelProperty(name = "사용자 프로필 파일", example = "filepath")
-    private String profile;
-
     @ApiModelProperty(name = "권한 정보", example = "admin / user")
     private String role;
 
