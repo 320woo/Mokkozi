@@ -1,6 +1,7 @@
 <template>
   <div class="test_video">
-  <video id="user_video" autoplay :width="videoWidth" :height="videoHeight"/>
+  <video @play="addVideoStream" id="user_video" autoplay :width="videoWidth" :height="videoHeight"/>
+  <!-- <video id="user_video" autoplay :width="videoWidth" :height="videoHeight"/> -->
   </div>
 </template>
 
@@ -18,33 +19,23 @@ export default ({
  watch: {
     streamManager () {
       this.streamManager.addVideoElement(document.querySelector("#user_video"))
+      // this.streamManager.addVideoElement(this.$el)
     }
   },
   mounted () {
     this.videoWidthSelect()
-    this.streamManager.addVideoElement(document.querySelector("#user_video"))
-    // const video = document.createElement("video");
+    const video = document.querySelector("#user_video");
+    Promise.all([
+      faceapi.nets.ssdMobilenetv1.loadFromUri('/weights'),
+      faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
+      faceapi.nets.faceRecognitionNet.loadFromUri('/weights')
+    ]).then(()=>{
+          this.streamManager.addVideoElement(video);
+          // this.addVideoStream (video);
+    }
 
-    // navigator.mediaDevices.getUserMedia({
-    //   video:true,
-    //   audio:true,
-    // }).then((stream)=>{
-    //   this.streamManager.addVideoElement(this.video)
-    //   this.addVideoStream(stream);
+    )
 
-    // })
-
-
-    // streamManager.addEventListener("play",()=>{
-    //   if(document.querySelector("canvas")){
-    //     document.querySelector("canvas").remove();
-    //   }
-    //   const canvas = faceapi.createCanvasFromMedia(this.streamManager.stream);
-    //   // videoGrid.append(canvas);
-
-
-
-    // })
   },
   methods: {
     videoWidthSelect () {
@@ -53,68 +44,42 @@ export default ({
         this.videoHeight = '30%'
       }
     },
-    addVideoStream (video, stream) {
-      video.srcObject = stream;
-      video.addEventListener("loadedmetadata",()=>{
-        // video.play();
-      });
+    addVideoStream () {
 
-
-
+      const video = document.querySelector("#user_video");
       const testVideo = document.querySelector('.test_video')
-      testVideo.append(this.video)
-      this.streamManager.addVideoElement(this.video);
-      this.video.enabled = true;
-      video.addEventListener("play",()=>{
+      testVideo.append(video)
+      // this.streamManager.addVideoElement(video);
+      // video.enabled = true;
+        if(video.paused || video.ended)
+        {return setTimeout(() => onPlay())}
+
         if (document.querySelector("canvas")) {
-        document.querySelector("canvas").remove();
-        }
+        document.querySelector("canvas").remove()};
 
-        const canvas = faceapi.createCanvasFromMedia(this.video);
+        const minConfidence = 0.3
+        const maxResult = 100
+        const options = new faceapi.SsdMobilenetv1Options({minConfidence,maxResult})
 
+        const canvas = faceapi.createCanvasFromMedia(video);
+        testVideo.append(canvas);
 
-      })
+        const displaySize = { width:video.width,height:video.height };
+        faceapi.matchDimensions(canvas, displaySize);
 
-      // if (this.streamManager.paused || this.streamManager.ended)
-      // { return setTimeout(() => onPlay()) }
-      // const minConfidence = 0.3
-      // const maxResult = 100
-      // const options = new faceapi.SsdMobilenetv1Options({ minConfidence, maxResult })
+        setInterval(async ()=>{
+        const detections = await faceapi
+        .detectAllFaces(video,options)
+        .withFaceLandmarks();
 
-      // // const result = faceapi.detectSingleFace(videoEl, options)
+        const resizedDetections = faceapi.resizeResults(detections,displaySize);
+        canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
+        faceapi.draw.drawDetections(canvas,resizedDetections);
+        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
 
-      // const displaySize = {width:this.streamManager.width,height:this.streamManager.height}
+      },100);
 
-      // // console.log(result)
-
-      // // if (result) {
-      // //   const canvas = document.getElementById('overlay')
-      // //   const dims = faceapi.matchDimensions(canvas, displaySize)
-      // //   faceapi.draw.drawDetections(canvas, faceapi.resizeResults(result, dims))
-      // // }
-      // // setTimeout(() => onPlay())
-      // // const canvas = document.getElementById('overlay')
-      // // console.log(canvas);
-      // // console.log(this.streamManager)
-      // // faceapi.matchDimensions(canvas, displaySize,true);
-      // // setInterval(async ()=>{
-      // //   const detections = await faceapi
-      // //   .detectAllFaces(this.streamManager,options)
-      // //   .withFaceLandmarks();
-      // //   const resizedDetections = faceapi.resizeResults(detections,displaySize);
-      // //   canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
-      // //   faceapi.draw.drawDetections(canvas,resizedDetections);
-      // //   faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
-      // // },100);
     }
   },
-  created () {
-    // 모델 로드
-    Promise.all([
-      faceapi.nets.ssdMobilenetv1.loadFromUri('/weights'),
-      faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
-      faceapi.nets.faceRecognitionNet.loadFromUri('/weights')
-    ]).then()
-  }
 })
 </script>

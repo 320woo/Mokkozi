@@ -84,6 +84,7 @@
 import axios from 'axios'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../../components/UserVideo'
+import * as faceapi from 'face-api.js'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8447'
@@ -112,6 +113,20 @@ export default {
       chatOpen: false
     }
   },
+  // mounted(){
+  //   Promise.all([
+  //     faceapi.nets.ssdMobilenetv1.loadFromUri('/weights'),
+  //     faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
+  //     faceapi.nets.faceRecognitionNet.loadFromUri('/weights')
+  //   ]);
+
+  //   navigator.mediaDevices.getUserMedia({
+  //     video:true,
+  //     audio:true,
+  //   }).then((stream)=>{
+  //     this.addVideoStream(stream);
+  //   })
+  // },
   methods: {
     videoOnOff () {
       this.videoState = !this.videoState
@@ -293,7 +308,49 @@ export default {
         this.messageLength = '0'
       }
       console.log(this.chatOpen)
-    }
+    },
+    // addVideoStream (stream) {
+
+    //   const video = stream;
+    //   const testVideos = document.getElementsByClassName('box-div')
+
+    //   for(var i=0; i<testVideos.length; i++) {
+    //     console.log(1111)
+
+    //   testVideos[i].append(video)
+    //   // this.streamManager.addVideoElement(video);
+    //   // video.enabled = true;
+
+    //     // if(video.paused || video.ended)
+    //     // {return setTimeout(() => onPlay())}
+
+    //     if (document.querySelector("canvas")) {
+    //     document.querySelector("canvas").remove()};
+
+    //     const minConfidence = 0.3
+    //     const maxResult = 100
+    //     const options = new faceapi.SsdMobilenetv1Options({minConfidence,maxResult})
+
+    //     const canvas = faceapi.createCanvasFromMedia(video);
+    //     testVideos[i].append(canvas);
+
+    //     const displaySize = { width:video.width,height:video.height };
+    //     faceapi.matchDimensions(canvas, displaySize);
+
+    //     setInterval(async ()=>{
+    //     const detections = await faceapi
+    //     .detectAllFaces(video,options)
+    //     .withFaceLandmarks();
+
+    //     const resizedDetections = faceapi.resizeResults(detections,displaySize);
+    //     canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
+    //     faceapi.draw.drawDetections(canvas,resizedDetections);
+    //     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+
+    //   },100);
+
+    //   }
+    // }
   }
 }
 </script>
