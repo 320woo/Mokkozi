@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfigurati
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableAutoConfiguration(exclude={AmazonS3config.class})
+@Configuration
 public class AmazonS3config {
     @Value("${cloud.aws.credentials.accessKey}")
     private String accessKey;
@@ -22,10 +22,10 @@ public class AmazonS3config {
     private String region;
 
     @Bean
-    public AmazonS3 amazonS3Client() {
+    public AmazonS3Client amazonS3Client() {
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
 
-        return AmazonS3ClientBuilder
+        return (AmazonS3Client) AmazonS3ClientBuilder
                 .standard()
                 .withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
