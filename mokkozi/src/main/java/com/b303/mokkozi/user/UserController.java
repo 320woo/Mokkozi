@@ -2,12 +2,13 @@ package com.b303.mokkozi.user;
 
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.User;
-import com.b303.mokkozi.jwt.CustomUserDetails;
 import com.b303.mokkozi.jwt.TokenProvider;
 import com.b303.mokkozi.user.dto.TokenDto;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.CredentialPostReq;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
+
+import com.b303.mokkozi.user.dto.UserFollowListDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -110,8 +111,7 @@ public class UserController {
     ) {
 
         try{
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
             userService.createFollow(user,toUserEmail);
             return ResponseEntity.ok(BaseResponseBody.of(200, "팔로우 성공"));
         } catch (AuthenticationException | NullPointerException e) {
@@ -134,8 +134,7 @@ public class UserController {
     ) {
 
         try{
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
             userService.deleteFollow(followId);
             return ResponseEntity.ok(BaseResponseBody.of(200, "언팔로우 성공"));
         } catch (AuthenticationException | NullPointerException e) {
@@ -158,10 +157,13 @@ public class UserController {
     ){
         //Jwt를 통해 나의 정보 get
         try{
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
             List<UserFollowDto> followers = userService.getFollowers(user);
+<<<<<<< HEAD
             return ResponseEntity.ok(UserFollowDto.UserFollowListDto.of(200, "팔로워 목록 조회 성공",followers));
+=======
+            return ResponseEntity.ok(UserFollowListDto.of(200, "팔로워 목록 조회 성공",followers));
+>>>>>>> ec994622e805353eb90dfe4767724bfb01d2e68d
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e){
@@ -182,10 +184,13 @@ public class UserController {
     ){
         //Jwt를 통해 나의 정보 get
         try{
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+            User user = (User) authentication.getDetails();
             List<UserFollowDto> following = userService.getFollowing(user);
+<<<<<<< HEAD
             return ResponseEntity.ok(UserFollowDto.UserFollowListDto.of(200, "팔로워 목록 조회 성공",following));
+=======
+            return ResponseEntity.ok(UserFollowListDto.of(200, "팔로워 목록 조회 성공",following));
+>>>>>>> ec994622e805353eb90dfe4767724bfb01d2e68d
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e){
