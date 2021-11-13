@@ -6,15 +6,14 @@ import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserBoardLike;
-import com.b303.mokkozi.user.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 @Service
@@ -26,7 +25,6 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     UserBoardLikeRepository ublRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Page<BoardDto> getBoardList(User user, int pageIdx) {
@@ -35,12 +33,11 @@ public class BoardServiceImpl implements BoardService {
         int page = pageIdx <= 0 ? 0 : pageIdx - 1;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-        logger.info("BoardServiceImpl.getBoardList 40 : pageable 객체 생성. ", pageable);
-        Page<Board> pageTuts = boardRepository.findAll(pageable);
-        logger.info("BoardServiceImpl.getBoardList 42 : 게시글 목록 불러오기 완료! : {} ", pageTuts.getContent());
-        Page<BoardDto> result = pageTuts.map(m -> new BoardDto(m.getId(),m.getTitle(), m.getContent(), m.getRegDate(),m.getActive(), m.getUser().getEmail()));
 
-        return result;
+        Page<Board> pageTuts = boardRepository.findAll(pageable);
+        Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
+
+        return boardList;
     }
 
     @Override
@@ -94,9 +91,7 @@ public class BoardServiceImpl implements BoardService {
         UserBoardLike bl = new UserBoardLike();
         bl.setUser(user);
         bl.setBoard(board);
-        if (!ublRepository.findByUserIdAndBoardId(user.getId(), boardId).isPresent()) {
-            ublRepository.save(bl);
-        }
+        ublRepository.save(bl);
     }
 
     @Override
