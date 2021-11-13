@@ -1,6 +1,7 @@
 package com.b303.mokkozi.gallery;
 
 import com.b303.mokkozi.common.response.BaseResponseBody;
+import com.b303.mokkozi.config.S3Uploader;
 import com.b303.mokkozi.entity.Gallery;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.gallery.request.FormWrapper;

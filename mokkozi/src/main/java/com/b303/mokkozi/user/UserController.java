@@ -82,7 +82,8 @@ public class UserController {
                 .of(200, "로그인에 성공하였습니다. 토큰 발급 완료",
                         tokenProvider.createToken(authentication, "user"),
                         user.get().getNickname(),
-                        user.get().getProfile()));
+                        user.get().getProfile(),
+                        user.get().getEmail()));
     }
 
 
