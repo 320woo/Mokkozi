@@ -159,11 +159,7 @@ public class UserController {
         try{
             User user = (User) authentication.getDetails();
             List<UserFollowDto> followers = userService.getFollowers(user);
-<<<<<<< HEAD
-            return ResponseEntity.ok(UserFollowDto.UserFollowListDto.of(200, "팔로워 목록 조회 성공",followers));
-=======
             return ResponseEntity.ok(UserFollowListDto.of(200, "팔로워 목록 조회 성공",followers));
->>>>>>> ec994622e805353eb90dfe4767724bfb01d2e68d
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e){
@@ -186,11 +182,7 @@ public class UserController {
         try{
             User user = (User) authentication.getDetails();
             List<UserFollowDto> following = userService.getFollowing(user);
-<<<<<<< HEAD
-            return ResponseEntity.ok(UserFollowDto.UserFollowListDto.of(200, "팔로워 목록 조회 성공",following));
-=======
             return ResponseEntity.ok(UserFollowListDto.of(200, "팔로워 목록 조회 성공",following));
->>>>>>> ec994622e805353eb90dfe4767724bfb01d2e68d
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e){
