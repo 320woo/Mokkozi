@@ -6,8 +6,6 @@ import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserBoardLike;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,6 +65,11 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("not found"));
         boolean boardLike = ublRepository.findByUserIdAndBoardId(user.getId(), board.getId()).isPresent();
         return new BoardDto(board, boardLike);
+    }
+
+    @Override
+    public Board getBoardbyId(Long boardId) {
+        return boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("not found"));
     }
 
     @Override

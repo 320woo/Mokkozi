@@ -29,7 +29,7 @@ public class GalleryServiceImpl implements GalleryService{
         gallery.setSort(galleryVo.getSort());
 
         if (galleryVo.getSort().equals("board")) {
-            Board board = boardService.getBoardDetail(Long.getLong(id));
+            Board board = boardService.getBoardbyId(Long.getLong(id));
             gallery.setBoard(board);
         } else {
             User user = userService.findByEmail(id).get();
