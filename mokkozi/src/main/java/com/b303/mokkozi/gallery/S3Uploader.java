@@ -36,9 +36,9 @@ public class S3Uploader {
 
     // S3에 올릴 파일 이름 설정하고, 올린 후 S3 URL 받아 반환하기.
     public String uploadToS3(File fileToUpload, String dirName) throws IOException {
-        String fileNameToUpload = dirName + "/" + UUID.randomUUID() + fileToUpload.getName();
+        String fileName = dirName + "/" + UUID.randomUUID() + fileToUpload.getName();
 
-        String uploadImageUrl = putS3(fileToUpload, fileNameToUpload);
+        String uploadImageUrl = putS3(fileToUpload, fileName);
         removeNewFile(fileToUpload);
         return uploadImageUrl;
     }
@@ -76,5 +76,10 @@ public class S3Uploader {
             return;
         }
         log.info("File Delete Fail");
+    }
+
+    // S3에서 파일 삭제하기.
+    private void delete(String filename) {
+        amazonS3Client.deleteObject(bucket, filename);
     }
 }
