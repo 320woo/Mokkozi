@@ -6,12 +6,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    jwt: {
-      type: String
-    },
+    jwt: '',
     user: {
       nickname: '',
       profile: '',
+      email: '',
     },
     role: '',
   },
@@ -25,6 +24,9 @@ export default new Vuex.Store({
     },
     setProfile(state, profile) {
       state.user.profile = profile
+    },
+    setEmail(state, email) {
+      state.user.email = email
     }
   },
   // 항상 context가 인자로 넘어온다. 단, 직접적으로 state를 변경하지는 않는다. dispatch()를 통해 호출한다.
@@ -37,6 +39,9 @@ export default new Vuex.Store({
     },
     setProfile(context, profile) {
       context.commit('setProfile', profile)
+    },
+    setEmail(context, email) {
+      context.commit('setEmail', email)
     }
 
   },
