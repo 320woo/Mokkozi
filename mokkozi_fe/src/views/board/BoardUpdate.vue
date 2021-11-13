@@ -9,13 +9,13 @@
         >
           <v-card-title style="display:flex; justify-content:space-between">
             <div>
-              <v-avatar size="36px" @click="userImageClick">
+              <v-avatar size="36px" @click="userImageClick(board.userEmail)">
               <img
                 alt="Avatar"
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">{{ board.nickName }}</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(board.userEmail)">{{ board.nickName }}</span>
             </div>
             <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
@@ -47,6 +47,7 @@
           filled
           name="input-7-4"
           :value="content"
+          v-model="content"
           placeholder="내용을 입력하세요.."
         ></v-textarea>
         <div style="float: right;">
@@ -96,11 +97,11 @@ export default {
     this.getSelectBoard(this.boardId)
   },
   methods: {
-    userImageClick () {
-      this.$router.push({ name: 'Profile' })
+    userImageClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
-    userNicknameClick () {
-      this.$router.push({ name: 'Profile' })
+    userNicknameClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
     backToBoardClick () {
       this.$router.push({ name: 'Board' })
@@ -133,10 +134,10 @@ export default {
         data: {
           id: boardId,
           content: this.content,
-          title: "타이틀" // 400 에러 해결 위해서 넣어둠. 삭제 예정
         }
       }).then(res => {
         console.log('게시물 수정', res)
+        this.$router.push({ name: 'BoardDetail', params: { boardId: boardId }})
       }).catch(err => {
         console.log('게시물 수정 실패', err)
       })
@@ -151,6 +152,7 @@ export default {
         },
       }).then(res => {
         console.log('게시물 삭제', res)
+        this.$router.push({ name: 'Board' })
       }).catch(err => {
         console.log('게시물 삭제 실패', err)
       })

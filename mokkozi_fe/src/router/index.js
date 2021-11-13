@@ -75,9 +75,10 @@ const routes = [
     component: () => import('../components/FaceDetection.vue')
   },
   {
-    path: '/profile',
+    path: '/profile/:userEmail',
     name: 'Profile',
-    component: () => import('../components/File.vue')
+    component: () => import('../components/File.vue'),
+    props: true
   },
   {
     path: '/matching',
