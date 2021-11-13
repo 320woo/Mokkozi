@@ -96,7 +96,9 @@ public class BoardServiceImpl implements BoardService {
         UserBoardLike bl = new UserBoardLike();
         bl.setUser(user);
         bl.setBoard(board);
-        ublRepository.save(bl);
+        if (!ublRepository.findByUserIdAndBoardId(user.getId(), boardId).isPresent()) {
+            ublRepository.save(bl);
+        }
     }
 
     @Override
