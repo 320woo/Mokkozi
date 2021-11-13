@@ -6,7 +6,6 @@ import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserBoardLike;
-import com.b303.mokkozi.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +15,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -42,14 +40,9 @@ public class BoardServiceImpl implements BoardService {
         return boardList;
     }
 
-    @Autowired
-    UserRepository userRepository;
-
     @Override
     public BoardDto createBoard(User user, BoardWritePostReq bwpr) {
-//            User user1 = userRepository.getById((long)1);
         Board board = new Board();
-        board.setTitle(bwpr.getTitle());
         board.setContent(bwpr.getContent());
         board.setUser(user);
         board.setActive("1");
@@ -83,10 +76,6 @@ public class BoardServiceImpl implements BoardService {
             Page<Board> pageTuts = boardRepository.findByUserIdContaining(pageable, keyword);
             Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
             return boardList;
-        } else if (type.equals("title")) {
-            Page<Board> pageTuts = boardRepository.findByTitleContaining(pageable, keyword);
-            Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
-            return boardList;
         } else if (type.equals("tag")) {
             //태그..?
             //Page<Board> pageTuts = boardRepository.findByTitleContaining(pageable,keyword);
@@ -110,7 +99,6 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findById(bmpr.getId()).orElseThrow(() -> new NoSuchElementException("not found"));
         if (board.getUser().getId() == user.getId()) {
 
-            board.setTitle(bmpr.getTitle());
             board.setContent(bmpr.getContent());
             board = boardRepository.save(board);
 
