@@ -28,6 +28,12 @@ export default {
   faceapi.nets.faceRecognitionNet.loadFromUri("/weights"),
 ]).then();
   },
+  methods: {
+    getConnectionData () {
+      const { connection } = this.streamManager.stream
+      return JSON.parse(connection.data)
+    }
+  },
   computed: {
     clientData () {
       const { clientData } = this.getConnectionData()

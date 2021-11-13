@@ -3,7 +3,7 @@
     <h1 style="display:flex; justify-content:center">게시판</h1>
     <br>
     <v-icon style="position: fixed; color: #FFB4B4;" @click="boardCreateClick">fas fa-plus-circle</v-icon>
-    <div class="background-div" v-for="image in images" :key="image.id">
+    <div class="background-div" v-for="board in boardList" :key="board.id">
       <div class="board-div">
         <v-card
           class="board-card"
@@ -12,13 +12,13 @@
         >
           <v-card-title style="display:flex; justify-content:space-between; margin-bottom: 0.2rem">
             <div>
-              <v-avatar size="36px" @click="userImageClick">
+              <v-avatar size="36px" @click="userImageClick()">
               <img
                 alt="Avatar"
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">MOKKOZI</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">{{ board.nickName }}</span>
             </div>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -31,10 +31,10 @@
               </template>
               <v-list>
                 <v-list-item>
-                  <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick">수정하기</v-list-item-title>
+                  <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                  <v-list-item-title style="cursor: pointer;" @click="boardReportClick">신고하기</v-list-item-title>
+                  <v-list-item-title style="cursor: pointer;" @click="boardReportClick(board.id)">신고하기</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -53,19 +53,19 @@
             height="auto"
             max-height="15rem"
             position="center"
-            :src="image"
+            src="https://images.dog.ceo/breeds/bulldog-english/murphy.jpg"
             style="margin-bottom: 0.2rem"
-            @click="boardDetailClick"
+            @click="boardDetailClick(board.id)"
           ></v-img>
 
           <v-card-text class="like-text">
-            <i v-if="like" class="fas fa-heart" style="color:red" @click="boardUnLike(1)"></i>
-            <i v-else class="far fa-heart" style="color:red" @click="boardLike(1)"></i>
+            <i v-if="board.boardLike" class="fas fa-heart" style="color:red" @click="boardUnLike(board.id)"></i>
+            <i v-else class="far fa-heart" style="color:red" @click="boardLike(board.id)"></i>
              like
           </v-card-text>
 
-          <v-card-text @click="boardDetailClick">
-            Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.
+          <v-card-text @click="boardDetailClick(board.id)">
+            {{ board.content }}
           </v-card-text>
           <v-card-text>
             Help
@@ -78,19 +78,11 @@
               color="#FFB4B4"
               width="4rem"
               height="1.25rem"
-              @click="createComment"
+              @click="createComment(board.id)"
             >
               작성
             </v-btn>
           </div>
-          <v-card-actions style="padding: 0.2rem 0rem">
-            <v-btn
-              color="#FFB4B4"
-              @click="userfollow"
-            >
-              Follow
-            </v-btn>
-          </v-card-actions>
         </v-card>
       </div>
     </div>
@@ -111,58 +103,39 @@ export default {
     InfiniteLoading
   },
   data: () => ({
-    images: [
-      'https://images.dog.ceo/breeds/bulldog-english/murphy.jpg',
-      'https://images.dog.ceo/breeds/spaniel-japanese/n02085782_2690.jpg',
-      'https://images.dog.ceo/breeds/stbernard/n02109525_13702.jpg',
-      'https://images.dog.ceo/breeds/papillon/n02086910_933.jpg',
-      'https://images.dog.ceo/breeds/ovcharka-caucasian/IMG_20190611_152047.jpg',
-      'https://images.dog.ceo/breeds/terrier-toy/n02087046_2843.jpg',
-      'https://images.dog.ceo/breeds/cockapoo/Scout.jpg',
-      'https://cdn.vuetifyjs.com/images/cards/cooking.png',
-      '@/assets/images/main.png',
-      'https://dog.ceo/api/breeds/image/random'
-    ],
     boardList: [],
-    limit: 1, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
-    like: true,
+    limit: 0, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
+    like: false,
     commentContent: ''
   }),
   created () {
     // infinite scroll
-    // async function getTopicFromApi() {
-    //       try {
-    //           const init = await fetch(`/api/idol/uwasa/pages/0`, {method: "GET"})
-    //           const data = await init.json()
-    //           return data
-    //       } catch(exc) {
-    //           console.error(exc)
-    //       }
-    //   }
-    //   getTopicFromApi().then(data => {
-    //       console.log("fromAPI", data)
-    //       this.boardList = data
-    //   })
   },
   mounted () {
-    this.getBoardList()
+    // this.getBoardList()
   },
   methods: {
     // infinite scroll
     infiniteHandler($state) {
-      const EACH_LEN = 30
-      fetch(`http://localhost:8000/api/meet/board?pages=${this.limit}`, {method: "get"}).then(resp => {
-        return resp.json()
-      }).then(data => {
+      const EACH_LEN = 10
+      axios({
+        url: `http://localhost:8000/api/meet/board?page=${this.limit+1}`,
+        method: 'GET',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
+      }).then(res => {
+        console.log('인피니트 스크롤롤 받아온 데이터', res.data.boardList)
+        console.log('인피니트 스크롤롤 받아온 데이터', res.data.boardList.content.length)
+
         setTimeout(() => {
-          if(data.length) {
-            console.log("게시판 데이터", data)
-            this.boardList = this.boardList.concat(data)
+          if(res.data.boardList.content.length) {
+            this.boardList = this.boardList.concat(res.data.boardList.content)
             $state.loaded()
             this.limit += 1
-            console.log("after", this.boardList.length, this.limit)
+            console.log("after", res.data.boardList.content.length, this.limit)
             // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
-            if(data.length / EACH_LEN < 1) {
+            if(res.data.boardList.content.length / EACH_LEN < 1) {
               $state.complete()
             }
           } else {
@@ -174,11 +147,11 @@ export default {
         console.error(err);
       })
     },
-    boardUpdateClick () {
-      this.$router.push({ name: 'BoardUpdate' })
+    boardUpdateClick (boardId) {
+      this.$router.push({ name: 'BoardUpdate', params: { boardId: boardId }})
     },
-    boardReportClick () {
-      this.$router.push({ name: 'Home' }) // 신고하는 페이지로 이동하도록 바꿔야함
+    boardReportClick (boardId) {
+      this.$router.push({ name: 'Home', params: { boardId: boardId }}) // 신고하는 페이지로 이동하도록 바꿔야함
     },
     userImageClick () {
       this.$router.push({ name: 'Profile' })
@@ -190,10 +163,10 @@ export default {
       this.$router.push({ name: 'BoardCreate' })
     },
     boardDetailClick (boardId) {
-      this.$router.push({ name: 'BoardDetail', params: boardId })
+      this.$router.push({ name: 'BoardDetail', params: { boardId: boardId }})
     },
-    commentClick () {
-      this.$router.push({ name: 'Comment' })
+    commentClick (boardId) {
+      this.$router.push({ name: 'Comment', params: { boardId: boardId }})
     },
     // 게시물 리스트 불러오기
     getBoardList () {
@@ -205,12 +178,13 @@ export default {
         },
       }).then(res => {
         console.log('게시물 불러오기 성공', res)
+        this.boardList = res.data.boardList.content
       }).catch(err => {
         console.log('게시물 불러오기 실패', err)
       })
     },
     // 댓글 작성
-    createComment () {
+    createComment (boardId) {
       axios({
         url: 'http://localhost:8000/api/meet/comment',
         method: 'POST',
@@ -218,6 +192,7 @@ export default {
           Authorization:"Bearer "+ this.$store.state.jwt
         },
         data: {
+          id: boardId,
           content: this.commentContent
         }
       }).then(res => {
@@ -247,7 +222,7 @@ export default {
     boardUnLike (boardId) {
       axios({
         url: 'http://localhost:8000/api/meet/board/unlike',
-        method: 'POST',
+        method: 'DELETE',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
@@ -260,40 +235,6 @@ export default {
         console.log('좋아요 취소 실패', err)
       })
     },
-    // 팔로우 요청
-    userfollow (userId) { // follow 신청
-      axios({
-        url: 'http://localhost:8000/api/meet/user/follow',
-        method: 'POST',
-        headers:{
-          Authorization:"Bearer "+ this.$store.state.jwt
-        },
-        data: {
-          userId: userId
-        }
-      }).then(res => {
-        console.log('팔로우 성공', res)
-      }).catch(err => {
-        console.log('팔로우 실패', err)
-      })
-    },
-    // 언팔로우 요청
-    userUnfollow (userId) { // follow 신청
-      axios({
-        url: 'http://localhost:8000/api/meet/user/unfollow',
-        method: 'POST',
-        headers:{
-          Authorization:"Bearer "+ this.$store.state.jwt
-        },
-        data: {
-          userId: userId
-        }
-      }).then(res => {
-        console.log('언팔로우 성공', res)
-      }).catch(err => {
-        console.log('언팔로우 실패', err)
-      })
-    }
   }
 }
 </script>

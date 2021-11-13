@@ -15,7 +15,7 @@ export default ({
     streamManager: Object
   },
   data(){
-    return(){
+    return{
       video:Object
     }
   },

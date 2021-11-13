@@ -90,7 +90,7 @@ const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8447'
 const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
 
 export default {
-  name: 'App',
+  name: 'Openvidu',
   components: {
     UserVideo
   },
@@ -305,7 +305,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   .meeting-container {
     overflow-y: scroll;
   }
@@ -314,7 +314,6 @@ export default {
   }
   .box-div {
     position: absolute;
-    // background-color: red;
     height: 120px;
     width: 180px;
     bottom: 30px;
