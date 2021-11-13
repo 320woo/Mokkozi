@@ -6,6 +6,8 @@ import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserBoardLike;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,7 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     UserBoardLikeRepository ublRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Page<BoardDto> getBoardList(User user, int pageIdx) {
@@ -96,7 +99,9 @@ public class BoardServiceImpl implements BoardService {
         UserBoardLike bl = new UserBoardLike();
         bl.setUser(user);
         bl.setBoard(board);
-        ublRepository.save(bl);
+        if (!ublRepository.findByUserIdAndBoardId(user.getId(), boardId).isPresent()) {
+            ublRepository.save(bl);
+        }
     }
 
     @Override
