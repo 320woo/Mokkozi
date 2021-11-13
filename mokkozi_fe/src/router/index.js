@@ -37,19 +37,22 @@ const routes = [
     component: () => import('../views/board/BoardCreate.vue')
   },
   {
-    path: '/boardupdate',
+    path: '/boardupdate/:boardId',
     name: 'BoardUpdate',
-    component: () => import('../views/board/BoardUpdate.vue')
+    component: () => import('../views/board/BoardUpdate.vue'),
+    props: true
   },
   {
     path: '/board/:boardId',
     name: 'BoardDetail',
-    component: () => import('../views/board/BoardDetail.vue')
+    component: () => import('../views/board/BoardDetail.vue'),
+    props: true
   },
   {
-    path: '/comment',
+    path: 'board/:boardId/comment',
     name: 'Comment',
-    component: () => import('../views/board/Comment.vue')
+    component: () => import('../views/board/Comment.vue'),
+    props: true
   },
   {
     path: '/openvidu',

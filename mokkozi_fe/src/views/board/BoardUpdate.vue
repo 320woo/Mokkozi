@@ -15,7 +15,7 @@
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">MOKKOZI</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">{{ board.nickName }}</span>
             </div>
             <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
@@ -46,18 +46,18 @@
           class="textarea"
           filled
           name="input-7-4"
-          value=""
+          :value="content"
           placeholder="내용을 입력하세요.."
         ></v-textarea>
         <div style="float: right;">
           <v-btn
             color="#FFB4B4"
-            @click="boardUpdate">
+            @click="boardUpdate(boardId)">
             수정
           </v-btn>
           <v-btn
             color="#FFB4B4"
-            @click="boardDelete">
+            @click="boardDelete(boardId)">
             삭제
           </v-btn>
         </div>
@@ -73,12 +73,18 @@ export default {
   name: 'BoardUpdae',
   components: {
   },
+  props: {
+    boardId: {
+      type: Number
+    }
+  },
   data: () => ({
     rules: [
       value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
     ],
     uploadImage: null,
-    content: ''
+    content: '',
+    board: {}
   }),
   computed: {
     url () {
@@ -87,7 +93,7 @@ export default {
     }
   },
   mounted () {
-    getSelectBoard()
+    this.getSelectBoard(this.boardId)
   },
   methods: {
     userImageClick () {
@@ -103,12 +109,15 @@ export default {
     getSelectBoard (boardId) {
       axios({
         url: `http://localhost:8000/api/meet/board/${boardId}`,
-        methods: 'GET',
+        method: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         }
       }).then(res => {
         console.log('게시물 불러오기', res)
+        this.board = res.data
+        this.content = res.data.content
+        // this.uploadImage =
       }).catch(err => {
         console.log('게시물 불러오기 실패', err)
       })
@@ -117,13 +126,14 @@ export default {
     boardUpdate (boardId) { // 이미지 업데이트 부분 필요
       axios({
         url: 'http://localhost:8000/api/meet/board',
-        methods: 'PATCH',
+        method: 'PATCH',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
         data: {
           id: boardId,
-          content: this.content
+          content: this.content,
+          title: "타이틀" // 400 에러 해결 위해서 넣어둠. 삭제 예정
         }
       }).then(res => {
         console.log('게시물 수정', res)
@@ -134,14 +144,11 @@ export default {
     // 게시물 삭제
     boardDelete (boardId) {
       axios({
-        url: 'http://localhost:8000/api/meet/board',
-        methods: 'DELETE',
+        url: `http://localhost:8000/api/meet/board?boardId=${boardId}`,
+        method: 'DELETE',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          id: boardId
-        }
       }).then(res => {
         console.log('게시물 삭제', res)
       }).catch(err => {
