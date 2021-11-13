@@ -27,7 +27,6 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     UserBoardLikeRepository ublRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public Page<BoardDto> getBoardList(User user, int pageIdx) {
@@ -94,9 +93,7 @@ public class BoardServiceImpl implements BoardService {
         UserBoardLike bl = new UserBoardLike();
         bl.setUser(user);
         bl.setBoard(board);
-        if (!ublRepository.findByUserIdAndBoardId(user.getId(), boardId).isPresent()) {
-            ublRepository.save(bl);
-        }
+        ublRepository.save(bl);
     }
 
     @Override
