@@ -1,7 +1,7 @@
 <template>
-  <!-- <div class="test_video"> -->
-  <video autoplay :width="videoWidth" :height="videoHeight"/>
-  <!-- </div> -->
+  <div class="test_video">
+  <video id="user_video" autoplay :width="videoWidth" :height="videoHeight"/>
+  </div>
 </template>
 
 <script>
@@ -17,14 +17,12 @@ export default ({
   },
  watch: {
     streamManager () {
-      this.streamManager.addVideoElement(this.$el)
+      this.streamManager.addVideoElement(document.querySelector("#user_video"))
     }
   },
   mounted () {
     this.videoWidthSelect()
-    this.streamManager.addVideoElement(this.$el).then((stream)=>{
-
-    })
+    this.streamManager.addVideoElement(document.querySelector("#user_video"))
     // const video = document.createElement("video");
 
     // navigator.mediaDevices.getUserMedia({
