@@ -30,7 +30,7 @@ public class BoardController {
     BoardService boardService;
 
     //게시글 목록 조회
-    @GetMapping("/list")
+    @GetMapping("")
     @ApiOperation(value = "게시글 목록 조회", notes = "게시글 목록을 조회한다.")
     @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
