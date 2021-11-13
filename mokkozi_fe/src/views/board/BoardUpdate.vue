@@ -133,7 +133,7 @@ export default {
         data: {
           id: boardId,
           content: this.content,
-          title: "타이틀"
+          title: "타이틀" // 400 에러 해결 위해서 넣어둠. 삭제 예정
         }
       }).then(res => {
         console.log('게시물 수정', res)

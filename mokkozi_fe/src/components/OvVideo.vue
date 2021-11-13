@@ -22,9 +22,7 @@ export default ({
   },
   mounted () {
     this.videoWidthSelect()
-    this.streamManager.addVideoElement(this.$el).then((stream)=>{
-
-    })
+    this.streamManager.addVideoElement(this.$el)
     // const video = document.createElement("video");
 
     // navigator.mediaDevices.getUserMedia({

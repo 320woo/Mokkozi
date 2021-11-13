@@ -206,14 +206,11 @@ export default {
     // 좋아요
     boardLike (boardId) {
       axios({
-        url: 'http://localhost:8000/api/meet/board/like',
+        url: `http://localhost:8000/api/meet/board/like?boardId=${boardId}`,
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          boardId: boardId
-        }
       }).then(res => {
         console.log('좋아요 성공', res)
       }).catch(err => {
@@ -223,14 +220,11 @@ export default {
     // 좋아요 취소
     boardUnLike (boardId) {
       axios({
-        url: 'http://localhost:8000/api/meet/board/unlike',
+        url: `http://localhost:8000/api/meet/board/unlike?boardId=${boardId}`,
         method: 'DELETE',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          boardId: boardId
-        }
       }).then(res => {
         console.log('좋아요 취소 성공', res)
       }).catch(err => {
