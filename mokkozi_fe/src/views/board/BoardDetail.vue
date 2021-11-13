@@ -17,7 +17,7 @@
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">MOKKOZI</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">{{ board.nickName }}</span>
             </div>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -30,10 +30,10 @@
               </template>
               <v-list>
                 <v-list-item>
-                  <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick">수정하기</v-list-item-title>
+                  <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                  <v-list-item-title style="cursor: pointer;" @click="boardReportClick">신고하기</v-list-item-title>
+                  <v-list-item-title style="cursor: pointer;" @click="boardReportClick(board.id)">신고하기</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -57,15 +57,15 @@
           ></v-img>
 
           <v-card-text class="like-text">
-            <i v-if="like" class="fas fa-heart" style="color:red" @click="boardLike(1)"></i>
-            <i v-else class="far fa-heart" style="color:red" @click="boardLike(1)"></i>
+            <i v-if="board.boardLike" class="fas fa-heart" style="color:red" @click="boardLike(board.id)"></i>
+            <i v-else class="far fa-heart" style="color:red" @click="boardLike(board.id)"></i>
              like
           </v-card-text>
 
           <v-card-text>
-            Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.
+            {{ board.content }}
           </v-card-text>
-          <v-card-text style="color: gray" @click="commentClick">댓글 더 보기..</v-card-text>
+          <v-card-text style="color: gray">댓글 더 보기..</v-card-text>
           <div>
             <input v-model="commentContent" style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem"
               type="text" placeholder="댓글 달기">
@@ -73,19 +73,11 @@
               color="#FFB4B4"
               width="4rem"
               height="1.25rem"
-              @click="createComment"
+              @click="createComment(boardId)"
             >
               작성
             </v-btn>
           </div>
-          <v-card-actions style="padding: 0.2rem 0rem">
-            <v-btn
-              color="#FFB4B4"
-              @click="userfollow"
-            >
-              Follow
-            </v-btn>
-          </v-card-actions>
         </v-card>
       </div>
     </div>
@@ -93,16 +85,24 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default ({
   name: 'BoardDetail',
   components: {},
+  props: {
+    boardId: {
+      type: Number
+    }
+  },
   data: () => ({
     image: 'https://images.dog.ceo/breeds/bulldog-english/murphy.jpg',
-    board: {},
-    commentContent: ''
+    commentContent: '',
+    board: {}
   }),
   mounted () {
-    getSelectBoard()
+    console.log(this.boardId)
+    this.getSelectBoard(this.boardId)
   },
   methods: {
     boardUpdateClick () {
@@ -130,19 +130,13 @@ export default ({
         }
       }).then(res => {
         console.log('게시물 불러오기', res)
-        this.board = res.data.board
-        // active: "1"
-        // content: "세번째 게시물 작성!"
-        // id: 7
-        // regDate: "2021-11-12 22:30:51"
-        // title: null
-        // userEmail: "test@naver.com"
+        this.board = res.data
       }).catch(err => {
         console.log('게시물 불러오기 실패', err)
       })
     },
     // 댓글 작성
-    createComment () {
+    createComment (boardId) {
       axios({
         url: 'http://localhost:8000/api/meet/comment',
         method: 'POST',
@@ -150,12 +144,47 @@ export default ({
           Authorization:"Bearer "+ this.$store.state.jwt
         },
         data: {
+          id: boardId,
           content: this.commentContent
         }
       }).then(res => {
         console.log('댓글 작성 성공', res)
       }).catch(err => {
         console.log('댓글 작성 실패', err)
+      })
+    },
+    // 좋아요
+    boardLike (boardId) {
+      axios({
+        url: 'http://localhost:8000/api/meet/board/like',
+        method: 'POST',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
+        data: {
+          boardId: boardId
+        }
+      }).then(res => {
+        console.log('좋아요 성공', res)
+      }).catch(err => {
+        console.log('좋아요 실패', err)
+      })
+    },
+    // 좋아요 취소
+    boardUnLike (boardId) {
+      axios({
+        url: 'http://localhost:8000/api/meet/board/unlike',
+        method: 'DELETE',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
+        data: {
+          boardId: boardId
+        }
+      }).then(res => {
+        console.log('좋아요 취소 성공', res)
+      }).catch(err => {
+        console.log('좋아요 취소 실패', err)
       })
     },
   }
