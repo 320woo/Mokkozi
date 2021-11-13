@@ -1,15 +1,13 @@
 <template>
   <div v-if="streamManager">
     <ov-video :stream-manager="streamManager"/>
-    <!-- <canvas id="overlay" /> -->
-    <div class="test_video"></div>
     <div><p>{{ clientData }}</p></div>
   </div>
 </template>
 
 <script>
 import OvVideo from './OvVideo'
-import * as faceapi from 'face-api.js'
+// import * as faceapi from 'face-api.js'
 export default {
   name: 'UserVideo',
 
@@ -28,16 +26,17 @@ export default {
   faceapi.nets.faceRecognitionNet.loadFromUri("/weights"),
 ]).then();
   },
+  methods: {
+    getConnectionData () {
+      const { connection } = this.streamManager.stream
+      return JSON.parse(connection.data)
+    }
+  },
   computed: {
     clientData () {
       const { clientData } = this.getConnectionData()
       return clientData
     },
-    videoTest(){
-      const canvas = document.getElementById('overlay')
-      canvas = this.onPlay()
-      return canvas
-    }
   },
 }
 </script>

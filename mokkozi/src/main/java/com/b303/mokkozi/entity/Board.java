@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 public class Board extends BaseEntity{
 
-    private String title;
     @Column(columnDefinition = "BLOB")
     private String content;
     private Date regDate;
@@ -27,8 +26,5 @@ public class Board extends BaseEntity{
     public void createdAt() {
         this.regDate = new Date();
     }
-
-    @OneToMany(mappedBy = "board")
-    private List<UserBoardLike> userBoardLikeList = new ArrayList<UserBoardLike>();
 
 }

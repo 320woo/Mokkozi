@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -44,14 +43,9 @@ public class BoardServiceImpl implements BoardService {
         return result;
     }
 
-    @Autowired
-    UserRepository userRepository;
-
     @Override
     public BoardDto createBoard(User user, BoardWritePostReq bwpr) {
-//            User user1 = userRepository.getById((long)1);
         Board board = new Board();
-        board.setTitle(bwpr.getTitle());
         board.setContent(bwpr.getContent());
         board.setUser(user);
         board.setActive("1");
@@ -85,10 +79,6 @@ public class BoardServiceImpl implements BoardService {
             Page<Board> pageTuts = boardRepository.findByUserIdContaining(pageable, keyword);
             Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
             return boardList;
-        } else if (type.equals("title")) {
-            Page<Board> pageTuts = boardRepository.findByTitleContaining(pageable, keyword);
-            Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
-            return boardList;
         } else if (type.equals("tag")) {
             //태그..?
             //Page<Board> pageTuts = boardRepository.findByTitleContaining(pageable,keyword);
@@ -104,7 +94,9 @@ public class BoardServiceImpl implements BoardService {
         UserBoardLike bl = new UserBoardLike();
         bl.setUser(user);
         bl.setBoard(board);
-        ublRepository.save(bl);
+        if (!ublRepository.findByUserIdAndBoardId(user.getId(), boardId).isPresent()) {
+            ublRepository.save(bl);
+        }
     }
 
     @Override
@@ -112,7 +104,6 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findById(bmpr.getId()).orElseThrow(() -> new NoSuchElementException("not found"));
         if (board.getUser().getId() == user.getId()) {
 
-            board.setTitle(bmpr.getTitle());
             board.setContent(bmpr.getContent());
             board = boardRepository.save(board);
 

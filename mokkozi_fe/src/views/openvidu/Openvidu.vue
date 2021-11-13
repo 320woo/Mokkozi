@@ -90,7 +90,7 @@ const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8447'
 const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
 
 export default {
-  name: 'App',
+  name: 'Openvidu',
   components: {
     UserVideo
   },
@@ -233,14 +233,7 @@ export default {
         axios
           .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
             JSON.stringify({
-              type: "WEBRTC",
               customSessionId: sessionId,
-              kurentoOptions : {
-                allowedFilters: [
-                  "GStreamerFilter",
-                  "FaceOverlayFilter"
-                ]
-              }
             }),
             {
               auth: {
@@ -305,52 +298,51 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.meeting-container {
-  overflow-y: scroll;
-}
-.meeting-container::-webkit-scrollbar {
-  display: none;
-}
-.box-div {
-  position: absolute;
-  // background-color: red;
-  height: 120px;
-  width: 180px;
-  bottom: 30px;
-  right: 0px;
-}
-.video-icon {
-  position: absolute;
-  width: 30px;
-  bottom: 120px;
-  left: 0px;
-}
-.audio-icon {
-  position: absolute;
-  width: 30px;
-  bottom: 80px;
-  left: 0px;
-}
-.exit-icon {
-  position: absolute;
-  width: 30px;
-  bottom: 40px;
-  left: 0px;
-}
-#chat-div::-webkit-scrollbar {
-  display: none;
-}
-.my-massage {
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: center;
-}
-.your-massage {
-  display: flex;
-  flex-direction: row;
-  justify-content: end;
-  align-items: center;
-}
+<style scoped>
+  .meeting-container {
+    overflow-y: scroll;
+  }
+  .meeting-container::-webkit-scrollbar {
+    display: none;
+  }
+  .box-div {
+    position: absolute;
+    height: 120px;
+    width: 180px;
+    bottom: 30px;
+    right: 0px;
+  }
+  .video-icon {
+    position: absolute;
+    width: 30px;
+    bottom: 120px;
+    left: 0px;
+  }
+  .audio-icon {
+    position: absolute;
+    width: 30px;
+    bottom: 80px;
+    left: 0px;
+  }
+  .exit-icon {
+    position: absolute;
+    width: 30px;
+    bottom: 40px;
+    left: 0px;
+  }
+  #chat-div::-webkit-scrollbar {
+    display: none;
+  }
+  .my-massage {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+  }
+  .your-massage {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+  }
 </style>
