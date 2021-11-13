@@ -3,10 +3,13 @@ module.exports = {
     'vuetify'
   ],
   devServer: {
-    https: false,
+    https: true,
     port: 3000,
     open: true,
     proxy: {
+      '/mokkozi': {
+        target: 'http://localhost:8000'
+      },
       '/api/v1': {
         target: 'https://k5b303.p.ssafy.io:8443/'
       },

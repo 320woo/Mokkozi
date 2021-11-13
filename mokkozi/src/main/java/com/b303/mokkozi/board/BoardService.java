@@ -19,6 +19,8 @@ public interface BoardService {
 
     BoardDto getBoardDetail(User user, Long boardId) throws NoSuchElementException;
 
+    Board getBoardbyId(Long boardId);
+
     Page<BoardDto> searchBoardList(User user,String type,String keyword, int pageIdx);
 
     void createBoardLike(User userEmail, Long boardId);

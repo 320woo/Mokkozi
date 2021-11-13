@@ -45,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // CORS에 대한 preflight 요청 허용
                 .cors()
                 .and()
-
                 // token을 사용하는 방식이기 때문에 csrf를 disable합니다.
                 .csrf().disable()
 
@@ -60,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/meet/user/login").permitAll()
                 .antMatchers("/api/meet/user/join").permitAll()
+                .antMatchers("/api/meet/gallery/myProfile").permitAll()
                 // Swagger와 관련된 URL은 모두 예외 처리.
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**").permitAll()
                 .anyRequest().authenticated()

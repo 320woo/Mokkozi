@@ -1,19 +1,18 @@
 <template>
-      <v-bottom-navigation
-    :value="value"
+  <v-bottom-navigation
     color="white"
     grow
     class="footer justify-space-around"
     background-color="#FFB4B4"
   >
     <router-link to="/" style="text-decoration: none; color:white">
-    <v-btn dark
-                dense
-                color="white"
-                text="text"
-                rounded="rounded"
-                class="my-2">Home
-      <v-icon>mdi-history</v-icon>
+      <v-btn dark
+                  dense
+                  color="white"
+                  text="text"
+                  rounded="rounded"
+                  class="my-2">Home
+        <v-icon>mdi-history</v-icon>
     </v-btn>
     </router-link>
 

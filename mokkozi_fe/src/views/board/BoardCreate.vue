@@ -9,13 +9,13 @@
         >
           <v-card-title style="display:flex; justify-content:space-between">
             <div>
-              <v-avatar size="36px" @click="userImageClick">
+              <v-avatar size="36px" @click="userImageClick(loginUser)">
               <img
                 alt="Avatar"
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick">MOKKOZI</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(loginUser)">MOKKOZI</span>
             </div>
             <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
@@ -77,14 +77,17 @@ export default {
     url () {
       if (!this.uploadImage) return
       return URL.createObjectURL(this.uploadImage)
+    },
+    loginUser () {
+      return this.$store.state.userEmail
     }
   },
   methods: {
-    userImageClick () {
-      this.$router.push({ name: 'Profile' })
+    userImageClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
-    userNicknameClick () {
-      this.$router.push({ name: 'Profile' })
+    userNicknameClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
     backToBoardClick () {
       this.$router.push({ name: 'Board' })

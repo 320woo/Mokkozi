@@ -5,9 +5,7 @@ import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.board.dto.BoardListDto;
 import com.b303.mokkozi.common.response.BaseResponseBody;
-import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
-import com.b303.mokkozi.jwt.CustomUserDetails;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +141,7 @@ public class BoardController {
     ) {
         try {
             User user = (User) authentication.getDetails();
-
+            logger.info("BoardController.boardId 146 : boardId : {}", boardId);
             boardService.deleteBoard(boardId);
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "게시글 삭제 완료"));
         } catch (AuthenticationException | NullPointerException e) {
