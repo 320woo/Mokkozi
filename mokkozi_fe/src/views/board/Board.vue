@@ -34,7 +34,10 @@
                   <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                  <report />
+                  <report-board />
+                </v-list-item>
+                <v-list-item>
+                  <report-user />
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -96,13 +99,15 @@
 <script>
 import axios from 'axios'
 import InfiniteLoading from 'vue-infinite-loading'
-import Report from '../../components/Report'
+import ReportBoard from '../../components/ReportBoard'
+import ReportUser from '../../components/ReportUser'
 
 export default {
   name: 'Board',
   components: {
     InfiniteLoading,
-    Report,
+    ReportBoard,
+    ReportUser
   },
   data: () => ({
     boardList: [],

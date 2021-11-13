@@ -33,7 +33,7 @@
                   <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                  <v-list-item-title style="cursor: pointer;" @click="boardReportClick(board.id)">신고하기</v-list-item-title>
+                  <report-board />
                 </v-list-item>
               </v-list>
             </v-menu>
