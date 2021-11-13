@@ -75,6 +75,7 @@ export default {
         this.$store.dispatch("setJwt", resp.data.token)
         this.$store.dispatch("setNickname", resp.data.nickName)
         this.$store.dispatch("setProfile", resp.data.profile)
+        this.$store.dispatch("setEmail", resp.data.email)
         this.$router.push("Matching")
         }
 
