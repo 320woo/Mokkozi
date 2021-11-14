@@ -12,9 +12,6 @@ export default new Vuex.Store({
       profile: '',
       email: '',
       address: '',
-      show: false,
-      followers: '',
-      following: ''
     },
     role: '',
   },
@@ -22,7 +19,6 @@ export default new Vuex.Store({
   mutations: {
     setJwt(state, jwt) {
       state.jwt = jwt
-      state.user.show = true;
     },
     setNickname(state, nickname) {
       state.user.nickname = nickname

@@ -24,13 +24,18 @@
                         <div class="mod-sub-frame">
                             <label for="ex_file">
                                 <img :src="camera" alt="카메라 아이콘"></label>
-                                <input type="file" id="ex_file" @change="propUpdate"/>
+                                <input type="file" id="ex_file"/>
                             </div>
                         </div>
-                        <div class="user-info"><div>{{this.$store.state.user.nickname}}</div><div>{{this.$store.state.user.address}}</div></div>
-                        <div class="user-follow">
+                        <div class="user-info"><div>{{ this.nickname }}</div><div>{{ this.address }}</div></div>
+                        <!-- <div class="user-follow">
                             <v-btn @click="follow" dark="dark" dense="dense" color="#FFB4B4" class="my-2 font-weight-black">
                                 팔로우
+                            </v-btn>
+                        </div> -->
+                        <div class="user-follow">
+                            <v-btn @click="unfollow" dark="dark" dense="dense" color="#FFB4B4" class="my-2 font-weight-black">
+                               팔로우 취소
                             </v-btn>
                         </div>
                         <!-- 인적 사항 부분 -->
@@ -62,7 +67,7 @@
                                         <v-flex md6="md6" xs12="xs12">
                                             <v-dialog v-model="dialog" width="500">
                                                 <template v-slot:activator="{ on, attrs }">
-                                                    <div color="red lighten-2" dark="dark" v-bind="attrs" v-on="on">
+                                                    <div @click="following" color="red lighten-2" dark="dark" v-bind="attrs" v-on="on">
                                                         <div class="font-weight-black">팔로잉</div>
                                                         <div class="font-weight-medium">50</div>
                                                     </div>
@@ -132,22 +137,44 @@
 
 <script>
 import defaultImage from '../assets/images/커버.png'
-import defaultUserImage from '../assets/images/user.png'
 import camera from '../assets/images/camera.png'
 import axios from 'axios'
 
 export default {
     name: 'File',
+    created() {
+        this.getuser();
+    },
     components: {},
     data: () => (
         {
             defaultImage: defaultImage, 
-            //propImage: this.$store.state.user.profile,
-            propImage: defaultUserImage,
-            camera: camera
+            propImage: '',
+            camera: camera,
+            profile: '',
+            address: '',
+            nickname: ''
         }
     ),
     methods: {
+        getuser() {
+            axios({
+                url: 'http://localhost:8000/api/meet/user/getuser',
+                method: 'GET',
+                headers:{
+                Authorization:"Bearer "+ this.$store.state.jwt
+                },
+                params: {
+                    toUserEmail: this.$route.params.userEmail
+                }
+            }).then(resp => {
+                console.log("회원정보 확인: ", resp)
+                this.propImage = resp.data.profile
+                this.address = resp.data.address
+                this.nickname = resp.data.nickname
+            })
+        },
+
         follow() {
             console.log(this.$route.params.userEmail);
             axios({
@@ -164,20 +191,42 @@ export default {
             })
         },
 
+        unfollow() {
+            axios({
+                url: 'http://localhost:8000/api/meet/user/unfollow',
+                method: 'DELETE',
+                headers:{
+                Authorization:"Bearer "+ this.$store.state.jwt
+                },
+                params: {
+                    followId: this.$route.params.userEmail
+                }
+            }).then(resp => {
+                console.log("언팔로우 가즈아: ", resp)
+            })
+        },
+
         follower() {
-            console.log("함수 들어왔다")
+            console.log("팔로워 목록")
             axios({
                 url: 'http://localhost:8000/api/meet/user/followers',
                 method: 'GET',
+                headers:{
+                Authorization:"Bearer "+ this.$store.state.jwt
+                }
             }).then(resp => {
                 console.log("팔로워 수 : ", resp)
                 this.$store.dispatch("setFollowers", resp.data.followers)
             })
                 },
         following() {
+            console.log("팔로잉 목록")
             axios({
                 url: 'http://localhost:8000/api/meet/user/following',
                 method: 'GET',
+                headers:{
+                Authorization:"Bearer "+ this.$store.state.jwt
+                }
             }).then(resp => {
                 console.log("팔로잉 목록 : ", resp)
                 this.$store.dispatch("setFollowing", resp.data.following)

@@ -4,6 +4,7 @@ import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.jwt.TokenProvider;
 import com.b303.mokkozi.user.dto.TokenDto;
+import com.b303.mokkozi.user.dto.UserDto;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.CredentialPostReq;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
@@ -80,10 +81,21 @@ public class UserController {
                         tokenProvider.createToken(authentication, "user"),
                         user.get().getNickname(),
                         user.get().getProfile(),
-                        user.get().getAddress().split(" ")[0],
-                        user.get().getEmail()));
+                        user.get().getEmail()
+                        ));
     }
-
+    
+    @GetMapping("/getuser")
+    @ApiOperation(value = "유저정보", notes = "이메일로 다른 유저 정보 가져오기")
+    @ApiResponses({@ApiResponse(code = 200, message = "유저정보 가져오기 성공"), @ApiResponse(code = 500, message = "유저정보 가져오기 실패")})
+    public User getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
+    		@ApiIgnore Authentication authentication) {
+    	
+    	System.out.println("유저정보");
+    	User getuser = userService.findByEmail(toUserEmail).get();
+        
+    	return getuser;
+    }
 
     @PostMapping("/join")
     @ApiOperation(value = "회원가입", notes = "회원 가입에 필요한 정보를 입력하고 회원가입한다.")
@@ -103,21 +115,6 @@ public class UserController {
         }
     }
     
-    @PatchMapping("/modify")
-    @ApiOperation(value = "회원수정", notes = "회원 수정에 필요한 정보를 입력하고 수정한다.")
-    @ApiResponses({@ApiResponse(code = 200, message = "회원수정 성공"), @ApiResponse(code = 500, message = "회원수정 실패")})
-    public ResponseEntity<? extends BaseResponseBody> modify(@RequestBody @ApiParam(value="수정 시 필요한 정보") JoinInfoPostReq joinInfo) {
-        logger.info("회원가입 시 받아온 정보는 {}", joinInfo.toString());
-
-        try {
-            User result = userService.join(joinInfo);
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "회원가입 성공."));
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "회원가입 실패."));
-        }
-    }
-    
     // 유저 팔로우
     @PostMapping("/follow")
     @ApiOperation(value = "팔로우", notes = "다른 사용자를 팔로우할 수 있다.")
@@ -125,7 +122,6 @@ public class UserController {
     public ResponseEntity<? extends BaseResponseBody>  follow(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail
             ,@ApiIgnore Authentication authentication
     ) {
-    	System.out.println("팔로우");
         try{
             User user = (User) authentication.getDetails();
             userService.createFollow(user,toUserEmail);

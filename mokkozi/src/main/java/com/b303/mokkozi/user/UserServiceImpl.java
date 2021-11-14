@@ -8,7 +8,6 @@ import com.b303.mokkozi.user.request.JoinInfoPostReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -21,21 +20,13 @@ public class UserServiceImpl implements UserService{
     UserRepository userRepository;
 
     @Autowired
-    UserInterestRepository userInterestRepository;
-
-    @Autowired
     UserFollowRepository userFollowRepository;
 
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
-    @Override
-    public User userUpdate(User user) {
-        return userRepository.save(user);
-    }
-
+    
     public User join(JoinInfoPostReq info) {
         // 1. DB에 저장하기 위한 엔티티 객체 생성
         User user = new User();
@@ -54,21 +45,7 @@ public class UserServiceImpl implements UserService{
         return result;
     }
 
-    @Override
-    public List<UserInterest> createUserInterest(JoinInfoPostReq info, User user) {
-        List<UserInterest> result = new ArrayList<>();
-
-        for (String hobby:info.getHobby()) {
-            UserInterest userInterest = new UserInterest();
-            userInterest.setUser(user);
-            userInterest.setInterest(hobby);
-
-            userInterestRepository.save(userInterest);
-            result.add(userInterest);
-        }
-        return result;
-    }
-
+    
     @Override
     public void createFollow(User fromUser, String toUserEmail) {
         User toUser = userRepository.findByEmail(toUserEmail).orElseThrow(()->new NoSuchElementException("not found"));
@@ -98,6 +75,18 @@ public class UserServiceImpl implements UserService{
         List<UserFollowDto> list = (List<UserFollowDto>) following.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
         return list;
     }
+
+	@Override
+	public User userUpdate(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<UserInterest> createUserInterest(JoinInfoPostReq info, User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 }

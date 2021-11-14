@@ -9,12 +9,14 @@
           </div>
           <v-form v-model="formValid">
             <v-text-field label="아이디"
+            @keyup.enter="login"
             v-model="credentials.email"
             :rules="[rules.mailRequired, rules.email]"
             outlined>
             </v-text-field>
 
             <v-text-field label="비밀번호"
+            @keyup.enter="login"
             v-model="credentials.password"
             :rules="[rules.pwRequired, rules.min]"
             :type="showPW ? 'text' : 'password'"
@@ -76,7 +78,7 @@ export default {
         this.$store.dispatch("setNickname", resp.data.nickName)
         this.$store.dispatch("setProfile", resp.data.profile)
         this.$store.dispatch("setEmail", resp.data.email)
-        this.$store.dispatch("setAddress", resp.data.address)
+        // this.$store.dispatch("setAddress", resp.data.address)
         this.$router.push("Matching")
         }
 
