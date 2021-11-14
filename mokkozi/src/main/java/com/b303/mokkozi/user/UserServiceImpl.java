@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService{
     @Autowired
     UserFollowRepository userFollowRepository;
 
+    @Autowired
+    UserRepositoryImpl userRepositoryImpl;
+
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -101,7 +104,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<User> getRandomUser(User user) {
-        return null;
+        List<User> list = userRepositoryImpl.getRandomUser(user.getId());
+        return list;
     }
 
 

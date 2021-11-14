@@ -204,6 +204,9 @@ public class UserController {
         }
     }
 
+    @Autowired
+    UserRepository userRepository;
+
     //랜덤 추천
     @GetMapping("/recommend/random")
     @ApiOperation(value = "랜덤 추천 목록 ", notes = "로그인한 회원을 제외한 랜덤 추천 목록을 반환")
@@ -211,7 +214,6 @@ public class UserController {
     public ResponseEntity<? extends BaseResponseBody> recommendRandom(
             @ApiIgnore Authentication authentication
     ){
-
         try{
             User user = (User) authentication.getDetails();
             List<User> random = userService.getRandomUser(user);
