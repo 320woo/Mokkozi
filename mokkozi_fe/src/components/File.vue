@@ -41,7 +41,7 @@
                                         <v-flex md6="md6" xs12="xs12">
                                             <v-dialog v-model="dialog" width="500">
                                                 <template v-slot:activator="{ on, attrs }">
-                                                    <div color="red lighten-2" dark="dark" v-bind="attrs" v-on="on">
+                                                    <div @click="follower" color="red lighten-2" dark="dark" v-bind="attrs" v-on="on">
                                                         <div class="font-weight-black">팔로워</div>
                                                         <div class="font-weight-medium">50</div>
                                                     </div>
@@ -134,6 +134,7 @@
 import defaultImage from '../assets/images/커버.png'
 import defaultUserImage from '../assets/images/user.png'
 import camera from '../assets/images/camera.png'
+import axios from 'axios'
 
 export default {
     name: 'File',
@@ -148,16 +149,23 @@ export default {
     ),
     methods: {
         follow() {
+            console.log(this.$route.params.userEmail);
             axios({
                 url: 'http://localhost:8000/api/meet/user/follow',
                 method: 'POST',
+                headers:{
+                Authorization:"Bearer "+ this.$store.state.jwt
+                },
+                params: {
+                    toUserEmail: this.$route.params.userEmail
+                }
             }).then(resp => {
                 console.log("팔로우 가즈아: ", resp)
-                this.$store.dispatch("setFollowers", resp.data.followers)
             })
         },
 
         follower() {
+            console.log("함수 들어왔다")
             axios({
                 url: 'http://localhost:8000/api/meet/user/followers',
                 method: 'GET',

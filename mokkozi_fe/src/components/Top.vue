@@ -24,9 +24,7 @@
                 text="text"
                 rounded="rounded"
                 class="my-2 btn">
-            
-              <p class="mt-4" v-if="this.$store.state.user.show" @click="logout">로그아웃</p>
-              <p v-else class="mt-4"><router-link to="/profile" style="text-decoration: none; color:white">나의 페이지</router-link></p></v-btn>
+              <p v-if="this.$store.state.user.email" class="mt-4"><router-link to="/profile" style="text-decoration: none; color:white">나의 페이지</router-link></p></v-btn>
         </v-row>
     </v-footer>
 </template>

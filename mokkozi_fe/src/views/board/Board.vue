@@ -2,7 +2,7 @@
   <v-container fluid style="height: 800px;" class="board-container">
     <h1 style="display:flex; justify-content:center">게시판</h1>
     <br>
-    <v-icon style="position: fixed; color: #FFB4B4;" @click="boardCreateClick">fas fa-plus-circle</v-icon>
+    <v-icon style="position: fixed; color:#FFB4B4;" @click="boardCreateClick">fas fa-plus-circle</v-icon>
     <div class="background-div" v-for="board in boardList" :key="board.id">
       <div class="board-div">
         <v-card
