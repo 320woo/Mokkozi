@@ -1,6 +1,6 @@
 <template>
     <v-footer class="top" color="#FFB4B4" padless="padless" elevation="4">
-        <v-row justify="center justify-space-around" no-gutters="no-gutters">
+        <v-row justify="space-around" align="center" no-gutters="no-gutters">
             <v-btn
                 dark
                 dense

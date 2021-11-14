@@ -6,9 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    jwt: {
-      type: String
-    },
+    jwt: '',
     user: {
       nickname: '',
       profile: '',
