@@ -2,7 +2,7 @@
   <v-container fluid>
     <!-- row의 height를 지정해야만 align을 통해 start, center, end로 배치할 수 있다. -->
     <v-row justify="center" align="center">
-      <v-col class="pa-4 mb-15">
+      <v-col class="pa-4">
         <div class="login-box" elevation="1" outlined>
           <div class="d-flex flex-wrap justify-center">
             <v-img max-width="400" max-height="200" src="@/assets/text_logo.png"></v-img>
@@ -21,14 +21,18 @@
             outlined>
             </v-text-field>
 
+            <v-text-field label="이메일"
+            v-model="credentials.email"
+            outlined>
+            </v-text-field>
+
+            <v-text-field label="주소"
+            v-model="credentials.address"
+            outlined>
+            </v-text-field>
+
             <v-btn class="mb-3" width="100%" outlined color="#FF9292" @click="login">
-              로그인
-            </v-btn>
-            <v-btn class="mb-3" width="100%" outlined color="#FF9292">
-              <v-icon>mdi-google</v-icon>Google 계정으로 로그인
-            </v-btn>
-            <v-btn class="mb-3" width="100%" outlined color="#FF9292" @click="goToJoin">
-              아직 계정이 없다면? 회원가입 하세요!
+              수정하기
             </v-btn>
           </v-form>
         </div>
@@ -46,7 +50,9 @@ export default {
   data: () => ({
     credentials: {
       email: '',
-      password: ''
+      password: '',
+      nickname: '',
+      address: ''
     },
     formValid: false,
     showPW: false,
@@ -77,7 +83,14 @@ export default {
         this.$store.dispatch("setEmail", resp.data.email)
         this.$store.dispatch("setAddress", resp.data.address)
         this.$router.push("Matching")
-      })
+      },
+      {
+        url: 'http://localhost:8000/api/meet/user/followers',
+        method: 'GET',
+      }).then(resp => {
+        console.log("팔로워 정보 : ", resp)
+      }
+      )
     }
 
   }

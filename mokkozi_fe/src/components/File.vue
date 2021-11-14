@@ -1,8 +1,13 @@
 <template>
+    <v-container class="board-container">
     <div>
+        <v-card
+          class="board-card"
+          max-height = "50rem"
+        >
         <div class="profile" style="height: 100%;">
             <!-- 배경 이미지 부분 -->
-            <img class="bg-img" :src="defaultImage" alt="커버사진" style="height:250px;">
+            <img class="bg-img" :src="defaultImage" alt="커버사진">
                 <!-- 사용자 프로필 이미지 부분 -->
                 <div class="user-img-frame" style="overflow: hidden;">
                     <div class="sub-frame">
@@ -22,9 +27,9 @@
                                 <input type="file" id="ex_file" @change="propUpdate"/>
                             </div>
                         </div>
-                        <div class="user-info"><div>닉네임</div><div>주소</div></div>
+                        <div class="user-info"><div>{{this.$store.state.user.nickname}}</div><div>{{this.$store.state.user.address}}</div></div>
                         <div class="user-follow">
-                            <v-btn dark="dark" dense="dense" color="#FFB4B4" class="my-2 font-weight-black">
+                            <v-btn @click="follow" dark="dark" dense="dense" color="#FFB4B4" class="my-2 font-weight-black">
                                 팔로우
                             </v-btn>
                         </div>
@@ -120,19 +125,76 @@
                         </div>
                     </div>
                     <!-- end of 사용자 프로필 -->
+                    </v-card>
                 </div>
-            </template>
+        </v-container>
+</template>
 
-            <script>
-                import defaultImage from '../assets/images/커버.png'
-                import defaultUserImage from '../assets/images/user.png'
-                import camera from '../assets/images/camera.png'
+<script>
+import defaultImage from '../assets/images/커버.png'
+import defaultUserImage from '../assets/images/user.png'
+import camera from '../assets/images/camera.png'
 
-                export default {
-                    name: 'File',
-                    components: {},
-                    data: () => (
-                        {defaultImage: defaultImage, propImage: defaultUserImage, camera: camera}
-                    )
-                }
-            </script>
+export default {
+    name: 'File',
+    components: {},
+    data: () => (
+        {
+            defaultImage: defaultImage, 
+            //propImage: this.$store.state.user.profile,
+            propImage: defaultUserImage,
+            camera: camera
+        }
+    ),
+    methods: {
+        follow() {
+            axios({
+                url: 'http://localhost:8000/api/meet/user/follow',
+                method: 'POST',
+            }).then(resp => {
+                console.log("팔로우 가즈아: ", resp)
+                this.$store.dispatch("setFollowers", resp.data.followers)
+            })
+        },
+
+        follower() {
+            axios({
+                url: 'http://localhost:8000/api/meet/user/followers',
+                method: 'GET',
+            }).then(resp => {
+                console.log("팔로워 수 : ", resp)
+                this.$store.dispatch("setFollowers", resp.data.followers)
+            })
+                },
+        following() {
+            axios({
+                url: 'http://localhost:8000/api/meet/user/following',
+                method: 'GET',
+            }).then(resp => {
+                console.log("팔로잉 목록 : ", resp)
+                this.$store.dispatch("setFollowing", resp.data.following)
+            })
+        }
+    },  
+}
+</script>
+<style scoped>
+  .board-container {
+    overflow-y: scroll;
+  }
+  .board-container::-webkit-scrollbar {
+    display: none;
+  }
+  .background-div {
+    padding: 0.5rem 5rem 0.5rem 5rem;
+    text-align: center;
+  }
+  .board-div {
+    width: 24rem;
+    height: 32rem;
+    display: inline-block;
+    background-color: #ffe8e8;
+    padding: 2rem 2rem;
+    border-radius: 1rem;
+  }
+</style>

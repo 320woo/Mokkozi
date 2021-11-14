@@ -24,10 +24,9 @@
                 text="text"
                 rounded="rounded"
                 class="my-2 btn">
-            <router-link to="/" class="mt-4" style="text-decoration: none; color:white">
-              <p v-if="isLogin">로그아웃</p>
-              <p v-else></p>
-            </router-link></v-btn>
+            
+              <p class="mt-4" v-if="this.$store.state.user.show" @click="logout">로그아웃</p>
+              <p v-else class="mt-4"><router-link to="/profile" style="text-decoration: none; color:white">나의 페이지</router-link></p></v-btn>
         </v-row>
     </v-footer>
 </template>
@@ -40,7 +39,12 @@ export default {
       const isLogin = this.$store.state.jwt
       return isLogin
     }
-  }
+  },
+  methods: {
+    logout () {
+      this.$store.dispatch("logout");
+    }
+  },
 }
 </script>
 
@@ -49,7 +53,7 @@ export default {
     position: fixed;
     left: auto;
     top: 0;
-    width: 600px;
-    z-index: 999;
+    width: 700px;
+    z-index: 10;
     }
 </style>
