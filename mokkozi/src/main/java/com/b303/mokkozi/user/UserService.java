@@ -21,6 +21,8 @@ public interface UserService {
 
     List<UserFollowDto> getFollowing(User user);
 
+    List<User> getRandomUser(User user);
+
     User join(JoinInfoPostReq info);
 
     List<UserInterest> createUserInterest(JoinInfoPostReq info, User user);
