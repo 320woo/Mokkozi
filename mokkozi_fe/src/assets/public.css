@@ -3,7 +3,7 @@
   border: 0.5px solid lightgrey; 
   border-radius: 5px;
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 300px;
 }
 .bg-img { /* 상단 배경 이미지 */
   display: inline-block;
@@ -13,16 +13,31 @@
   border-top-left-radius: 5px;
   object-fit: cover;
 }
-.user-img-frame { /* 사용자 프로필 이미지 프레임 */
+.user-info {
+  position: absolute;
+  top: 225px;
+  left: auto;
+  right: 278px;
+}
+.user-follow {
+  /* 사용자 프로필 이미지 프레임 */
+  position: absolute;
+  top: 200px;
+  left: auto;
+  right: 40px;
+}
+.user-img-frame {
+  /* 사용자 프로필 이미지 프레임 */
   background-color: #F9F7F7;
-  border: 5px solid white;
   border-radius: 100px;
   height: 150px;
   width: 150px;
   position: absolute;
-  top: 25%;
-  left: 5%; 
+  bottom: auto;
+  top: 12%;
+  left: 5%;
 }
+
 .sub-frame { /* userImgFrame 내 sub프레임  ( 이미지의 absolute 배치 위해 ) */
   position: relative;
 }
@@ -30,15 +45,17 @@
   display: inline-block;
   height: 30px;
   width: 30px;
-  background-color: #112D4E;
+  background-color: white;
   color: white;
   position: absolute;
-  top: 30%;
-  left: 20%;
+  bottom: auto;
+  top: 21%;
+  right: auto;
+  left: 150px;
   text-align: center;
   vertical-align: middle;
   border-radius: 0.8rem;
-  
+  border: 1px solid black;
 }
 .user-img-mod-frame * {
   vertical-align: middle;
@@ -96,4 +113,18 @@
 }
 .calendar { /* 시작일, 종료일 설정하는 캘린더 */
   width: 50%;
+}
+
+.radius {
+  border-radius: 10px;
+}
+
+.background-div {
+  padding: 0.5rem 5rem;
+  text-align: center;
+}
+
+.board-div {
+  width: 24rem;
+  display: inline-block;
 }

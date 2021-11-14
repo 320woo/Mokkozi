@@ -24,9 +24,9 @@
                 text="text"
                 rounded="rounded"
                 class="my-2 btn">
-            <router-link to="/" style="text-decoration: none; color:white">
-              <p v-if="isLogin">로그인중</p>
-              <p v-else>로그인 필요</p>
+            <router-link to="/" class="mt-4" style="text-decoration: none; color:white">
+              <p v-if="isLogin">로그아웃</p>
+              <p v-else></p>
             </router-link></v-btn>
         </v-row>
     </v-footer>
