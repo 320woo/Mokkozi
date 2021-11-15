@@ -13,7 +13,7 @@
   position: absolute;
   top: 227px;
   left: auto;
-  right: 227px;
+  right: 243px;
 }
 .user-follow {
   /* 사용자 프로필 이미지 프레임 */
@@ -123,4 +123,24 @@
 .board-div {
   width: 24rem;
   display: inline-block;
+}
+
+.font {
+  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.font-test {
+  font-family: 'this_is_font_name'; 
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/SDSamliphopangche_Outline.woff') format('woff');
+  font-weight: normal;
+  font-style: normal; 
+}
+
+.follow-title {
+  border-bottom : 1px solid gainsboro;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px
 }

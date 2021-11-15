@@ -25,6 +25,9 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     @Autowired
+    UserInterestRepository userInterestRepository;
+
+    @Autowired
     UserFollowRepository userFollowRepository;
 
     @Autowired
@@ -34,7 +37,12 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-    
+
+    @Override
+    public User userUpdate(User user) {
+        return userRepository.save(user);
+    }
+
     public User join(JoinInfoPostReq info) {
         // 1. DB에 저장하기 위한 엔티티 객체 생성
         User user = new User();
@@ -125,18 +133,6 @@ public class UserServiceImpl implements UserService {
         List<User> list = userRepositoryImpl.getRandomUser(user.getId());
         return list;
     }
-
-	@Override
-	public User userUpdate(User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<UserInterest> createUserInterest(JoinInfoPostReq info, User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 }

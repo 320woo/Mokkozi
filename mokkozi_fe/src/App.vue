@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main style="background-color: #FFE8E8;">
+    <v-main class="font-test" style="background-color: #FFE8E8;">
       <v-container class="com">
         <v-row no-gutters justify-sm="center" justify-md="center" align="center">
           <!-- 소개 페이지 -->
@@ -50,6 +50,7 @@ export default ({
 </script>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700&display=swap');
 .com {
   height: 100%;
   background-color: white;
@@ -60,5 +61,8 @@ export default ({
 }
 .logo-page * {
   margin : auto;
+}
+.font-test {
+  font-family: 'Noto Sans KR', sans-serif;
 }
 </style>
