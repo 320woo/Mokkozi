@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -161,6 +162,7 @@ public class UserController {
     }
 
     //나의 팔로워 목록 확인
+    @Transactional
     @GetMapping("/followers")
     @ApiOperation(value = "팔로워 목록 ", notes = "팔로워 정보를 리스트로 반환")
     @ApiResponses({@ApiResponse(code = 200, message = "팔로워 목록 조회 성공"), @ApiResponse(code = 500, message = "팔로워 목록 조회 실패")})
@@ -184,6 +186,7 @@ public class UserController {
     }
 
     //나의 팔로잉 목록 확인
+    @Transactional
     @GetMapping("/following")
     @ApiOperation(value = "팔로잉 목록 ", notes = "팔로잉 정보를 리스트로 반환")
     @ApiResponses({@ApiResponse(code = 200, message = "팔로워 목록 조회 성공"), @ApiResponse(code = 500, message = "팔로잉 목록 조회 실패")})

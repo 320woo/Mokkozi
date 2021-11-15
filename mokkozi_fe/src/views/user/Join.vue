@@ -85,7 +85,7 @@
                   prepend-icon="mdi-camera"
                   :rules="ProfileRules"
                   placeholder="프로필 이미지를 설정해 주세요"
-                  
+                  show-size="1024"
                 >
                 <template v-slot:selection="{ text }">
                   <v-chip

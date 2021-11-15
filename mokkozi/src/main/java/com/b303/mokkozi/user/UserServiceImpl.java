@@ -71,9 +71,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<UserFollowDto> getFollowing(User user) {
-        Stream<UserFollow> following = userFollowRepository.findAllByFromUserId(user.getId());
-        List<UserFollowDto> list = (List<UserFollowDto>) following.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
-        return list;
+        List<UserFollowDto> following = (List<UserFollowDto>) userFollowRepository.findAllByFromUserId(user.getId()).map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
+        return following;
     }
 
 	@Override
