@@ -34,7 +34,7 @@
                   <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                  <report-board />
+                  <report-board :boardId ="board.id" />
                 </v-list-item>
                 <v-list-item>
                   <report-user />
