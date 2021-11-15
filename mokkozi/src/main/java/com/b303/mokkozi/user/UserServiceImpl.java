@@ -1,13 +1,20 @@
 package com.b303.mokkozi.user;
 
+import com.b303.mokkozi.board.dto.BoardDto;
+import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserFollow;
 import com.b303.mokkozi.entity.UserInterest;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -87,19 +94,32 @@ public class UserServiceImpl implements UserService{
         userFollowRepository.delete(follow);
     }
 
+    @Transactional
     @Override
     public List<UserFollowDto> getFollowers(User user) {
-        Stream<UserFollow> followers = userFollowRepository.findAllByToUserId(user.getId());
-        List<UserFollowDto> list = (List<UserFollowDto>) followers.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
-//        List<UserFollowDto> followers = list.map(m -> new UserFollowDto());;
-        return list;
+
+////        int page = 0;
+////
+//////        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+////
+////        Page<Board> pageTuts = boardRepository.findAll(pageable);
+////        Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
+////
+////        return boardList;
+//
+//        Optional<List<UserFollow>> followers =  userFollowRepository.findAllByToUserId(user.getId());
+//
+////        List<UserFollowDto> followers = (List<UserFollowDto>) Optional.ofNullable(userFollowRepository.findAllByToUserId(user.getId())).orElseThrow(()->new NoSuchElementException("not found")).map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
+//        List<UserFollowDto> list = followers.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
+////        List<UserFollowDto> followers = list.map(m -> new UserFollowDto());
+////        return followers;
+        return null;
     }
 
     @Override
     public List<UserFollowDto> getFollowing(User user) {
-        Stream<UserFollow> following = userFollowRepository.findAllByFromUserId(user.getId());
-        List<UserFollowDto> list = (List<UserFollowDto>) following.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
-        return list;
+        List<UserFollowDto> following = (List<UserFollowDto>) userFollowRepository.findAllByFromUserId(user.getId()).map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
+        return following;
     }
 
     @Override
