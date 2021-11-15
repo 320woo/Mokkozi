@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
 public interface ReportUserRepository extends JpaRepository<ReportUser, Long> {
     String findEmailById(Long targetId);
 
-    Page<ReportUser> findByResult(Pageable pageable, String result);
 }

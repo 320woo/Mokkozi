@@ -6,9 +6,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReportUserUpdateReq {
+public class ReportBoardUpdateReq {
 
-    @ApiModelProperty(name = "사용자 신고 ID", example = "1")
+    @ApiModelProperty(name = "게시글 신고 ID", example = "1")
     private Long reportId;
     @ApiModelProperty(name = "신고 결과", example = "신고 결과")
     private String result;

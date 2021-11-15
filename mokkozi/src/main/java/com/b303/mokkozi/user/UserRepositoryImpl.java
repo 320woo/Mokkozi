@@ -1,6 +1,6 @@
 package com.b303.mokkozi.user;
 
-import com.b303.mokkozi.entity.QUser;
+//import com.b303.mokkozi.entity.QUser;
 import com.b303.mokkozi.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,7 +17,7 @@ public class UserRepositoryImpl {
     @Autowired
     private EntityManager em;
 
-    QUser qUser = QUser.user;
+//    QUser qUser = QUser.user;
 
     @Transactional
     public List<User> getRandomUser(Long userId){

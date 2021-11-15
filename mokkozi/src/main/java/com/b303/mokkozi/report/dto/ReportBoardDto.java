@@ -1,8 +1,7 @@
 package com.b303.mokkozi.report.dto;
 
-import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.common.response.BaseResponseBody;
-import com.b303.mokkozi.entity.Board;
+import com.b303.mokkozi.entity.ReportBoard;
 import com.b303.mokkozi.entity.ReportUser;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,26 +11,27 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class ReportUserDto extends BaseResponseBody {
+public class ReportBoardDto extends BaseResponseBody {
+
 
     private Long id;
-    private String reporter;
-    private String target;
+    private Long boardId;
+    private String result;
     private Date regDate;
     private String content;
 
     @Builder
-    public ReportUserDto(ReportUser report,String targetEmail) {
+    public ReportBoardDto(ReportBoard report) {
 
         this.id = report.getId();
         this.content = report.getContent();
         this.regDate = report.getRegDate();
-        this.reporter = report.getUser().getEmail();
-        this.target = targetEmail;
+        this.result = report.getResult();
+        this.boardId = report.getBoard().getId();
     }
 
-    public static ReportUserDto of(Integer statusCode, String message, ReportUserDto report) {
-        ReportUserDto res = report;
+    public static ReportBoardDto of(Integer statusCode, String message, ReportBoardDto report) {
+        ReportBoardDto res = report;
         res.setStatusCode(statusCode);
         res.setMessage(message);
         return res;
