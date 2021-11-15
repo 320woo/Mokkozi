@@ -7,6 +7,7 @@ import com.b303.mokkozi.jwt.CustomUserDetails;
 import com.b303.mokkozi.jwt.TokenProvider;
 import com.b303.mokkozi.user.dto.TokenDto;
 import com.b303.mokkozi.user.dto.UserFollowDto;
+import com.b303.mokkozi.user.dto.UserRandomDto;
 import com.b303.mokkozi.user.request.CredentialPostReq;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
 
@@ -31,6 +32,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api/meet/user")
@@ -201,6 +203,32 @@ public class UserController {
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
         }
     }
+
+    @Autowired
+    UserRepository userRepository;
+
+    //랜덤 추천
+    @GetMapping("/recommend/random")
+    @ApiOperation(value = "랜덤 추천 목록 ", notes = "로그인한 회원을 제외한 랜덤 추천 목록을 반환")
+    @ApiResponses({@ApiResponse(code = 200, message = "회원 랜덤 조회 성공"), @ApiResponse(code = 500, message = "회원 랜덤 조회 실패")})
+    public ResponseEntity<? extends BaseResponseBody> recommendRandom(
+            @ApiIgnore Authentication authentication
+    ){
+        try{
+            User user = (User) authentication.getDetails();
+            List<User> random = userService.getRandomUser(user);
+            return ResponseEntity.ok(UserRandomDto.of(200, "회원 랜덤 조회 성공",random));
+        } catch (AuthenticationException | NullPointerException e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+        } catch (NoSuchElementException e){
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 정보입니다."));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+        }
+    }
+
 
     @PostMapping("/test")
     public ResponseEntity<? extends BaseResponseBody> test(Authentication authentication) {
