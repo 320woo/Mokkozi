@@ -100,6 +100,8 @@ export default {
     },
     // 사용자 신고
     report () {
+      console.log(this.userEmail)
+      console.log(this.reason)
       if (this.reason.length) {
          axios({
           url: 'http://localhost:8000/api/meet/report/user',
@@ -108,13 +110,13 @@ export default {
             Authorization:"Bearer "+ this.$store.state.jwt
           },
           data: {
-            targetId: this.userEmail,
+            targetId: 2, // 아이디 값으로 요청 보내야함
             content: this.reason
           }
         }).then(res => {
-          console.log('게시판 신고 성공', res)
+          console.log('유저 신고 성공', res)
         }).catch(err => {
-          console.log('게시판 신고 실패', err)
+          console.log('유저 신고 실패', err)
         })
       }
       this.reasonList.forEach((reasonIdx) => {
