@@ -29,11 +29,11 @@
                   >fas fa-ellipsis-h</v-icon>
               </template>
               <v-list>
-                <v-list-item>
+                <v-list-item v-if="board.userEmail === loginUser">
                   <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                  <report-board />
+                  <report-board :boardId="board.id" />
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -86,10 +86,13 @@
 
 <script>
 import axios from 'axios'
+import ReportBoard from '../../components/ReportBoard'
 
 export default ({
   name: 'BoardDetail',
-  components: {},
+  components: {
+    ReportBoard
+  },
   props: {
     boardId: {
       type: Number
@@ -106,6 +109,11 @@ export default ({
   // },
   mounted () {
     this.getSelectBoard(this.boardId)
+  },
+  computed: {
+    loginUser () {
+      return this.$store.state.user.email
+    }
   },
   methods: {
     boardUpdateClick (boardId) {

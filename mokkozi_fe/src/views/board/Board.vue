@@ -30,14 +30,14 @@
                   >fas fa-ellipsis-h</v-icon>
               </template>
               <v-list>
-                <v-list-item>
+                <v-list-item v-if="board.userEmail === loginUser">
                   <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                  <report-board />
+                  <report-board :boardId="board.id" />
                 </v-list-item>
                 <v-list-item>
-                  <report-user />
+                  <report-user :userEmail="board.userEmail" />
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -114,11 +114,13 @@ export default {
     limit: 0, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
     commentContent: ''
   }),
-  created () {
-    // infinite scroll
-  },
   mounted () {
     // this.getBoardList()
+  },
+  computed: {
+    loginUser () {
+      return this.$store.state.user.email
+    }
   },
   methods: {
     // infinite scroll

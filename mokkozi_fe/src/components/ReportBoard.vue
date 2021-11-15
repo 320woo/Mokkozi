@@ -19,7 +19,7 @@
         <v-card-title style="display:flex; justify-content:space-between;" class="white">
           <span>게시글 신고하기</span>
           <v-btn color="white" icon>
-            <v-icon style="color: #FFB4B4;" @click="dialog = false">fas fa-times-circle</v-icon>
+            <v-icon style="color: #FFB4B4;" @click="exit">fas fa-times-circle</v-icon>
           </v-btn>
         </v-card-title>
         <v-divider></v-divider>
@@ -29,19 +29,19 @@
         <v-card-text>
           여러 사유에 해당되는 경우 대표적인 사유 1개를 선택해 주세요.
         </v-card-text>
-        <p id="reason1" class="reason" @click="selectReason('reason1', '부적절한 홍보 게시글')">부적절한 홍보 게시글</p>
-        <p id="reason2" class="reason" @click="selectReason('reason2', '음란성')">음란성</p>
-        <p id="reason3" class="reason" @click="selectReason('reason3', '명예훼손/사생활 침해 및 저작권 침해 등')">명예훼손/사생활 침해 및 저작권 침해 등</p>
-        <p id="reason4" class="reason" @click="selectReason('reason4', '혐오 발언 또는 상징')">혐오 발언 또는 상징</p>
-        <p id="reason5" class="reason" @click="selectReason('reason5', '불법 또는 규제 상품 판매')">불법 또는 규제 상품 판매</p>
-        <p id="reason6" class="reason" @click="selectReason('reason6', '기타')">기타</p>
+        <p id="boardReason1" class="reason" @click="selectReason('boardReason1', '부적절한 홍보 게시글')">부적절한 홍보 게시글</p>
+        <p id="boardReason2" class="reason" @click="selectReason('boardReason2', '음란성')">음란성</p>
+        <p id="boardReason3" class="reason" @click="selectReason('boardReason3', '명예훼손/사생활 침해 및 저작권 침해 등')">명예훼손/사생활 침해 및 저작권 침해 등</p>
+        <p id="boardReason4" class="reason" @click="selectReason('boardReason4', '혐오 발언 또는 상징')">혐오 발언 또는 상징</p>
+        <p id="boardReason5" class="reason" @click="selectReason('boardReason5', '불법 또는 규제 상품 판매')">불법 또는 규제 상품 판매</p>
+        <p id="boardReason6" class="reason" @click="selectReason('boardReason6', '기타')">기타</p>
         <v-divider style="margin-top: 21px"></v-divider>
 
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="#FFB4B4"
-            @click="dialog = false"
+            @click="report"
           >
             신고
           </v-btn>
@@ -52,37 +52,81 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'ReportBoard',
   data: () => ({
     dialog: false,
-    reason: '',
-    reasonList: [['reason1', '부적절한 홍보 게시글'], ['reason2', '음란성'],
-                 ['reason3', '명예훼손/사생활 침해 및 저작권 침해 등'], ['reason4', '혐오 발언 또는 상징'],
-                 ['reason5', '불법 또는 규제 상품 판매'], ['reason6', '기타'],]
+    boardReason: '',
+    boardReasonList: [['boardReason1', '부적절한 홍보 게시글'], ['boardReason2', '음란성'],
+                 ['boardReason3', '명예훼손/사생활 침해 및 저작권 침해 등'], ['boardReason4', '혐오 발언 또는 상징'],
+                 ['boardReason5', '불법 또는 규제 상품 판매'], ['boardReason6', '기타']]
   }),
   props: {
-    open: {
-      type: Boolean
+    boardId: {
+      type: Number
     }
+  },
+  mounted () {
+    console.log(this.boardId)
+    this.boardReason = ''
   },
   methods: {
     selectReason (id, reason) { // 하나만 선택할 수 있도록 바꿔야 한다
       const show = document.querySelector('#' + id)
-      // 이미 선택한 이유가 있는 경우
-      if (show.classList.contains('selected')) {
-        // 1. CSS 변경
+      if (this.boardReason.length && show.classList.contains('selected')) {
         show.classList.remove('selected')
-        // 2. reason 변경
-        this.reason = reason
-      // 선택한 이유가 없는 경우
-      } else {
+        this.boardReason = ''
+      }
+      else if (this.boardReason.length && !show.classList.contains('selected')) {
+          this.boardReasonList.forEach((reasonIdx) => {
+          if (reasonIdx[1] === this.boardReason) {
+            const beforeReason = document.querySelector('#' + reasonIdx[0])
+            beforeReason.classList.remove('selected')
+          }
+        })
+        show.className += ' selected'
+        this.boardReason = reason
+      }
+      else {
         // 1. CSS 변경
         show.className += ' selected'
         // 2. hobby List 변경
-        this.reason = reason
+        this.boardReason = reason
       }
     },
+    // 게시판 신고
+    report () {
+      if (this.boardReason.length) {
+        axios({
+          url: 'http://localhost:8000/api/meet/report/board',
+          method: 'POST',
+          headers:{
+            Authorization:"Bearer "+ this.$store.state.jwt
+          },
+          data: {
+            id: this.boardId,
+            content: this.boardReason
+          }
+        }).then(res => {
+          console.log('게시판 신고 성공', res)
+        }).catch(err => {
+          console.log('게시판 신고 실패', err)
+        })
+      }
+      this.boardReasonList.forEach((reasonIdx) => {
+        document.querySelector('#' + reasonIdx[0]).classList.remove('selected')
+      })
+      this.dialog = false
+    },
+    // x 아이콘으로 닫을 때 reason 초기화
+    exit () {
+      this.boardReasonList.forEach((reasonIdx) => {
+        document.querySelector('#' + reasonIdx[0]).classList.remove('selected')
+      })
+      this.dialog = false
+    }
   }
 }
 </script>
