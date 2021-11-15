@@ -12,8 +12,9 @@ import java.util.Optional;
 public interface ChatService {
     Optional<List<ChatRoomJoin>> getChatRoomList(Long userId);
 
-    Page<ChatMessageDto> getChatMsgList(Long chatRoomId, ChatMsgListGetReq chatMsgListGetReq);
+    Page<ChatMessageDto> getChatMsgList(Long chatRoomId, int page);
 
     void insertMessage(ChatMessage chatMessage);
 
+    Long newRoom(Long id1, Long id2);
 }
