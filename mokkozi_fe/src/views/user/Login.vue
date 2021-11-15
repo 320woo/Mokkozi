@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
     <!-- row의 height를 지정해야만 align을 통해 start, center, end로 배치할 수 있다. -->
-    <v-row justify="center" align="center" style="height: 937px; width: 500px;">
+    <v-row justify="center" align="center">
       <v-col class="pa-4">
-        <div class="login-box" elevation="1" outlined style="height: 400px;">
+        <div class="login-box" elevation="1" outlined>
           <div class="d-flex flex-wrap justify-center">
             <v-img max-width="400" max-height="200" src="@/assets/text_logo.png"></v-img>
           </div>
@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import router from '../../router'
 import axios from 'axios'
 
 export default {
@@ -60,18 +59,26 @@ export default {
   }),
   methods: {
     goToJoin () {
-      router.push('Join')
+      this.$router.push('Join')
     },
     login () {
       axios({
-        url: 'http://localhost:8443/api/meet/user/login',
+        url: 'http://localhost:8000/api/meet/user/login',
         method: 'POST',
         data: {
           email: this.credentials.email,
           password: this.credentials.password
         }
       }).then(resp => {
-        console.log(resp)
+        if (resp.status === 200) {
+        console.log("로그인 성공! 로그인 반환 정보 : ", resp)
+        this.$store.dispatch("setJwt", resp.data.token)
+        this.$store.dispatch("setNickname", resp.data.nickName)
+        this.$store.dispatch("setProfile", resp.data.profile)
+        this.$store.dispatch("setEmail", resp.data.email)
+        this.$router.push("Matching")
+        }
+
       })
     }
 

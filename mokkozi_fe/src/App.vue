@@ -2,9 +2,9 @@
   <v-app>
     <v-main style="background-color: #FFE8E8;">
       <v-container class="com">
-        <v-row no-gutters>
+        <v-row no-gutters justify-sm="center" justify-md="center" align="center">
           <!-- 소개 페이지 -->
-          <v-col cols="5" class="d-none d-md-flex logo-page"> <!-- 창 크기에 따라 전시 or 비전시 -->
+          <v-col cols="5" class="d-none d-sm-none d-md-none d-lg-flex logo-page"> <!-- 창 크기에 따라 전시 or 비전시 -->
             <div class="pa-5 d-flex flex-wrap flex-column">
               <!-- 로고 이미지 -->
               <div class="mb-10">
@@ -26,9 +26,11 @@
             </div>
           </v-col>
           <!-- 매번 바뀌는 페이지 -->
-          <v-col class="d-flex flex-row justify-center align-center" cols="7">
+          <v-col class="d-flex flex-row justify-center" cols="7">
             <top></top>
-            <router-view/>
+            <main>
+              <router-view/>
+            </main>
             <foot></foot>
           </v-col>
         </v-row>
@@ -38,11 +40,13 @@
 </template>
 
 <script>
-export default {
+export default ({
+  components: {},
   name: 'App',
   data: () => ({
+
   })
-}
+})
 </script>
 
 <style lang="scss" scoped>

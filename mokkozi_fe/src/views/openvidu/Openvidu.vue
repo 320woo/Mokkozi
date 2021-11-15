@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div id="main-container" class="container">
+  <v-container fluid style="height: 800px; width: 600px; padding: 0px">
+    <div id="main-container">
       <div id="join" v-if="!session">
         <div id="img-div"><img src="https://images.dog.ceo/breeds/spaniel-japanese/n02085782_2690.jpg" /></div>
         <div id="join-dialog" class="jumbotron vertical-center">
@@ -19,49 +19,79 @@
             </p>
           </div>
         </div>
-        <video src="" id="test-video"></video>
       </div>
-
-      <div id="session" v-if="session">
-        <div id="session-header">
-          <h1 id="session-title">{{ mySessionId }}</h1>
-          <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
+      <div v-if="session" style="500px; padding: 40px 0px 0px 0px">
+        <h2 id="session-title">{{ mySessionId }}번 {{ myUserName }}님의 방</h2>
+        <div id="main-video" style="position: relative;">
+          <user-video :stream-manager="mainStreamManager" />
+          <div class="box-div">
+            <!-- <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/> -->
+            <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/>
+          </div>
+          <v-icon v-if="videoState" class="video-icon" right dark @click="videoOnOff">fas fa-video</v-icon>
+          <v-icon v-else class="video-icon" right dark @click="videoOnOff">fas fa-video-slash</v-icon>
+          <v-icon v-if="audioState" class="audio-icon" right dark @click="audioOnOff">fas fa-microphone</v-icon>
+          <v-icon v-else class="audio-icon" right dark @click="audioOnOff">fas fa-microphone-slash</v-icon>
+          <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-external-link-alt</v-icon>
         </div>
-        <div id="main-video" class="col-md-6" v-if="videoState">
-          <h3>메인 비디오</h3>
-          <user-video :stream-manager="mainStreamManager"/>
-        </div>
-        <div id="video-container" class="col-md-6">
-          <h3>같은 방 사람들</h3>
-          <user-video :stream-manager="publisher" @click.native="updateMainVideoStreamManager(publisher)"/>
-          <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/>
+        <div id="chat-div" style="height:300px; overflow:scroll;">
+          <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-header class="font-weight-bold" style="font-size: 20px; height: 60px" @click="CountMessage">
+              채팅
+              <template v-slot:actions>
+                <v-badge
+                  color="green"
+                  :content="messageLength"
+                >
+                  <v-icon color="#FFB4B4">
+                    fas fa-comment
+                  </v-icon>
+                </v-badge>
+              </template>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content v-for="(message, i) in messages" :key="i">
+              <div v-if="message.from == myUserName" class="my-massage">
+                <v-avatar color="brown" size="32">
+                  <span class="white--text text-h5">KG</span>
+                </v-avatar>
+                <span class="font-weight-bold" style="margin: 0px 3px">{{ message.from }}</span>
+                <span>{{ message.content }}</span>
+              </div>
+              <div v-else class="your-massage">
+                <v-avatar color="pink" size="32">
+                  <span class="white--text text-h5">WH</span>
+                </v-avatar>
+                <span class="font-weight-bold" style="margin: 0px 3px">{{ message.from }}</span>
+                <span>{{ message.content }}</span>
+              </div>
+            </v-expansion-panel-content>
+            <v-expansion-panel-content>
+              <div>
+                <input style="width: 528px" v-model="message" type="text" placeholder="내용을 입력해주세요.." @keydown.enter="sendMessage">
+                <v-icon style="width: 24px">fas fa-location-arrow</v-icon>
+              </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
         </div>
       </div>
-      <div id="session-header" v-if="session">
-        <v-btn v-if="videoState" color="#fdb4b5" class="white--text" @click="videoOnOff">Video OFF
-          <v-icon right dark>fas fa-video</v-icon>
-        </v-btn>
-        <v-btn v-if="!videoState" color="#fdb4b5" class="white--text" @click="videoOnOff">Video ON
-          <v-icon right dark>fas fa-video-slash</v-icon>
-        </v-btn>
-          <h1 id="session-title">{{ mySessionId }}</h1>
-          <input class="btn btn-large btn-danger" type="button" id="buttonLeaveSession" @click="leaveSession" value="Leave session">
-        </div>
     </div>
-  </div>
+  </v-container>
 </template>
 
 <script>
 import axios from 'axios'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../../components/UserVideo'
+import * as faceapi from 'face-api.js'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
-const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8443'
+const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8447'
 const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
 
 export default {
-  name: 'App',
+  name: 'Openvidu',
   components: {
     UserVideo
   },
@@ -72,15 +102,39 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'SessionA',
+      mySessionId: 'kwang',
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
-      videoState: true
+      videoState: true,
+      audioState: true,
+      isSpeak: false,
+      message: '',
+      messages: [],
+      messageLength: '0',
+      chatOpen: false
     }
   },
+  // mounted(){
+  //   Promise.all([
+  //     faceapi.nets.ssdMobilenetv1.loadFromUri('/weights'),
+  //     faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
+  //     faceapi.nets.faceRecognitionNet.loadFromUri('/weights')
+  //   ]);
+
+  //   navigator.mediaDevices.getUserMedia({
+  //     video:true,
+  //     audio:true,
+  //   }).then((stream)=>{
+  //     this.addVideoStream(stream);
+  //   })
+  // },
   methods: {
     videoOnOff () {
       this.videoState = !this.videoState
       this.publisher.publishVideo(this.videoState)
+    },
+    audioOnOff () {
+      this.audioState = !this.audioState
+      this.publisher.publishAudio(this.audioState)
     },
     joinSession () {
       // --- Get an OpenVidu object ---
@@ -88,9 +142,31 @@ export default {
       // --- Init a session ---
       this.session = this.OV.initSession()
       // --- Specify the actions when events take place in the session ---
+
+      // 메세지를 받는 부분(채팅)
+      this.session.on('signal:chat', (event) => {
+        const eventData = JSON.parse(event.data)
+        this.messages.push(eventData)
+        console.log('메세지 내용 출력', this.messages)
+        if (!this.chatOpen) {
+          this.message = 0
+          this.messageLength++
+        }
+        // 스크롤이 자동으로 맞춰서 내려가게 한다
+        setTimeout(() => {
+          const chatDiv = document.getElementById('chat-div')
+          chatDiv.scrollTo({
+            top: chatDiv.scrollHeight,
+            behavior: 'smooth'
+          })
+        }, 50)
+      })
+
       // On every new Stream received...
       this.session.on('streamCreated', ({ stream }) => {
         const subscriber = this.session.subscribe(stream)
+        console.log('subscriber객체 들어있는 것', subscriber) // 삭제 예정
+        console.log('video 크기 변경', subscriber.stream.streamManager) // 삭제 예정
         this.subscribers.push(subscriber)
       })
       // On every Stream destroyed...
@@ -102,12 +178,13 @@ export default {
       })
       // On every asynchronous exception...
       this.session.on('exception', ({ exception }) => {
-        console.warn(exception)
+        console.warn('예외 처리', exception)
       })
       // --- Connect to the session with a valid user token ---
       // 'getToken' method is simulating what your server-side should do.
       // 'token' parameter should be retrieved and returned by your own backend
       this.getToken(this.mySessionId).then(token => {
+        console.log('getToken 후에 받아온 token값', token)
         this.session.connect(token, { clientData: this.myUserName })
           .then(() => {
             // --- Get your own camera stream with the desired properties ---
@@ -116,19 +193,19 @@ export default {
               videoSource: undefined, // The source of video. If undefined default webcam
               publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
               publishVideo: true, // Whether you want to start publishing with your video enabled or not
-              resolution: '640x480', // The resolution of your video
+              resolution: '600x400', // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-              mirror: false // Whether to mirror your local video or not
+              mirror: true // Whether to mirror your local video or not
             })
             this.mainStreamManager = publisher
             this.publisher = publisher
             // --- Publish your stream ---
             this.session.publish(this.publisher)
-            console.log('getToken 성공', publisher)
+            console.log('session.connect 성공 후 publisher', publisher) // 삭제 예정
           })
           .catch(error => {
-            console.log('There was an error connecting to the session:', error.code, error.message)
+            console.log('session.connect 실패.. There was an error connecting to the session:', error.code, error.message)
           })
       })
       window.addEventListener('beforeunload', this.leaveSession)
@@ -140,11 +217,13 @@ export default {
       this.mainStreamManager = undefined
       this.publisher = undefined
       this.subscribers = []
+      this.messages = []
       this.OV = undefined
       window.removeEventListener('beforeunload', this.leaveSession)
     },
     updateMainVideoStreamManager (stream) {
       if (this.mainStreamManager === stream) return
+      this.subscribers.splice(0, 1, this.mainStreamManager)
       this.mainStreamManager = stream
     },
     /**
@@ -159,17 +238,17 @@ export default {
      *   3) The Connection.token must be consumed in Session.connect() method
      */
     getToken (mySessionId) {
-      console.log('getToken sessionId: ', mySessionId)
+      console.log('getToken함수 실행할 때 들어가는 sessionId: ', mySessionId)
       return this.createSession(mySessionId).then(sessionId => this.createToken(sessionId))
     },
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-session
     createSession (sessionId) {
-      console.log('createSession sessionId: ', sessionId)
+      console.log('createSession함수 실행할 때 들어가는 sessionId: ', sessionId) // 삭제 예정
       return new Promise((resolve, reject) => {
         axios
           .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
             JSON.stringify({
-              customSessionId: sessionId
+              customSessionId: sessionId,
             }),
             {
               auth: {
@@ -180,6 +259,7 @@ export default {
           .then(response => response.data)
           .then(data => resolve(data.id))
           .catch(error => {
+            console.log(error)
             if (error.response.status === 409) {
               resolve(sessionId)
             } else {
@@ -194,7 +274,7 @@ export default {
     },
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-connection
     createToken (sessionId) {
-      console.log('createToken sessionId: ', sessionId)
+      console.log('createToken함수 실행 시 들어가는 sessionId: ', sessionId) // 삭제 예정
       return new Promise((resolve, reject) => {
         axios
           .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
@@ -207,7 +287,119 @@ export default {
           .then(data => resolve(data.token))
           .catch(error => reject(error.response))
       })
-    }
+    },
+
+    // 메세지 보내는 함수(채팅)
+    sendMessage () {
+      const messageData = {
+        content: this.message,
+        from: this.myUserName
+      }
+      this.message = ''
+      this.session.signal({
+        data: JSON.stringify(messageData), // Any string (optional)
+        to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+        type: 'chat' // The type of message (optional)
+      })
+    },
+    CountMessage () {
+      this.chatOpen = !this.chatOpen
+      if (this.chatOpen === true) {
+        this.messageLength = '0'
+      }
+      console.log(this.chatOpen)
+    },
+    // addVideoStream (stream) {
+
+    //   const video = stream;
+    //   const testVideos = document.getElementsByClassName('box-div')
+
+    //   for(var i=0; i<testVideos.length; i++) {
+    //     console.log(1111)
+
+    //   testVideos[i].append(video)
+    //   // this.streamManager.addVideoElement(video);
+    //   // video.enabled = true;
+
+    //     // if(video.paused || video.ended)
+    //     // {return setTimeout(() => onPlay())}
+
+    //     if (document.querySelector("canvas")) {
+    //     document.querySelector("canvas").remove()};
+
+    //     const minConfidence = 0.3
+    //     const maxResult = 100
+    //     const options = new faceapi.SsdMobilenetv1Options({minConfidence,maxResult})
+
+    //     const canvas = faceapi.createCanvasFromMedia(video);
+    //     testVideos[i].append(canvas);
+
+    //     const displaySize = { width:video.width,height:video.height };
+    //     faceapi.matchDimensions(canvas, displaySize);
+
+    //     setInterval(async ()=>{
+    //     const detections = await faceapi
+    //     .detectAllFaces(video,options)
+    //     .withFaceLandmarks();
+
+    //     const resizedDetections = faceapi.resizeResults(detections,displaySize);
+    //     canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
+    //     faceapi.draw.drawDetections(canvas,resizedDetections);
+    //     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+
+    //   },100);
+
+    //   }
+    // }
   }
 }
 </script>
+
+<style scoped>
+  .meeting-container {
+    overflow-y: scroll;
+  }
+  .meeting-container::-webkit-scrollbar {
+    display: none;
+  }
+  .box-div {
+    position: absolute;
+    height: 120px;
+    width: 180px;
+    bottom: 30px;
+    right: 0px;
+  }
+  .video-icon {
+    position: absolute;
+    width: 30px;
+    bottom: 120px;
+    left: 0px;
+  }
+  .audio-icon {
+    position: absolute;
+    width: 30px;
+    bottom: 80px;
+    left: 0px;
+  }
+  .exit-icon {
+    position: absolute;
+    width: 30px;
+    bottom: 40px;
+    left: 0px;
+  }
+  #chat-div::-webkit-scrollbar {
+    display: none;
+  }
+  .my-massage {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+  }
+  .your-massage {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+  }
+</style>

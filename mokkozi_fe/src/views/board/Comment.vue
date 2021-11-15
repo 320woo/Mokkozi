@@ -6,18 +6,18 @@
         max-width="24rem"
         height="auto"
       >
-        <!-- <v-card-title style="display:flex; justify-content:space-between;" class="font-weight-bold"><v-icon @click="BackToBoardClick">fas fa-chevron-left</v-icon>댓글<v-icon>fas fa-ellipsis-h</v-icon></v-card-title> -->
+        <!-- <v-card-title style="display:flex; justify-content:space-between;" class="font-weight-bold"><v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>댓글<v-icon>fas fa-ellipsis-h</v-icon></v-card-title> -->
         <v-toolbar
             color="#ffe8e8"
             style="box-shadow: none;"
           >
             <v-btn icon>
-              <v-icon @click="BackToBoardClick">fas fa-chevron-left</v-icon>
+              <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
             </v-btn>
             <v-spacer></v-spacer>
             <v-toolbar-title class="font-weight-bold">댓글</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-list-item-avatar @click="UserImageClick">
+            <v-list-item-avatar @click="userImageClick">
               <img src="https://picsum.photos/250/300?image=1008">
             </v-list-item-avatar>
           </v-toolbar>
@@ -127,11 +127,13 @@
           </div>
         </div>
         <div>
-            <input style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem" type="text" placeholder="댓글 달기">
+            <input v-model="commentContent" style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem"
+              type="text" placeholder="댓글 달기">
             <v-btn
-              color="#fdb4b5"
+              color="#FFB4B4"
               width="4rem"
               height="1.25rem"
+              @click="createComment"
             >
               작성
             </v-btn>
@@ -146,14 +148,49 @@ export default {
   name: 'Comment',
   components: {},
   data: () => ({
+    commentContent: ''
   }),
+  mounted () {
+    getCommentList()
+  },
   methods: {
-    BackToBoardClick () {
+    backToBoardClick () {
       this.$router.push({ name: 'Board' })
     },
-    UserImageClick () {
+    userImageClick () {
       this.$router.push({ name: 'Profile' })
-    }
+    },
+    // 댓글 불러오기
+    getCommentList (boardId) {
+      axios({
+        url: `http://localhost:8000/api/meet/comment/${boardId}`,
+        methods: 'GET',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        }
+      }).then(res => {
+        console.log('댓글 불러오기', res)
+      }).catch(err => {
+        console.log('댓글 불러오기 실패', err)
+      })
+    },
+    // 댓글 작성
+    createComment () {
+      axios({
+        url: 'http://localhost:8000/api/meet/comment',
+        method: 'POST',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
+        data: {
+          content: this.commentContent
+        }
+      }).then(res => {
+        console.log('댓글 작성 성공', res)
+      }).catch(err => {
+        console.log('댓글 작성 실패', err)
+      })
+    },
   }
 }
 </script>

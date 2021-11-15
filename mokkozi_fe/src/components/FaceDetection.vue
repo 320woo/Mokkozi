@@ -80,29 +80,6 @@ export default {
 
 
     },
-//     onInputSizeChanged(e) {
-//   changeInputSize(e.target.value)
-//   updateResults()
-// },
-//     changeInputSize(size) {
-//   let inputSize = 512
-
-//   const inputSizeSelect = $('#inputSize')
-//   inputSizeSelect.val(inputSize)
-//   inputSizeSelect.material_select()
-// },
-// initFaceDetectionControls() {
-//   let selectedFaceDetector = SSD_MOBILENETV1
-//   const faceDetectorSelect = $('#selectFaceDetector')
-//   faceDetectorSelect.val(selectedFaceDetector)
-//   faceDetectorSelect.on('change', onSelectedFaceDetectorChanged)
-//   faceDetectorSelect.material_select()
-
-//   const inputSizeSelect = $('#inputSize')
-//   inputSizeSelect.val(inputSize)
-//   inputSizeSelect.on('change', onInputSizeChanged)
-//   inputSizeSelect.material_select()
-// }
   },
 
 }

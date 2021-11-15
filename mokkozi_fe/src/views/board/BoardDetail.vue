@@ -1,7 +1,7 @@
 <template>
   <v-container fluid style="height: 800px;">
     <br>
-    <v-icon style="position: fixed; color: #fdb4b5;" @click="BackToBoardClick">fas fa-chevron-left</v-icon>
+    <v-icon style="position: fixed; color: #FFB4B4;" @click="backToBoardClick">fas fa-chevron-left</v-icon>
     <div class="background-div">
       <div class="board-div">
         <v-card
@@ -11,13 +11,13 @@
         >
           <v-card-title style="display:flex; justify-content:space-between; margin-bottom: 0.2rem">
             <div>
-              <v-avatar size="36px" @click="UserImageClick">
+              <v-avatar size="36px" @click="userImageClick(board.userEmail)">
               <img
                 alt="Avatar"
                 src="@/assets/logo.png"
               >
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="UserNicknameClick">MOKKOZI</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(board.userEmail)">{{ board.nickName }}</span>
             </div>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -30,10 +30,10 @@
               </template>
               <v-list>
                 <v-list-item>
-                  <v-list-item-title style="cursor: pointer;" @click="BoardUpdateClick">수정하기</v-list-item-title>
+                  <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
-                  <v-list-item-title style="cursor: pointer;" @click="BoardReportClick">신고하기</v-list-item-title>
+                  <report-board />
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -57,33 +57,27 @@
           ></v-img>
 
           <v-card-text class="like-text">
-            <i v-if="like" class="fas fa-heart" style="color:red" @click="BoardLike(1)"></i>
-            <i v-else class="far fa-heart" style="color:red" @click="BoardLike(1)"></i>
+            <i v-if="like" class="fas fa-heart" style="color:red" @click="boardUnLike(board.id)"></i>
+            <i v-else class="far fa-heart" style="color:red" @click="boardLike(board.id)"></i>
              like
           </v-card-text>
 
           <v-card-text>
-            Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.
+            {{ board.content }}
           </v-card-text>
-          <v-card-text style="color: gray" @click="CommentClick">댓글 더 보기..</v-card-text>
+          <v-card-text style="color: gray">댓글 더 보기..</v-card-text>
           <div>
-            <input style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem" type="text" placeholder="댓글 달기">
+            <input v-model="commentContent" style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem"
+              type="text" placeholder="댓글 달기">
             <v-btn
-              color="#fdb4b5"
+              color="#FFB4B4"
               width="4rem"
               height="1.25rem"
+              @click="createComment(boardId)"
             >
               작성
             </v-btn>
           </div>
-          <v-card-actions style="padding: 0.2rem 0rem">
-            <v-btn
-              color="#fdb4b5"
-              @click="Userfollow"
-            >
-              Follow
-            </v-btn>
-          </v-card-actions>
         </v-card>
       </div>
     </div>
@@ -91,28 +85,105 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default ({
   name: 'BoardDetail',
   components: {},
+  props: {
+    boardId: {
+      type: Number
+    }
+  },
   data: () => ({
-    image: 'https://images.dog.ceo/breeds/bulldog-english/murphy.jpg'
+    image: 'https://images.dog.ceo/breeds/bulldog-english/murphy.jpg',
+    commentContent: '',
+    board: {},
+    like: false
   }),
+  mounted () {
+    this.getSelectBoard(this.boardId)
+  },
   methods: {
-    BoardUpdateClick () {
-      this.$router.push({ name: 'BoardUpdate' })
+    boardUpdateClick (boardId) {
+      this.$router.push({ name: 'BoardUpdate', params: { boardId: boardId }})
     },
-    BoardReportClick () {
+    boardReportClick () {
       this.$router.push({ name: 'Home' }) // 신고하는 페이지로 이동하도록 바꿔야함
     },
-    UserImageClick () {
-      this.$router.push({ name: 'Profile' })
+    userImageClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
-    UserNicknameClick () {
-      this.$router.push({ name: 'Profile' })
+    userNicknameClick (userEmail) {
+      this.$router.push({ name: 'Profile', params: { userEmail: userEmail} })
     },
-    BackToBoardClick () {
+    backToBoardClick () {
       this.$router.push({ name: 'Board' })
-    }
+    },
+    // 게시물 불러오기
+    getSelectBoard (boardId) {
+      axios({
+        url: `http://localhost:8000/api/meet/board/${boardId}`,
+        methods: 'GET',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        }
+      }).then(res => {
+        console.log('게시물 불러오기', res)
+        this.board = res.data
+        this.like = res.date.boardLike
+      }).catch(err => {
+        console.log('게시물 불러오기 실패', err)
+      })
+    },
+    // 댓글 작성
+    createComment (boardId) {
+      axios({
+        url: 'http://localhost:8000/api/meet/comment',
+        method: 'POST',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
+        data: {
+          id: boardId,
+          content: this.commentContent
+        }
+      }).then(res => {
+        console.log('댓글 작성 성공', res)
+      }).catch(err => {
+        console.log('댓글 작성 실패', err)
+      })
+    },
+    // 좋아요
+    boardLike (boardId) {
+      axios({
+        url: `http://localhost:8000/api/meet/board/like?boardId=${boardId}`,
+        method: 'POST',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
+      }).then(res => {
+        console.log('좋아요 성공', res)
+        this.like = !this.like
+      }).catch(err => {
+        console.log('좋아요 실패', err)
+      })
+    },
+    // 좋아요 취소
+    boardUnLike (boardId) {
+      axios({
+        url: `http://localhost:8000/api/meet/board/unlike?boardId=${boardId}`,
+        method: 'DELETE',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        },
+      }).then(res => {
+        console.log('좋아요 취소 성공', res)
+        this.like = !this.like
+      }).catch(err => {
+        console.log('좋아요 취소 실패', err)
+      })
+    },
   }
 })
 </script>
