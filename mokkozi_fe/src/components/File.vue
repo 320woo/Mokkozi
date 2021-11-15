@@ -28,8 +28,8 @@
             </div>
           </div>
           <div class="user-info">
-            <div>{{ this.nickname }}</div>
-            <div>{{ this.address }}</div>
+            <div>이름 : {{ this.nickname }}</div>
+            <div>이메일 : {{ this.email }}</div>
           </div>
           <div class="user-follow">
             <v-btn
@@ -43,10 +43,16 @@
             </v-btn>
           </div>
           <!-- <div class="user-follow">
-                            <v-btn @click="unfollow" dark="dark" dense="dense" color="#FFB4B4" class="my-2 font-weight-black">
-                               팔로우 취소
-                            </v-btn>
-                        </div> -->
+            <v-btn
+              @click="unfollow"
+              dark="dark"
+              dense="dense"
+              color="#FFB4B4"
+              class="my-2 font-weight-black"
+            >
+              팔로우 취소
+            </v-btn>
+          </div> -->
           <!-- 인적 사항 부분 -->
           <div>
             <v-card
@@ -91,6 +97,16 @@
                                 />
                               </v-avatar>
                               {{ item.nickname }}
+                              <v-btn
+                                @click="unfollow"
+                                dark="dark"
+                                dense="dense"
+                                color="#FFB4B4"
+                                class="my-2 font-weight-black"
+                                style="margin-left: 175px"
+                              >
+                                삭제
+                              </v-btn>
                             </div>
                           </v-card-text>
                         </div>
@@ -128,6 +144,16 @@
                                 />
                               </v-avatar>
                               {{ item.nickname }}
+                              <v-btn
+                                @click="unfollow"
+                                dark="dark"
+                                dense="dense"
+                                color="#FFB4B4"
+                                class="my-2 font-weight-black"
+                                style="margin-left: 175px"
+                              >
+                                삭제
+                              </v-btn>
                             </div>
                           </v-card-text>
                         </div>
@@ -202,7 +228,7 @@ export default {
     propImage: "",
     camera: camera,
     profile: "",
-    address: "",
+    email: "",
     nickname: "",
     followers: [],
     followings: [],
@@ -221,7 +247,7 @@ export default {
       }).then((resp) => {
         console.log("회원정보 확인: ", resp);
         this.propImage = resp.data.profile;
-        this.address = resp.data.address;
+        this.email = resp.data.email;
         this.nickname = resp.data.nickname;
       });
     },
@@ -250,6 +276,7 @@ export default {
           Authorization: "Bearer " + this.$store.state.jwt,
         },
         params: {
+          //각 유저마다 갖고 있는 followid
           followId: this.$route.params.userEmail,
         },
       }).then((resp) => {
