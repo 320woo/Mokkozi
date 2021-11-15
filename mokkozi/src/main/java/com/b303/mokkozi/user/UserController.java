@@ -158,27 +158,20 @@ public class UserController {
         }
     }
 
-    @Autowired
-    UserRepository userRepository;
     //나의 팔로워 목록 확인
     @GetMapping("/followers")
     @ApiOperation(value = "팔로워 목록 ", notes = "팔로워 정보를 리스트로 반환")
     @ApiResponses({@ApiResponse(code = 200, message = "팔로워 목록 조회 성공"), @ApiResponse(code = 500, message = "팔로워 목록 조회 실패")})
     public ResponseEntity<? extends BaseResponseBody> getFollowers(
-//            @ApiIgnore Authentication authentication
+            @ApiIgnore Authentication authentication
     ){
-        //Jwt를 통해 나의 정보 get
         try{
-//            User user = (User) authentication.getDetails();
-            User user = userRepository.getById((long)1);
+            User user = (User) authentication.getDetails();
             List<UserFollowDto> followers = userService.getFollowers(user);
             return ResponseEntity.ok(UserFollowListDto.of(200, "팔로워 목록 조회 성공",followers));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
-        } catch (NoSuchElementException e){
-            e.printStackTrace();
-            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 정보입니다."));
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
         }
@@ -191,17 +184,13 @@ public class UserController {
     public ResponseEntity<? extends BaseResponseBody> getFollowing(
             @ApiIgnore Authentication authentication
     ){
-        //Jwt를 통해 나의 정보 get
         try{
             User user = (User) authentication.getDetails();
             List<UserFollowDto> following = userService.getFollowing(user);
             return ResponseEntity.ok(UserFollowListDto.of(200, "팔로워 목록 조회 성공",following));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
-        } catch (NoSuchElementException e){
-            e.printStackTrace();
-            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 정보입니다."));
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
         }
