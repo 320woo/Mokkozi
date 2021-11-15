@@ -59,36 +59,34 @@ public class GalleryController {
         logger.info("GalleryController.upload 57 : 사용자 이메일 : {}", model.getEmail());
         logger.info("GalleryController.upload 57 : 게시글 ID : {}", model.getBoardId());
 
-        return null;
+        for (MultipartFile file:model.getFiles()) {
+            // 파일 업로드 시, Exception 처리
+            try {
+                String file_path = s3Uploader.upload(file, file.getOriginalFilename());
 
-//        for (MultipartFile file:model.getFile()) {
-//            // 파일 업로드 시, Exception 처리
-//            try {
-//                String file_path = s3Uploader.upload(file, file.getOriginalFilename());
-//
-//                GalleryVO galleryVO = new GalleryVO();
-//                galleryVO.setFilePath(file_path);
-//                galleryVO.setSort(model.getSort());
-//                galleryVO.setTitle(file.getOriginalFilename());
-//
-//                // 게시글 이미지 업로드인 경우
-//                if (model.getEmail().equals("")) {
-//                    logger.info("GalleryController.upload 67 : 게시글 이미지 저장 결과 : {}",
-//                            galleryService.galleryCreate(galleryVO, model.getBoardId()));
-//                }
-//                // 프로필 이미지 업로드인 경우
-//                else {
-//                    logger.info("GalleryController.upload 73 : 프로필 이미지 저장 결과 : {}",
-//                            galleryService.galleryCreate(galleryVO, model.getEmail()));
-//                }
-//            // S3 파일 업로드가 실패하는 경우, Exception이 발생한다.
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return ResponseEntity.status(500).body(BaseResponseBody.of(500, "파일 업로드 실패하였습니다.."));
-//            }
-//        }
-//        // for문 종료 후. 모든 파일이 에러 없이 업로드 됐다면 이곳으로 넘어온다.
-//        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "파일 S3 업로드 및 DB 저장 완료"));
+                GalleryVO galleryVO = new GalleryVO();
+                galleryVO.setFilePath(file_path);
+                galleryVO.setSort(model.getSort());
+                galleryVO.setTitle(file.getOriginalFilename());
+
+                // 게시글 이미지 업로드인 경우
+                if (model.getEmail().equals("")) {
+                    logger.info("GalleryController.upload 67 : 게시글 이미지 저장 결과 : {}",
+                            galleryService.galleryCreate(galleryVO, model.getBoardId()));
+                }
+                // 프로필 이미지 업로드인 경우
+                else {
+                    logger.info("GalleryController.upload 73 : 프로필 이미지 저장 결과 : {}",
+                            galleryService.galleryCreate(galleryVO, model.getEmail()));
+                }
+            // S3 파일 업로드가 실패하는 경우, Exception이 발생한다.
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(500).body(BaseResponseBody.of(500, "파일 업로드 실패하였습니다.."));
+            }
+        }
+        // for문 종료 후. 모든 파일이 에러 없이 업로드 됐다면 이곳으로 넘어온다.
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "파일 S3 업로드 및 DB 저장 완료"));
     }
 
 

@@ -8,8 +8,10 @@ import com.b303.mokkozi.user.dto.UserDto;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.dto.UserRandomDto;
 import com.b303.mokkozi.user.request.CredentialPostReq;
+import com.b303.mokkozi.user.request.EmailPostReq;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
 import com.b303.mokkozi.user.dto.UserFollowListDto;
+import com.b303.mokkozi.user.request.NicknamePostReq;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -227,10 +229,43 @@ public class UserController {
     }
 
 
-    @PostMapping("/test")
-    public ResponseEntity<? extends BaseResponseBody> test(Authentication authentication) {
-        logger.info("테스트합니다.");
-        logger.info("Authentication.getName() : {}", authentication.getName());
-        return null;
+    @PostMapping("/validEmail")
+    @ApiOperation(value = "이메일 검증", notes = "입력한 이메일이 이미 존재하는지 검증합니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "이미 아이디가 있습니다."),
+            @ApiResponse(code = 404, message = "아이디 사용 가능"),
+            @ApiResponse(code = 500, message = "에러 발생")})
+    public ResponseEntity<? extends BaseResponseBody> validEmail(@RequestBody EmailPostReq email) {
+        logger.info("UseController.validEmail 235 : 이메일 검증합니다. {} ", email.getEmail());
+
+        Optional<User> user = userService.findByEmail(email.getEmail());
+        if (user.isPresent()) {
+            logger.info("UseController.validEmail 245 : 사용자가 존재합니다.");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "이미 사용자가 존재합니다."));
+        }
+        else {
+            logger.info("UseController.validEmail 249 : 사용 가능한 아이디입니다.");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(404, "사용 가능한 아이디입니다."));
+        }
     }
+
+    @PostMapping("/validNickname")
+    @ApiOperation(value = "닉네임 검증", notes = "입력한 닉네임이 이미 존재하는지 검증합니다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "이미 닉네임이 있습니다."),
+            @ApiResponse(code = 404, message = "닉네임 사용 가능"),
+            @ApiResponse(code = 500, message = "에러 발생")})
+    public ResponseEntity<? extends BaseResponseBody> validNickname(@RequestBody NicknamePostReq nickname) {
+        logger.info("UseController.validNickname 362 : 닉네임 검증합니다 : {} ", nickname.getNickname());
+
+        Optional<User> user = userService.findByNickname(nickname.getNickname());
+        if (user.isPresent()) {
+            logger.info("UseController.validNickname 266 : 사용자가 존재합니다.");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "이미 사용자가 존재합니다."));
+        } else {
+            logger.info("UseController.validEmail 249 : 사용 가능한 닉네임입니다.");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(404, "사용 가능한 닉네임입니다."));
+        }
+    }
+
 }
