@@ -1,7 +1,8 @@
 package com.b303.mokkozi.user;
 
-import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserFollow;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,17 @@ public interface UserFollowRepository extends JpaRepository<UserFollow,Long> {
 
 //    List<UserFollow> getByUserFollower(Long id);
 
-    Stream<UserFollow> findAllByToUserId(Long id);
+//    Optional<List<UserFollow>> findAllByToUserId(Long id);
 
     Stream<UserFollow> findAllByFromUserId(Long id);
+
+    int countByToUserId(Long id);
+
+    boolean existsByFromUserIdAndToUserId(Long fromUserId, Long toUserId);
+
+    Page<UserFollow> findByToUserId(Pageable pageable, Long id);
+
+    int countByFromUserId(Long id);
+
+    Page<UserFollow> findByFromUserId(Pageable pageable, Long id);
 }

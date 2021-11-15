@@ -57,7 +57,7 @@
           ></v-img>
 
           <v-card-text class="like-text">
-            <i v-if="like" class="fas fa-heart" style="color:red" @click="boardUnLike(board.id)"></i>
+            <i v-if="board.boardLike" class="fas fa-heart" style="color:red" @click="boardUnLike(board.id)"></i>
             <i v-else class="far fa-heart" style="color:red" @click="boardLike(board.id)"></i>
              like
           </v-card-text>
@@ -101,6 +101,9 @@ export default ({
     board: {},
     like: false
   }),
+  // created () {
+  //   this.getSelectBoard(this.boardId)
+  // },
   mounted () {
     this.getSelectBoard(this.boardId)
   },
@@ -129,9 +132,8 @@ export default ({
           Authorization:"Bearer "+ this.$store.state.jwt
         }
       }).then(res => {
-        console.log('게시물 불러오기', res)
+        console.log('게시물 불러오기 성공', res)
         this.board = res.data
-        this.like = res.date.boardLike
       }).catch(err => {
         console.log('게시물 불러오기 실패', err)
       })
@@ -164,7 +166,7 @@ export default ({
         },
       }).then(res => {
         console.log('좋아요 성공', res)
-        this.like = !this.like
+        this.getSelectBoard(boardId)
       }).catch(err => {
         console.log('좋아요 실패', err)
       })
@@ -179,7 +181,7 @@ export default ({
         },
       }).then(res => {
         console.log('좋아요 취소 성공', res)
-        this.like = !this.like
+        this.getSelectBoard(boardId)
       }).catch(err => {
         console.log('좋아요 취소 실패', err)
       })
