@@ -7,13 +7,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@ApiModel("ReportCreatePostRequest")
-public class ReportUserPostReq {
+@ApiModel("ReportBoardPostRequest")
+public class ReportBoardPostReq {
 
     @ApiModelProperty(name = "신고 내용", example = "신고 내용")
     private String content;
 
-    @ApiModelProperty(name = "타겟 사용자 ID")
-    private Long targetId;
+    @ApiModelProperty(name = "신고 게시글 ID")
+    private Long boardId;
 
 }
