@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 @ToString
-public class FormWrapper {
+public class ProfileWrapper {
     private MultipartFile file;
     private String email;
 }
