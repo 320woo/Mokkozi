@@ -13,7 +13,6 @@ public class ReportUser extends BaseEntity{
 
     private String content;
     private Date regDate;
-    private String result;
     @Column(nullable = false)
     private Long targetId;
 
