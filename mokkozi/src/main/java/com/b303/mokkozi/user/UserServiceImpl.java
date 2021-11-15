@@ -98,21 +98,22 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<UserFollowDto> getFollowers(User user) {
 
-//        int page = 0;
+////        int page = 0;
+////
+//////        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+////
+////        Page<Board> pageTuts = boardRepository.findAll(pageable);
+////        Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
+////
+////        return boardList;
 //
-////        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+//        Optional<List<UserFollow>> followers =  userFollowRepository.findAllByToUserId(user.getId());
 //
-//        Page<Board> pageTuts = boardRepository.findAll(pageable);
-//        Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
-//
-//        return boardList;
-
-        Optional<List<UserFollow>> followers =  userFollowRepository.findAllByToUserId(user.getId());
-
-//        List<UserFollowDto> followers = (List<UserFollowDto>) Optional.ofNullable(userFollowRepository.findAllByToUserId(user.getId())).orElseThrow(()->new NoSuchElementException("not found")).map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
-        List<UserFollowDto> list = followers.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
-//        List<UserFollowDto> followers = list.map(m -> new UserFollowDto());;
-        return followers;
+////        List<UserFollowDto> followers = (List<UserFollowDto>) Optional.ofNullable(userFollowRepository.findAllByToUserId(user.getId())).orElseThrow(()->new NoSuchElementException("not found")).map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
+//        List<UserFollowDto> list = followers.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
+////        List<UserFollowDto> followers = list.map(m -> new UserFollowDto());
+////        return followers;
+        return null;
     }
 
     @Override
