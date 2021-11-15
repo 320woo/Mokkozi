@@ -1,7 +1,5 @@
 package com.b303.mokkozi.user;
 
-import com.b303.mokkozi.board.dto.BoardDto;
-import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserFollow;
 import com.b303.mokkozi.entity.UserInterest;
@@ -19,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -77,6 +74,11 @@ public class UserServiceImpl implements UserService {
             result.add(userInterest);
         }
         return result;
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
     @Override

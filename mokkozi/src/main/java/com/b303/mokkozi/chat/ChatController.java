@@ -1,12 +1,15 @@
 package com.b303.mokkozi.chat;
 
 import com.b303.mokkozi.chat.dto.ChatMessageDto;
+import com.b303.mokkozi.chat.dto.ChatMessageListDto;
 import com.b303.mokkozi.chat.request.ChatMsgListGetReq;
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.ChatMessage;
 import com.b303.mokkozi.entity.ChatRoomJoin;
 import com.b303.mokkozi.entity.User;
+import com.b303.mokkozi.user.UserService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +40,9 @@ public class ChatController {
     @Autowired
     ChatService chatService;
 
+    @Autowired
+    UserService userService;
+
     private final SimpMessagingTemplate  template;
 
     // 채팅방 목록 조회
@@ -58,11 +64,13 @@ public class ChatController {
     @ApiOperation(value = "해당 채팅방의 메시지 목록 조회", notes = "메시지 목록을 조회한다.")
     @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
-    public ResponseEntity<? extends BaseResponseBody> getChatMsgList(@PathVariable Long chatRoomId, ChatMsgListGetReq chatMsgListGetReq) {
+    public ResponseEntity<? extends BaseResponseBody> getChatMsgList(
+            @PathVariable Long chatRoomId,
+            @RequestParam @ApiParam(value = "채팅 메시지 페이지 Index", defaultValue = "0") int page) {
 
         // 해당 채팅방 id를 기준으로 메시지를 탐색해서 리턴
-        Page<ChatMessageDto> messageList = chatService.getChatMsgList(chatRoomId, chatMsgListGetReq);
-        return null;
+        Page<ChatMessageDto> messageList = chatService.getChatMsgList(chatRoomId, page);
+        return ResponseEntity.ok(ChatMessageListDto.of(200, "채팅 메시지 조회 완료", messageList));
     }
 
     // 채팅 메시지 전송
@@ -76,11 +84,19 @@ public class ChatController {
 
     // chat (post) - 채팅방 만들기
     @PostMapping("")
-    public String create() {
-        // chat_room 을 하나 생성
-        // chatService.createRoom();
+    public String create(@ApiIgnore Authentication authentication, @RequestParam @ApiParam(value = "상대방 email") String email) {
+        // 내 id
+        User user1 = (User) authentication.getDetails();
+        Long id1 = user1.getId();
+
+        // 상대방 id
+        Optional<User> user2 = userService.findByEmail(email);
+        Long id2 = user2.get().getId();
+
+        // 내 id 와 상대방 id 를 기준으로 chat_room 을 하나 생성
+        Long chatRoomId = chatService.newRoom(id1, id2);
         // 생성된 chat_room 을 FK로 하여 상대방과 내 ID를 컬럼값으로 갖는 데이터를 저장한다.
 
-        return null; // 상대방 이메일 리턴
+        return null;
     }
 }
