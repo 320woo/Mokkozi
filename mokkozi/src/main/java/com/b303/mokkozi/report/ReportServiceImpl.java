@@ -1,11 +1,10 @@
 package com.b303.mokkozi.report;
 
-import com.b303.mokkozi.board.dto.BoardDto;
-import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.ReportUser;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.report.dto.ReportUserDto;
 import com.b303.mokkozi.report.request.ReportUserPostReq;
+import com.b303.mokkozi.report.request.ReportUserUpdateReq;
 import com.b303.mokkozi.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,17 +38,36 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Page<ReportUserDto> getUserReportList(int pageIdx) {
+    public Page<ReportUserDto> getUserReportList(int pageIdx, String result) {
 
         int size = 10;
         int page = pageIdx <= 0 ? 0 : pageIdx - 1;
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "regDate"));
 
-        Page<ReportUser> pageTuts = ruRepository.findAll(pageable);
-        Page<ReportUserDto> boardList = pageTuts.map(m -> new ReportUserDto(m,userRepository.findEmailById(m.getTargetId())));
+        if(result.equals("")){
+            Page<ReportUser> pageTuts = ruRepository.findAll(pageable);
+            Page<ReportUserDto> reportList = pageTuts.map(m -> new ReportUserDto(m,ruRepository.findEmailById(m.getTargetId())));
+            return reportList;
+        }else{
+            Page<ReportUser> pageTuts = ruRepository.findByResult(pageable,result);
+            Page<ReportUserDto> reportList = pageTuts.map(m -> new ReportUserDto(m,ruRepository.findEmailById(m.getTargetId())));
+            return reportList;
+        }
+    }
 
-        return boardList;
+    @Override
+    public ReportUserDto getUserReport(Long reportId) {
+        ReportUser report = ruRepository.findById(reportId).orElseThrow(() -> new NoSuchElementException("not found"));
+        ReportUserDto reportDto = new ReportUserDto(report,ruRepository.findEmailById(report.getTargetId()));
+        return reportDto;
+    }
+
+    @Override
+    public void updateUserReport(ReportUserUpdateReq ruur) {
+        ReportUser report = ruRepository.findById(ruur.getReportId()).orElseThrow(() -> new NoSuchElementException("not found"));
+        report.setResult(ruur.getResult());
+        ruRepository.save(report);
     }
 
 }
