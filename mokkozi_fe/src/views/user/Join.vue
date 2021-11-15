@@ -41,6 +41,37 @@
 
               <v-row no-gutters>
                 <v-col cols="12">
+                  <ValidationProvider name="생년월일" rules="required" v-slot="{ errors }">
+                    <v-menu
+                    v-model="birthMenu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }" class="mb-3">
+
+                          <v-text-field
+                            v-model="joinInfo.birth"
+                            label="생년월일"
+                            prepend-icon="mdi-calendar"
+                            :error-messages="errors"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="joinInfo.birth"
+                        @input="birthMenu = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </ValidationProvider>
+                </v-col>
+
+
+                <v-col cols="12">
                   <ValidationProvider name="주소" rules="required" v-slot="{ errors }">
                     <v-text-field
                     label="주소"
@@ -70,63 +101,51 @@
                     주소찾기
                   </v-btn>
                 </v-col>
-                <ValidationProvider name="성별" rules="required" v-slot="{ errors }">
-                  <v-select
-                    :items="genderItems"
-                    v-model="joinInfo.gender"
-                    :error-messages="errors"
-                    label="성별"
-                  ></v-select>
-                </ValidationProvider>
-                <v-file-input
-                  v-model="joinInfo.imgFile"
-                  truncate-length="15"
-                  accept="image/*"
-                  prepend-icon="mdi-camera"
-                  :rules="ProfileRules"
-                  placeholder="프로필 이미지를 설정해 주세요"
-                  show-size="1024"
-                >
-                <template v-slot:selection="{ text }">
-                  <v-chip
-                    small
-                    label
-                    color="#FF9292"
-                  >
-                    {{ text }}
-                  </v-chip>
-                </template>
-                </v-file-input>
-                <ValidationProvider name="생년월일" rules="required" v-slot="{ errors }">
-                  <v-menu
-                  v-model="birthMenu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                  >
-                    <template v-slot:activator="{ on, attrs }" class="mb-3">
 
-                        <v-text-field
-                          v-model="joinInfo.birth"
-                          label="생년월일"
-                          prepend-icon="mdi-calendar"
-                          :error-messages="errors"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      v-model="joinInfo.birth"
-                      @input="birthMenu = false"
-                    ></v-date-picker>
-                  </v-menu>
-                </ValidationProvider>
+                <v-col cols="12">
+                  <ValidationProvider name="성별" rules="required" v-slot="{ errors }">
+                    <v-select
+                      :items="genderItems"
+                      v-model="joinInfo.gender"
+                      :error-messages="errors"
+                      label="성별"
+                    ></v-select>
+                  </ValidationProvider>
+                  <v-file-input
+                    v-model="joinInfo.imgFile"
+                    truncate-length="15"
+                    accept="image/*"
+                    prepend-icon="mdi-camera"
+                    :rules="ProfileRules"
+                    @change="myProfile"
+                    placeholder="프로필 이미지를 설정해 주세요"
+                    show-size="1024"
+                  >
+                  <template v-slot:selection="{ text }">
+                    <v-chip
+                      small
+                      label
+                      color="#FF9292"
+                    >
+                      {{ text }}
+                    </v-chip>
+                  </template>
+                  </v-file-input>
+                </v-col>
+
+                <v-col cols="12" v-if="joinInfo.isProfile">
+                  <v-img
+                    class="myProfile"
+                    lazy-src="https://picsum.photos/id/11/10/6"
+                    max-height="400"
+                    max-width="300"
+                    :src="joinInfo.profileURL"
+                  ></v-img>
+                </v-col>
+
                 <!-- 관심사 선택하기 -->
+                <h3>관심사 선택</h3>
                 <v-col class="d-flex-column mx-5 mb-5" cols="10">
-                  <h3>관심사 선택</h3>
                   <span id="애니" class="hobby" @click="changeHobby('애니', '애니')">애니</span>
                   <span id="글쓰기" class="hobby" @click="changeHobby('글쓰기', '글쓰기')">글쓰기</span>
                   <span id="자기계발" class="hobby" @click="changeHobby('자기계발', '자기계발')">자기계발</span>
@@ -156,6 +175,41 @@
                   <span id="음악" class="hobby" @click="changeHobby('음악', '음악')">음악</span>
                   <span id="외국어" class="hobby" @click="changeHobby('외국어', '외국어')">외국어</span>
                 </v-col>
+
+                <v-col cols="12">
+                  <h3>내 모습을 보여주세요!</h3>
+                  <v-file-input
+                    v-model="joinInfo.myImages"
+                    multiple
+                    truncate-length="15"
+                    accept="image/*"
+                    prepend-icon="mdi-camera"
+                    @change="myImages"
+                    placeholder="상대방에게 보여줄 나만의 이미지를 올려 주세요! (3장)"
+                    show-size="1024"
+                  >
+                  <template v-slot:selection="{ text }">
+                    <v-chip
+                      small
+                      label
+                      color="#FF9292"
+                    >
+                      {{ text }}
+                    </v-chip>
+                  </template>
+                  </v-file-input>
+
+                  <v-carousel class="carousel" v-if="joinInfo.isCarousel">
+                      <v-carousel-item
+                        v-for="(url, i) in joinInfo.myImagesURL"
+                        :key="i"
+                        :src="url"
+                        reverse-transition="fade-transition"
+                        transition="fade-transition"
+                      ></v-carousel-item>
+                  </v-carousel>
+                </v-col>
+
                 <v-col>
                   <v-btn
                     @click="join()"
@@ -206,10 +260,15 @@ export default {
       extAddress: '101-1106',
       gender: '남',
       birth: '1995-04-12',
-      imgFile: [],
+      imgFile: null,  // X 버튼 누르는 경우 null로 바뀐다.
+      profileURL: '',
+      myImages: [],
+      myImagesURL: [],
       role: '사용자',
       hobby: [],
     },
+    isCarousel: false,  // Carousel 보이게 하는 거..
+    isProfile: false,   // Profile 보이게 하는 거..
     zcode: '',
     genderItems: ['남', '여'],
     birthMenu: false,
@@ -275,8 +334,6 @@ export default {
       formData.append("email", this.joinInfo.email)
       this.joinInfo.imgFile = formData
 
-      console.log("formData 정보: ", formData)
-
       axios({
           url: API_BASE_URL + '/meet/user/join',
           method: 'POST',
@@ -297,7 +354,7 @@ export default {
       }).then(resp => {
 
         if (resp.data.statusCode == 200) {
-          console.log("회원가입 완료! ", resp)
+          console.log("회원가입 완료! 사용자 프로필 이미지 등록합니다. ", this.joinInfo.imgFile)
           // 프로필 이미지 등록 시작합니다.
           axios({
             url: API_BASE_URL + '/meet/gallery/myProfile',
@@ -306,13 +363,72 @@ export default {
               'Content-Type': 'multipart/form-data'
             },
             data: this.joinInfo.imgFile
-          }).then(
-            router.push("/Login")
-          )
+          }).then(() => {
+            console.log("프로필 이미지 등록 완료! 사용자 이미지 등록합니다. ")
+            // 사용자가 지정한 이미지 파일 등록합니다.
+            const formData2 = new FormData()
+
+            // 리스트로 넘어오게 된다.
+            formData2.append("files", this.joinInfo.myImages)
+
+            for (let i = 0; i < this.joinInfo.myImages.length; i++) {
+              formData2.append("files", this.joinInfo.myImages[i])
+            }
+
+            formData2.append("email", this.joinInfo.email)
+            formData2.append("boardId", "")
+            formData2.append("sort", "사용자")
+            this.joinInfo.myImages = formData2
+
+            console.log("사용자 이미지 리스트 정보 : ", this.joinInfo.myImages)
+
+            axios({
+              url: API_BASE_URL + '/meet/gallery/images',
+              method: 'POST',
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              },
+              data: this.joinInfo.myImages
+            }).then(
+              // 회원가입, 프로필 img path 수정, 프로필 이미지 등록이 끝났으면, login 페이지로 GoGo
+              router.push("/Login")
+            )
+
+
+          })
         }
-
-
       })
+    },
+    myImages() {
+      // 갯수를 제한한다.
+      if (this.joinInfo.myImages.length !== 0 && 3 < this.joinInfo.myImages.length ||
+      this.joinInfo.myImages.length !== 0 && this.joinInfo.myImages.length < 3) {
+        alert("3개의 이미지를 선택해 주세요.")
+        this.joinInfo.myImages = []
+      }
+
+      // X 버튼을 누르는 경우에는, 초기화를 한 것이므로
+      if (this.joinInfo.myImages.length === 0) {
+        this.joinInfo.isCarousel = false
+      } else {
+        const result = []
+        // 파일 하나당 가상의 URL 만들기
+        for (let i=0; i < this.joinInfo.myImages.length; i++) {
+          const previewURL = URL.createObjectURL(this.joinInfo.myImages[i])
+          result.push(previewURL)
+        }
+        this.joinInfo.myImagesURL = result
+        this.joinInfo.isCarousel = true
+      }
+    },
+    myProfile() {
+      // X 버튼 누르는 경우 초기화
+      if (this.joinInfo.imgFile === null) {
+        this.joinInfo.isProfile = false
+      } else {
+        this.joinInfo.profileURL = URL.createObjectURL(this.joinInfo.imgFile)
+        this.joinInfo.isProfile = true
+      }
     }
   }
 
@@ -337,5 +453,16 @@ export default {
 .selected {
   background-color: #FF9292;
   border: 1px solid #FF9292;
+}
+.carousel {
+  -webkit-transition: 1000ms;
+  width: 400px;
+  height: 350px;
+  margin: auto;
+  margin-bottom: 15px;
+}
+.myProfile {
+  margin: auto;
+  margin-bottom: 15px;
 }
 </style>

@@ -4,7 +4,8 @@ import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.config.S3Uploader;
 import com.b303.mokkozi.entity.Gallery;
 import com.b303.mokkozi.entity.User;
-import com.b303.mokkozi.gallery.request.FormWrapper;
+import com.b303.mokkozi.gallery.request.ImageWrapper;
+import com.b303.mokkozi.gallery.request.ProfileWrapper;
 import com.b303.mokkozi.gallery.request.GalleryVO;
 import com.b303.mokkozi.user.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/meet/gallery")
@@ -37,7 +41,7 @@ public class GalleryController {
      * @Param file, fileInfo
      * @Return Response Message
      */
-    @PostMapping("/iamges")
+    @PostMapping("/images")
     @ApiOperation(value = "이미지 파일 업로드", notes = "업로드한 이미지를 S3 서버에 올립니다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "이미지 업로드 성공"),
@@ -45,31 +49,46 @@ public class GalleryController {
             @ApiResponse(code = 500, message = "파일 업로드 실패")})
     @Transactional
     public ResponseEntity<? extends BaseResponseBody> upload(
-            @RequestBody(required = true) MultipartFile file,
-            @RequestBody String sort,
-            @RequestBody String id) {
+            @ModelAttribute ImageWrapper model) {
 
-        String file_path = "";
-        try {
-            // 1. S3에 먼저 업로드한다.
-            file_path = s3Uploader.upload(file, file.getOriginalFilename());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(BaseResponseBody.of(500, "파일 업로드 실패하였습니다.."));
-        }
-        // 2. S3에 업로드한 URL을 file_path로 하여 DB에 저장한다.
-        if (!file_path.equals("")) {
-            GalleryVO galleryVo = new GalleryVO();
-            galleryVo.setFilePath(file_path);
-            galleryVo.setSort(sort);
-            galleryVo.setTitle(file.getOriginalFilename());
+        logger.info("GalleryController.upload 54 : 이미지 파일 업로드합니다.");
 
-            Gallery result = galleryService.galleryCreate(galleryVo, id);
-            logger.info("GalleryController.upload 65 : 파일 저장 결과 : {}", result);
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "파일 S3 업로드 및 DB 저장 완료")); 
-        }
-        // 이 경우는 file_path가 ""인 경우로, 정상적으로 S3에 업로드 되지 않았다는 뜻이다.
-        return ResponseEntity.status(500).body(BaseResponseBody.of(500, "저장된 파일의 S3 URL이 Null입니다."));
+        // 데이터 확인
+        logger.info("GalleryController.upload 57 : 파일 리스트: {}", model.getFiles());
+        logger.info("GalleryController.upload 57 : 분류 : {}", model.getSort());
+        logger.info("GalleryController.upload 57 : 사용자 이메일 : {}", model.getEmail());
+        logger.info("GalleryController.upload 57 : 게시글 ID : {}", model.getBoardId());
+
+        return null;
+
+//        for (MultipartFile file:model.getFile()) {
+//            // 파일 업로드 시, Exception 처리
+//            try {
+//                String file_path = s3Uploader.upload(file, file.getOriginalFilename());
+//
+//                GalleryVO galleryVO = new GalleryVO();
+//                galleryVO.setFilePath(file_path);
+//                galleryVO.setSort(model.getSort());
+//                galleryVO.setTitle(file.getOriginalFilename());
+//
+//                // 게시글 이미지 업로드인 경우
+//                if (model.getEmail().equals("")) {
+//                    logger.info("GalleryController.upload 67 : 게시글 이미지 저장 결과 : {}",
+//                            galleryService.galleryCreate(galleryVO, model.getBoardId()));
+//                }
+//                // 프로필 이미지 업로드인 경우
+//                else {
+//                    logger.info("GalleryController.upload 73 : 프로필 이미지 저장 결과 : {}",
+//                            galleryService.galleryCreate(galleryVO, model.getEmail()));
+//                }
+//            // S3 파일 업로드가 실패하는 경우, Exception이 발생한다.
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return ResponseEntity.status(500).body(BaseResponseBody.of(500, "파일 업로드 실패하였습니다.."));
+//            }
+//        }
+//        // for문 종료 후. 모든 파일이 에러 없이 업로드 됐다면 이곳으로 넘어온다.
+//        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "파일 S3 업로드 및 DB 저장 완료"));
     }
 
 
@@ -86,7 +105,7 @@ public class GalleryController {
             @ApiResponse(code = 500, message = "대표 프로필 업로드 실패"),
             @ApiResponse(code = 401, message = "권한 인증 실패")})
     public ResponseEntity<? extends BaseResponseBody> uploadMyProfile(
-            @ModelAttribute FormWrapper model) {
+            @ModelAttribute ProfileWrapper model) {
 
         logger.info("GalleryController.uploadMyProfile 87 : 파일 용량 정보 : {}", model.getFile().getSize());
         logger.info("GalleryController.uploadMyProfile 88 : 파일 컨텐츠 타입 : {}", model.getFile().getContentType());

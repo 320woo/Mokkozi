@@ -102,7 +102,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'kwang',
+      mySessionId: 'kwang12',
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
       videoState: true,
       audioState: true,
@@ -309,48 +309,48 @@ export default {
       }
       console.log(this.chatOpen)
     },
-    // addVideoStream (stream) {
+    addVideoStream (stream) {
 
-    //   const video = stream;
-    //   const testVideos = document.getElementsByClassName('box-div')
+      const video = stream;
+      const testVideos = document.getElementsByClassName('box-div')
 
-    //   for(var i=0; i<testVideos.length; i++) {
-    //     console.log(1111)
+      for(var i=0; i<testVideos.length; i++) {
+        console.log(1111)
 
-    //   testVideos[i].append(video)
-    //   // this.streamManager.addVideoElement(video);
-    //   // video.enabled = true;
+      testVideos[i].append(video)
+      // this.streamManager.addVideoElement(video);
+      // video.enabled = true;
 
-    //     // if(video.paused || video.ended)
-    //     // {return setTimeout(() => onPlay())}
+        // if(video.paused || video.ended)
+        // {return setTimeout(() => onPlay())}
 
-    //     if (document.querySelector("canvas")) {
-    //     document.querySelector("canvas").remove()};
+        if (document.querySelector("canvas")) {
+        document.querySelector("canvas").remove()};
 
-    //     const minConfidence = 0.3
-    //     const maxResult = 100
-    //     const options = new faceapi.SsdMobilenetv1Options({minConfidence,maxResult})
+        const minConfidence = 0.3
+        const maxResult = 100
+        const options = new faceapi.SsdMobilenetv1Options({minConfidence,maxResult})
 
-    //     const canvas = faceapi.createCanvasFromMedia(video);
-    //     testVideos[i].append(canvas);
+        const canvas = faceapi.createCanvasFromMedia(video);
+        testVideos[i].append(canvas);
 
-    //     const displaySize = { width:video.width,height:video.height };
-    //     faceapi.matchDimensions(canvas, displaySize);
+        const displaySize = { width:video.width,height:video.height };
+        faceapi.matchDimensions(canvas, displaySize);
 
-    //     setInterval(async ()=>{
-    //     const detections = await faceapi
-    //     .detectAllFaces(video,options)
-    //     .withFaceLandmarks();
+        setInterval(async ()=>{
+        const detections = await faceapi
+        .detectAllFaces(video,options)
+        .withFaceLandmarks();
 
-    //     const resizedDetections = faceapi.resizeResults(detections,displaySize);
-    //     canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
-    //     faceapi.draw.drawDetections(canvas,resizedDetections);
-    //     faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+        const resizedDetections = faceapi.resizeResults(detections,displaySize);
+        canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
+        faceapi.draw.drawDetections(canvas,resizedDetections);
+        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
 
-    //   },100);
+      },100);
 
-    //   }
-    // }
+      }
+    }
   }
 }
 </script>
