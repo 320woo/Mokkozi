@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService{
     @Autowired
     UserFollowRepository userFollowRepository;
 
+    @Autowired
+    UserRepositoryImpl userRepositoryImpl;
+
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -96,6 +99,12 @@ public class UserServiceImpl implements UserService{
     public List<UserFollowDto> getFollowing(User user) {
         Stream<UserFollow> following = userFollowRepository.findAllByFromUserId(user.getId());
         List<UserFollowDto> list = (List<UserFollowDto>) following.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
+        return list;
+    }
+
+    @Override
+    public List<User> getRandomUser(User user) {
+        List<User> list = userRepositoryImpl.getRandomUser(user.getId());
         return list;
     }
 
