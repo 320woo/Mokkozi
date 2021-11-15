@@ -29,4 +29,6 @@ public interface UserService {
     User join(JoinInfoPostReq info);
 
     List<UserInterest> createUserInterest(JoinInfoPostReq info, User user);
+
+    Optional<User> findById(Long id);
 }
