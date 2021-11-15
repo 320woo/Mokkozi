@@ -41,12 +41,12 @@ public class ReportController {
     @ApiOperation(value = "사용자 신고", notes = "다른 사용자를 신고할 수 있다.")
     @ApiResponses({@ApiResponse(code = 200, message = "사용자 신고 성공"), @ApiResponse(code = 500, message = "사용자 신고 실패")})
     public ResponseEntity<? extends BaseResponseBody> createUserReport(@RequestBody ReportUserPostReq rupr
-//            , @ApiIgnore Authentication authentication
+            , @ApiIgnore Authentication authentication
     ) {
 
         try {
-//            User user = (User) authentication.getDetails();
-            User user = userRepository.getById((long)1);
+            User user = (User) authentication.getDetails();
+//            User user = userRepository.getById((long)1);
             reportService.createUserReport(user, rupr);
             return ResponseEntity.ok(BaseResponseBody.of(200, "사용자 신고 성공"));
         } catch (AuthenticationException | NullPointerException e) {
@@ -65,11 +65,12 @@ public class ReportController {
     @ApiOperation(value = "사용자 신고 목록 조회", notes = "사용자 신고 목록을 조회할 수 있다.")
     @ApiResponses({@ApiResponse(code = 200, message = "사용자 신고 목록 조회 성공"), @ApiResponse(code = 500, message = "사용자 신고 목록 조회 실패")})
     public ResponseEntity<? extends BaseResponseBody> getUserReportList(@RequestParam @ApiParam(value = "신고 페이지 Index", defaultValue = "0") int page
-            , @ApiIgnore Authentication authentication
+//            , @ApiIgnore Authentication authentication
     ) {
 
         try {
-            User user = (User) authentication.getDetails();
+//            User user = (User) authentication.getDetails();
+            User user = userRepository.getById((long)1);
             if (!user.getRole().equals("관리자")) new Exception();
             Page<ReportUserDto> reportList = reportService.getUserReportList(page);
             return ResponseEntity.ok(ReportUserListDto.of(200, "사용자 신고 목록 조회 성공", reportList));
@@ -89,11 +90,12 @@ public class ReportController {
     @ApiOperation(value = "사용자 신고 상세 조회", notes = "사용자 신고 내용을 조회할 수 있다.")
     @ApiResponses({@ApiResponse(code = 200, message = "사용자 신고 상세 조회 성공"), @ApiResponse(code = 500, message = "사용자 신고 상세 조회 실패")})
     public ResponseEntity<? extends BaseResponseBody> getUserReport(@RequestParam @ApiParam(value = "사용자 신고 ID", defaultValue = "0") Long reportId
-            , @ApiIgnore Authentication authentication
+//            , @ApiIgnore Authentication authentication
     ) {
 
         try {
-            User user = (User) authentication.getDetails();
+//            User user = (User) authentication.getDetails();
+            User user = userRepository.getById((long)1);
             if (!user.getRole().equals("관리자")) new Exception();
             ReportUserDto report = reportService.getUserReport(reportId);
             return ResponseEntity.ok(ReportUserDto.of(200, "사용자 신고 상세 조회 성공", report));
