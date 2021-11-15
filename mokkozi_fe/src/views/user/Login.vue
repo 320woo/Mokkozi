@@ -77,6 +77,9 @@ export default {
         this.$store.dispatch("setProfile", resp.data.profile)
         this.$store.dispatch("setEmail", resp.data.email)
         this.$router.push("Matching")
+        } else {
+          alert("아이디 또는 비밀번호가 일치하지 않습니다.")
+
         }
 
       })

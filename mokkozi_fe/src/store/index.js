@@ -27,6 +27,9 @@ export default new Vuex.Store({
     },
     setEmail(state, email) {
       state.user.email = email
+    },
+    setRole(state, role) {
+      state.role = role
     }
   },
   // 항상 context가 인자로 넘어온다. 단, 직접적으로 state를 변경하지는 않는다. dispatch()를 통해 호출한다.
@@ -42,6 +45,9 @@ export default new Vuex.Store({
     },
     setEmail(context, email) {
       context.commit('setEmail', email)
+    },
+    setRole(context, role) {
+      context.commit('setRole', role)
     }
 
   },

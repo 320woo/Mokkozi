@@ -1,0 +1,7 @@
+.carousel {
+  -webkit-transition: 1000ms;
+  width: 400px;
+  height: 350px;
+  margin: auto;
+  margin-bottom: 15px;
+}
