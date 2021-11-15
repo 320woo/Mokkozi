@@ -1,13 +1,13 @@
-package com.b303.mokkozi.chat;
+package com.b303.mokkozi.report;
 
-import com.b303.mokkozi.entity.ChatMessage;
+import com.b303.mokkozi.entity.ReportUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
+public interface ReportUserRepository extends JpaRepository<ReportUser, Long> {
+    String findEmailById(Long targetId);
 
-    Page<ChatMessage> findAll(Pageable pageable);
 }

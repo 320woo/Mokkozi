@@ -84,8 +84,12 @@ const routes = [
     path: '/matching',
     name: 'Matching',
     component: () => import('../views/matching/Matching.vue')
+  },
+  {
+    path: '/modify',
+    name: 'Modify',
+    component: () => import('../views/user/Modify.vue')
   }
-
 ]
 
 const router = new VueRouter({

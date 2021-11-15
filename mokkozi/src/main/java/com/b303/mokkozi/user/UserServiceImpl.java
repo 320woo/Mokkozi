@@ -6,16 +6,20 @@ import com.b303.mokkozi.entity.UserInterest;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service("userService")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
@@ -32,6 +36,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<User> findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname);
     }
 
     @Override
@@ -61,7 +70,7 @@ public class UserServiceImpl implements UserService{
     public List<UserInterest> createUserInterest(JoinInfoPostReq info, User user) {
         List<UserInterest> result = new ArrayList<>();
 
-        for (String hobby:info.getHobby()) {
+        for (String hobby : info.getHobby()) {
             UserInterest userInterest = new UserInterest();
             userInterest.setUser(user);
             userInterest.setInterest(hobby);
@@ -73,33 +82,55 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
     public void createFollow(User fromUser, String toUserEmail) {
-        User toUser = userRepository.findByEmail(toUserEmail).orElseThrow(()->new NoSuchElementException("not found"));
-        userFollowRepository.save(UserFollow.builder()
-                .fromUser(fromUser)
-                .toUser(toUser)
-                .build());
+        User toUser = userRepository.findByEmail(toUserEmail).orElseThrow(() -> new NoSuchElementException("not found"));
+        if (!userFollowRepository.existsByFromUserIdAndToUserId(fromUser.getId(), toUser.getId()))
+            userFollowRepository.save(UserFollow.builder()
+                    .fromUser(fromUser)
+                    .toUser(toUser)
+                    .build());
     }
 
     @Override
     public void deleteFollow(Long Id) {
-        UserFollow follow = userFollowRepository.findById(Id).orElseThrow(()->new NoSuchElementException("not found"));
+        UserFollow follow = userFollowRepository.findById(Id).orElseThrow(() -> new NoSuchElementException("not found"));
         userFollowRepository.delete(follow);
     }
 
+    @Transactional
     @Override
     public List<UserFollowDto> getFollowers(User user) {
-        Stream<UserFollow> followers = userFollowRepository.findAllByToUserId(user.getId());
-        List<UserFollowDto> list = (List<UserFollowDto>) followers.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
-//        List<UserFollowDto> followers = list.map(m -> new UserFollowDto());;
-        return list;
+
+        int page = 0;
+        int size = userFollowRepository.countByToUserId(user.getId());
+        size = size <= 0 ? 1 : size;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+
+        Page<UserFollow> pageTuts = userFollowRepository.findByToUserId(pageable,user.getId());
+        Page<UserFollowDto> followerList = pageTuts.map(m -> new UserFollowDto(m.getId(), m.getFromUser().getId(), m.getFromUser().getNickname(), m.getFromUser().getProfile()));
+
+        return followerList.getContent();
+
     }
 
     @Override
     public List<UserFollowDto> getFollowing(User user) {
-        Stream<UserFollow> following = userFollowRepository.findAllByFromUserId(user.getId());
-        List<UserFollowDto> list = (List<UserFollowDto>) following.map(m->new UserFollowDto(m.getId(),m.getToUser().getId(),m.getToUser().getNickname(),m.getToUser().getProfile()));
-        return list;
+
+        int page = 0;
+        int size = userFollowRepository.countByFromUserId(user.getId());
+        size = size <= 0 ? 1 : size;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+
+        Page<UserFollow> pageTuts = userFollowRepository.findByFromUserId(pageable,user.getId());
+        Page<UserFollowDto> followerList = pageTuts.map(m -> new UserFollowDto(m.getId(), m.getToUser().getId(), m.getToUser().getNickname(), m.getToUser().getProfile()));
+
+        return followerList.getContent();
+
     }
 
     @Override

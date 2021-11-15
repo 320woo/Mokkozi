@@ -3,7 +3,7 @@
   <v-container>
     <v-row align="center">
       <v-col>
-        <div class="pa-5 d-flex flex-wrap flex-column side-page">
+        <div class="d-flex flex-wrap flex-column side-page">
           오른쪽 페이지
         </div>
       </v-col>

@@ -115,7 +115,7 @@ export default {
           Authorization:"Bearer "+ this.$store.state.jwt
         }
       }).then(res => {
-        console.log('게시물 불러오기', res)
+        console.log('게시물 불러오기 성공', res)
         this.board = res.data
         this.content = res.data.content
         // this.uploadImage =
@@ -136,7 +136,7 @@ export default {
           content: this.content,
         }
       }).then(res => {
-        console.log('게시물 수정', res)
+        console.log('게시물 수정 성공', res)
         this.$router.push({ name: 'BoardDetail', params: { boardId: boardId }})
       }).catch(err => {
         console.log('게시물 수정 실패', err)
@@ -151,7 +151,7 @@ export default {
           Authorization:"Bearer "+ this.$store.state.jwt
         },
       }).then(res => {
-        console.log('게시물 삭제', res)
+        console.log('게시물 삭제 성공', res)
         this.$router.push({ name: 'Board' })
       }).catch(err => {
         console.log('게시물 삭제 실패', err)
