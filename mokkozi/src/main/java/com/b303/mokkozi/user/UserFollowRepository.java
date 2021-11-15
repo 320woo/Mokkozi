@@ -1,6 +1,5 @@
 package com.b303.mokkozi.user;
 
-import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserFollow;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,7 +13,7 @@ public interface UserFollowRepository extends JpaRepository<UserFollow,Long> {
 
 //    List<UserFollow> getByUserFollower(Long id);
 
-    Stream<UserFollow> findAllByToUserId(Long id);
+    Optional<List<UserFollow>> findAllByToUserId(Long id);
 
     Stream<UserFollow> findAllByFromUserId(Long id);
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="test_video">
-  <video @play="addVideoStream" id="user_video" autoplay :width="videoWidth" :height="videoHeight"/>
-  <!-- <video id="user_video" autoplay :width="videoWidth" :height="videoHeight"/> -->
+  <video id="user_video" :width="videoWidth" :height="videoHeight"/>
+  <!-- <video @play="addVideoStream"  id="user_video" autoplay :width="videoWidth" :height="videoHeight"/> -->
   </div>
 </template>
 
@@ -25,16 +25,15 @@ export default ({
   mounted () {
     this.videoWidthSelect()
     const video = document.querySelector("#user_video");
-    Promise.all([
-      faceapi.nets.ssdMobilenetv1.loadFromUri('/weights'),
-      faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
-      faceapi.nets.faceRecognitionNet.loadFromUri('/weights')
-    ]).then(()=>{
+    // Promise.all([
+    //   faceapi.nets.ssdMobilenetv1.loadFromUri('/weights'),
+    //   faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
+    //   faceapi.nets.faceRecognitionNet.loadFromUri('/weights')
+    // ]).then(()=>{
           this.streamManager.addVideoElement(video);
-          // this.addVideoStream (video);
-    }
+    // }
 
-    )
+    // )
 
   },
   methods: {
