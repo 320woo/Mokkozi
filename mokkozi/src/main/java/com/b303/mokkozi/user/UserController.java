@@ -93,7 +93,7 @@ public class UserController {
         }
         //
         else {
-
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "유저가 존재하지 않습니다."));
         }
     }
 
