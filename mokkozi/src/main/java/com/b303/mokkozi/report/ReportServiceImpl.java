@@ -40,7 +40,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void createUserReport(User user, ReportUserPostReq rcpr) {
 
-        userRepository.findById(rcpr.getTargetId()).orElseThrow(() -> new NoSuchElementException("not found"));
+        User target = userRepository.findById(rcpr.getTargetId()).orElseThrow(() -> new NoSuchElementException("not found"));
 
         ReportUser report = new ReportUser();
         report.setContent(rcpr.getContent());
@@ -48,9 +48,10 @@ public class ReportServiceImpl implements ReportService {
         report.setTargetId(rcpr.getTargetId());
         ruRepository.save(report);
 
-        long pc = user.getPenaltyCount() + 1;
-        user.setPenaltyCount(pc);
-        userRepository.save(user);
+
+        long pc = target.getPenaltyCount() + 1;
+        target.setPenaltyCount(pc);
+        userRepository.save(target);
 
     }
 

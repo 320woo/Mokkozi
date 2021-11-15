@@ -41,11 +41,12 @@ public class ReportController {
     @ApiOperation(value = "사용자 신고", notes = "다른 사용자를 신고할 수 있다.")
     @ApiResponses({@ApiResponse(code = 200, message = "사용자 신고 성공"), @ApiResponse(code = 500, message = "사용자 신고 실패")})
     public ResponseEntity<? extends BaseResponseBody> createUserReport(@RequestBody ReportUserPostReq rupr
-            , @ApiIgnore Authentication authentication
+//            , @ApiIgnore Authentication authentication
     ) {
 
         try {
-            User user = (User) authentication.getDetails();
+//            User user = (User) authentication.getDetails();
+            User user = userRepository.getById((long)1);
             reportService.createUserReport(user, rupr);
             return ResponseEntity.ok(BaseResponseBody.of(200, "사용자 신고 성공"));
         } catch (AuthenticationException | NullPointerException e) {
