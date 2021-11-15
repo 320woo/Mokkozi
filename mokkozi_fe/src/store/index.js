@@ -11,6 +11,7 @@ export default new Vuex.Store({
       nickname: '',
       profile: '',
       email: '',
+      address: '',
     },
     role: '',
   },
@@ -26,7 +27,19 @@ export default new Vuex.Store({
       state.user.profile = profile
     },
     setEmail(state, email) {
-      state.user.email = email
+      state.user.email = email;
+    },
+    setAddress(state, address) {
+      state.user.address = address;
+    },
+    logOut(state) {
+      state.user.show = false;
+    },
+    setFollowers(state, followers) {
+      state.user.followers = followers;
+    },
+    setFollowing(state, following) {
+      state.user.following = following;
     }
   },
   // 항상 context가 인자로 넘어온다. 단, 직접적으로 state를 변경하지는 않는다. dispatch()를 통해 호출한다.
@@ -42,8 +55,19 @@ export default new Vuex.Store({
     },
     setEmail(context, email) {
       context.commit('setEmail', email)
+    },
+    setAddress(context, address) {
+      context.commit('setAddress', address)
+    },
+    logout(context) {
+      context.commit('logOut');
+    },
+    setFollowers(context,followers) {
+      context.commit('setFollowers', followers)
+    },
+    setFollowing(context,following) {
+      context.commit('setFollowing', following)
     }
-
   },
   modules: {
 
