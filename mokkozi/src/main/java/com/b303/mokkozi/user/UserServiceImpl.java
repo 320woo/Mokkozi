@@ -1,10 +1,13 @@
 package com.b303.mokkozi.user;
 
+import com.b303.mokkozi.board.dto.BoardDto;
+import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserFollow;
 import com.b303.mokkozi.entity.UserInterest;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
+import com.b303.mokkozi.user.request.UserActivePatchReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -84,6 +87,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public Page<User> getUserList(User user, int pageIdx) {
+
+        int size = 10;
+        int page = pageIdx <= 0 ? 0 : pageIdx - 1;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+
+        Page<User> list = userRepository.findAll(pageable);
+
+        return list;
+    }
+
+    @Override
+    public void modifyUserActive(UserActivePatchReq vupr) {
+        User user = userRepository.findById(vupr.getUserId()).orElseThrow(()->new NoSuchElementException("not found"));
+        user.setActive(vupr.getActive());
+        userRepository.save(user);
     }
 
     @Override
