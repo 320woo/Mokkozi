@@ -4,6 +4,8 @@ import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserInterest;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
+import com.b303.mokkozi.user.request.UserActivePatchReq;
+import org.springframework.data.domain.Page;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -31,4 +33,8 @@ public interface UserService {
     List<UserInterest> createUserInterest(JoinInfoPostReq info, User user);
 
     Optional<User> findById(Long id);
+
+    Page<User> getUserList(User user, int page);
+
+    void modifyUserActive(UserActivePatchReq vupr);
 }
