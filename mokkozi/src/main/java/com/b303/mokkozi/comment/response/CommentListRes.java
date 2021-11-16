@@ -12,13 +12,13 @@ import java.util.List;
 @ApiModel("CommentListResponse")
 public class CommentListRes extends BaseResponseBody {
 
-    private List<CommentDto> commentList;
-
-    public static CommentListRes of(Integer statusCode, String message, List<CommentDto> commentList) {
-        CommentListRes res = new CommentListRes();
-        res.setStatusCode(statusCode);
-        res.setMessage(message);
-        res.setCommentList(commentList);
-        return res;
-    }
+//    private List<CommentDto> commentList;
+//
+//    public static CommentListRes of(Integer statusCode, String message, List<CommentDto> commentList) {
+//        CommentListRes res = new CommentListRes();
+//        res.setStatusCode(statusCode);
+//        res.setMessage(message);
+//        res.setCommentList(commentList);
+//        return res;
+//    }
 }
