@@ -5,9 +5,9 @@
         <v-card
         class="board-card"
         max-width="24rem"
-        height="3rem"
+        height="26rem"
         >
-          <v-card-title style="display:flex; justify-content:space-between">
+          <v-card-title style="display:flex; justify-content:space-between; margin-bottom:1rem">
             <div>
               <v-avatar size="36px" @click="userImageClick(loginUser)">
               <img alt="Avatar" src="@/assets/logo.png">
@@ -16,27 +16,26 @@
             </div>
             <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
+          <v-file-input
+            multiple
+            accept="image/png, image/jpeg, image/bmp"
+            placeholder="이미지를 선택하세요."
+            prepend-icon="mdi-camera"
+            @change="createImgUrl"
+            v-model="boardImages" />
+
+          <!-- 올린 이미지 미리 보기 -->
+          <v-carousel height="300" class="carousel" v-if="isCarousel" style="margin: 1rem 0rem">
+            <v-carousel-item
+            v-for="(url, i) in imagesURL"
+            :key="i"
+            :src="url"
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+            ></v-carousel-item>
+          </v-carousel>
         </v-card>
-
-        <v-file-input
-        multiple
-        accept="image/png, image/jpeg, image/bmp"
-        placeholder="이미지를 선택하세요."
-        prepend-icon="mdi-camera"
-        @change="createImgUrl"
-        v-model="boardImages" />
-
-        <!-- 올린 이미지 미리 보기 -->
-        <v-carousel height="300" class="carousel" v-if="isCarousel">
-          <v-carousel-item
-          v-for="(url, i) in imagesURL"
-          :key="i"
-          :src="url"
-          reverse-transition="fade-transition"
-          transition="fade-transition"
-          ></v-carousel-item>
-        </v-carousel>
-
+        <!-- 글 작성 -->
         <v-textarea
         class="textarea"
         filled
@@ -138,7 +137,7 @@ export default {
   }
   .board-div {
     width: 24rem;
-    height: 45rem;
+    height: 42rem;
     display: inline-block;
     background-color: #ffe8e8;
     padding: 2rem 2rem;
