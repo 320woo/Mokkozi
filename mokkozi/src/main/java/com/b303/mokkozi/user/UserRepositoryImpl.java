@@ -1,6 +1,5 @@
 package com.b303.mokkozi.user;
 
-//import com.b303.mokkozi.entity.QUser;
 import com.b303.mokkozi.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Repository

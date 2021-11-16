@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { Subscriber } from "openvidu-browser"
+
 
 export default ({
   name: 'OvVideo',
@@ -20,16 +22,19 @@ export default ({
     }
   },
   mounted () {
-    this.videoWidthSelect()
+    console.log('OvVideo에서 보는 스트림매니저', this.streamManager)
+    console.log('테스트 값', this.streamManager.constructor.name)
+    // this.videoWidthSelect()
     this.streamManager.addVideoElement(this.$el)
   },
   methods: {
-    videoWidthSelect () {
-      if (this.streamManager.stream.connection.role === 'SUBSCRIBER') {
-        this.videoWidth = '30%'
-        this.videoHeight = '30%'
-      }
-    },
+    // videoWidthSelect () {
+    //   console.log('트루/폴스', this.streamManager.constructor.name === 'Subscriber')
+    //   if (this.streamManager.constructor.name === 'Subscriber') {
+    //     this.videoWidth = '30%'
+    //     this.videoHeight = '30%'
+    //   }
+    // },
   },
 })
 </script>

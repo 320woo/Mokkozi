@@ -76,7 +76,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportUserDto getUserReport(Long reportId) {
         ReportUser report = ruRepository.findById(reportId).orElseThrow(() -> new NoSuchElementException("not found"));
-        ReportUserDto reportDto = new ReportUserDto(report, userRepository.getEmailById(report.getTargetId()));
+        ReportUserDto reportDto = new ReportUserDto(report, userRepository.findEmailById(report.getTargetId()));
         return reportDto;
     }
 
