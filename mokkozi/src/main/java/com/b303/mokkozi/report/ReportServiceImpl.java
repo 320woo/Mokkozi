@@ -48,9 +48,12 @@ public class ReportServiceImpl implements ReportService {
         report.setTargetId(rcpr.getTargetId());
         ruRepository.save(report);
 
-
         long pc = target.getPenaltyCount() + 1;
         target.setPenaltyCount(pc);
+
+        if(target.getPenaltyCount()==(long)5)
+            target.setActive("정지");
+
         userRepository.save(target);
 
     }
