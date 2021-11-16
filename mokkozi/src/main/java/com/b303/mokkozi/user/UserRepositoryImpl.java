@@ -17,13 +17,10 @@ public class UserRepositoryImpl {
     @Autowired
     private EntityManager em;
 
-//    QUser qUser = QUser.user;
-
     @Transactional
     public List<User> getRandomUser(Long userId){
-//        List<User> list = jpaQueryFactory.select(qUser).from(qUser).where(qUser.id.ne(userId)).orderBy();
         int maxResults = 5;
-        String str = "SELECT u FROM User u WHERE u.id is not "+ userId +" ORDER BY RAND()";
+        String str = "SELECT u FROM User u WHERE u.id is not "+ userId +" AND u.active LIKE '활동' ORDER BY RAND()";
         return Optional.ofNullable(em.createQuery(str).setMaxResults(maxResults)
                 .getResultList()).orElse(null);
     }

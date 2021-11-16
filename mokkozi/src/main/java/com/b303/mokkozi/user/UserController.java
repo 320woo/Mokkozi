@@ -214,10 +214,11 @@ public class UserController {
     @ApiOperation(value = "랜덤 추천 목록 ", notes = "로그인한 회원을 제외한 랜덤 추천 목록을 반환")
     @ApiResponses({@ApiResponse(code = 200, message = "회원 랜덤 조회 성공"), @ApiResponse(code = 500, message = "회원 랜덤 조회 실패")})
     public ResponseEntity<? extends BaseResponseBody> recommendRandom(
-            @ApiIgnore Authentication authentication
+//            @ApiIgnore Authentication authentication
     ){
         try{
-            User user = (User) authentication.getDetails();
+//            User user = (User) authentication.getDetails();
+            User user = userService.findById((long)1).get();
             List<User> random = userService.getRandomUser(user);
             return ResponseEntity.ok(UserRandomDto.of(200, "회원 랜덤 조회 성공",random));
         } catch (AuthenticationException | NullPointerException e) {
