@@ -1,31 +1,32 @@
 <template>
-  <v-container fluid style="height: 800px; width: 600px; padding: 0px">
+  <!-- <v-container fluid style="height: 800px; width: 600px; padding: 0px"> -->
     <div id="main-container">
       <div id="join" v-if="!session">
-        <div id="img-div"><img src="https://images.dog.ceo/breeds/spaniel-japanese/n02085782_2690.jpg" /></div>
+        <v-menu offset-y style="float:right">
+          <template v-slot:activator="{ on, attrs }">
+            <p style="float: right"><v-btn color="primary" v-bind="attrs" v-on="on" @click="following">초대</v-btn></p>
+          </template>
+          <v-list v-for="following in followings" :key="following.id" style="padding: 4px 0px">
+            <v-list-item style="cursor: pointer">
+              <v-btn color="#ffb4b4">{{ following.nickname }}</v-btn>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <div id="img-div" style="text-align:center"><img src="@/assets/images/main.png" width="500px" height="500px"/></div>
         <div id="join-dialog" class="jumbotron vertical-center">
-          <h1>Join a video session</h1>
+          <h1>새로운 만남을 경험하세요!</h1>
           <div class="form-group">
-            <p>
-              <label>Participant</label>
-              <input v-model="myUserName" class="form-control" type="text" required>
-            </p>
-            <p>
-              <label>Session</label>
-              <input v-model="mySessionId" class="form-control" type="text" required>
-            </p>
-            <p class="text-center">
-              <button class="btn btn-lg btn-success" @click="joinSession()">Join!</button>
+            <p class="text-center" style="margin-top: 1rem">
+              <v-btn depressed color="primary" @click="joinSession()">입장</v-btn>
             </p>
           </div>
         </div>
       </div>
       <div v-if="session" style="500px; padding: 40px 0px 0px 0px">
-        <h2 id="session-title">{{ mySessionId }}번 {{ myUserName }}님의 방</h2>
+        <h2 id="session-title">{{ mySessionId }} {{ myUserName }}님의 방</h2>
         <div id="main-video" style="position: relative;">
-          <user-video :stream-manager="mainStreamManager" />
+          <user-video :stream-manager="mainStreamManager" style="width: 680px; height: 510px"/>
           <div class="box-div">
-            <!-- <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/> -->
             <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/>
           </div>
           <v-icon v-if="videoState" class="video-icon" right dark @click="videoOnOff">fas fa-video</v-icon>
@@ -34,7 +35,7 @@
           <v-icon v-else class="audio-icon" right dark @click="audioOnOff">fas fa-microphone-slash</v-icon>
           <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-external-link-alt</v-icon>
         </div>
-        <div id="chat-div" style="height:300px; overflow:scroll;">
+        <div id="chat-div" style="height:200px; overflow:scroll;">
           <v-expansion-panels>
           <v-expansion-panel>
             <v-expansion-panel-header class="font-weight-bold" style="font-size: 20px; height: 60px" @click="CountMessage">
@@ -55,20 +56,20 @@
                 <v-avatar color="brown" size="32">
                   <span class="white--text text-h5">KG</span>
                 </v-avatar>
-                <span class="font-weight-bold" style="margin: 0px 3px">{{ message.from }}</span>
+                <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span>
                 <span>{{ message.content }}</span>
               </div>
               <div v-else class="your-massage">
                 <v-avatar color="pink" size="32">
                   <span class="white--text text-h5">WH</span>
                 </v-avatar>
-                <span class="font-weight-bold" style="margin: 0px 3px">{{ message.from }}</span>
+                <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span>
                 <span>{{ message.content }}</span>
               </div>
             </v-expansion-panel-content>
             <v-expansion-panel-content>
               <div>
-                <input style="width: 528px" v-model="message" type="text" placeholder="내용을 입력해주세요.." @keydown.enter="sendMessage">
+                <input style="width: 608px" v-model="message" type="text" placeholder="내용을 입력해주세요.." @keydown.enter="sendMessage">
                 <v-icon style="width: 24px">fas fa-location-arrow</v-icon>
               </div>
             </v-expansion-panel-content>
@@ -77,7 +78,7 @@
         </div>
       </div>
     </div>
-  </v-container>
+  <!-- </v-container> -->
 </template>
 
 <script>
@@ -91,7 +92,7 @@ const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8447'
 const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
 
 export default {
-  name: 'Openvidu',
+  name: 'Meeting',
   components: {
     UserVideo
   },
@@ -102,7 +103,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'kwang12',
+      mySessionId: 'MOKKOZI',
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
       videoState: true,
       audioState: true,
@@ -110,24 +111,40 @@ export default {
       message: '',
       messages: [],
       messageLength: '0',
-      chatOpen: false
+      chatOpen: false,
+      followings: [], // 팔로잉 목록
+      profileImg: ''
     }
   },
-  // mounted(){
-  //   Promise.all([
-  //     faceapi.nets.ssdMobilenetv1.loadFromUri('/weights'),
-  //     faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
-  //     faceapi.nets.faceRecognitionNet.loadFromUri('/weights')
-  //   ]);
-
-  //   navigator.mediaDevices.getUserMedia({
-  //     video:true,
-  //     audio:true,
-  //   }).then((stream)=>{
-  //     this.addVideoStream(stream);
-  //   })
+  // computed: {
+  //   nickName () {
+  //     return this.$store.state.user.nickName
+  //   },
+  //   profile () {
+  //     return this.$store.state.user.profile
+  //   }
   // },
+  mounted () {
+    this.myUserName = this.$store.state.user.nickname
+    // this.mySessionId = 'room' + Math.floor(Math.random() * 100)
+  },
   methods: {
+    // 팔로잉 목록 가져오기
+    following() {
+      console.log("팔로잉 목록");
+      axios({
+        url: "http://localhost:8000/api/meet/user/following",
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+      }).then((resp) => {
+        console.log("팔로잉 목록 : ", resp)
+        this.followings = resp.data.followers
+        console.log("팔로잉 객체 " + resp.data.followers)
+        this.$store.dispatch("setFollowing", resp.data.following)
+      })
+    },
     videoOnOff () {
       this.videoState = !this.videoState
       this.publisher.publishVideo(this.videoState)
@@ -196,7 +213,7 @@ export default {
               resolution: '600x400', // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-              mirror: false // Whether to mirror your local video or not
+              mirror: false, // Whether to mirror your local video or not
             })
             this.mainStreamManager = publisher
             this.publisher = publisher
@@ -288,6 +305,22 @@ export default {
           .catch(error => reject(error.response))
       })
     },
+    // 닉네임으로 회원 프로필 가져오는 부분 -> 아직 백엔드가 안되어있음
+    getuser(name) {
+      axios({
+        url: "http://localhost:8000/api/meet/user/getuser",
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+        params: {
+          nickname: name,
+        },
+      }).then((resp) => {
+        console.log("회원정보 확인: ", resp);
+        this.profileImg = resp.data.profile;
+      });
+    },
 
     // 메세지 보내는 함수(채팅)
     sendMessage () {
@@ -295,6 +328,7 @@ export default {
         content: this.message,
         from: this.myUserName
       }
+      // this.getuser(messageData.from) 아직 구현이 안되어 있음
       this.message = ''
       this.session.signal({
         data: JSON.stringify(messageData), // Any string (optional)
@@ -309,53 +343,17 @@ export default {
       }
       console.log(this.chatOpen)
     },
-    addVideoStream (stream) {
-
-      const video = stream;
-      const testVideos = document.getElementsByClassName('box-div')
-
-      for(var i=0; i<testVideos.length; i++) {
-        console.log(1111)
-
-      testVideos[i].append(video)
-      // this.streamManager.addVideoElement(video);
-      // video.enabled = true;
-
-        // if(video.paused || video.ended)
-        // {return setTimeout(() => onPlay())}
-
-        if (document.querySelector("canvas")) {
-        document.querySelector("canvas").remove()};
-
-        const minConfidence = 0.3
-        const maxResult = 100
-        const options = new faceapi.SsdMobilenetv1Options({minConfidence,maxResult})
-
-        const canvas = faceapi.createCanvasFromMedia(video);
-        testVideos[i].append(canvas);
-
-        const displaySize = { width:video.width,height:video.height };
-        faceapi.matchDimensions(canvas, displaySize);
-
-        setInterval(async ()=>{
-        const detections = await faceapi
-        .detectAllFaces(video,options)
-        .withFaceLandmarks();
-
-        const resizedDetections = faceapi.resizeResults(detections,displaySize);
-        canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
-        faceapi.draw.drawDetections(canvas,resizedDetections);
-        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
-
-      },100);
-
-      }
-    }
   }
 }
 </script>
 
 <style scoped>
+   .main-container {
+     display: flex;
+     flex-direction: row;
+     justify-content: center;
+     align-items: center;
+   }
   .meeting-container {
     overflow-y: scroll;
   }
@@ -364,8 +362,8 @@ export default {
   }
   .box-div {
     position: absolute;
-    height: 120px;
-    width: 180px;
+    height: 136px;
+    width: 204px;
     bottom: 30px;
     right: 0px;
   }
@@ -391,15 +389,17 @@ export default {
     display: none;
   }
   .my-massage {
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-  }
-  .your-massage {
+    margin-left: 300px;
     display: flex;
     flex-direction: row;
     justify-content: end;
-    align-items: center;
+    /* align-items: center; */
+  }
+  .your-massage {
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    /* align-items: center; */
   }
 </style>
