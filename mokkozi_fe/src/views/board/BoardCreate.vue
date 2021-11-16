@@ -16,15 +16,17 @@
             </div>
             <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
-          <v-file-input
-            multiple
-            accept="image/png, image/jpeg, image/bmp"
-            placeholder="이미지를 선택하세요."
-            prepend-icon="mdi-camera"
-            @change="createImgUrl"
-            v-model="boardImages" />
 
-          <!-- 올린 이미지 미리 보기 -->
+          <!-- 이미지 선택 -->
+          <v-file-input
+          multiple
+          accept="image/png, image/jpeg, image/bmp"
+          placeholder="이미지를 선택하세요."
+          prepend-icon="mdi-camera"
+          @change="createImgUrl"
+          v-model="boardImages" />
+
+          <!-- 새롭게 올릴 이미지 미리 보기 -->
           <v-carousel height="300" class="carousel" v-if="isCarousel" style="margin: 1rem 0rem">
             <v-carousel-item
             v-for="(url, i) in imagesURL"
@@ -35,6 +37,7 @@
             ></v-carousel-item>
           </v-carousel>
         </v-card>
+
         <!-- 글 작성 -->
         <v-textarea
         class="textarea"
@@ -87,20 +90,24 @@ export default {
       this.$router.push({ name: 'Board' })
     },
     // 게시글 작성 요청
-    // Swagger로 보면 title과 content가 필요하지만 content만 있으면 될 듯?
-    // 사진 보내는 url 필요, FormData() 이용
     createBoard () {
-      // const formData = new FormData()
-      // formData.append('files', this.uploadImage)
+      const formData = new FormData()
+      // 파일의 경우, 하나씩 넣어야 한다.
+      for (let i = 0; i < this.boardImages.length; i++) {
+        formData.append('files', this.boardImages[i])
+      }
+
+      formData.append('content', this.content)
+
+      // console.log("전송할 파일 정보는 : ", formData.get("files"))
+
       axios({
         url: 'http://localhost:8000/api/meet/board',
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          content: this.content
-        }
+        data: formData
       }).then(res => {
         console.log('게시물 작성', res)
         this.$router.push({ name: 'Board' })

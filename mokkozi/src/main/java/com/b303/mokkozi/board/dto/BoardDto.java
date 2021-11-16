@@ -3,16 +3,20 @@ package com.b303.mokkozi.board.dto;
 
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.Board;
+import com.b303.mokkozi.gallery.dto.GalleryDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class BoardDto extends BaseResponseBody {
 
     private Long id;
@@ -24,6 +28,7 @@ public class BoardDto extends BaseResponseBody {
     private String nickName;
     private boolean boardLike; //현재 로그인한 사용자의 게시글 좋아요 여부
     private String profileUrl;
+    private List<GalleryDto> galleryList;
 
 //    private List<CommentDto> comment;
 
@@ -47,6 +52,14 @@ public class BoardDto extends BaseResponseBody {
         BoardDto res = board;
         res.setStatusCode(statusCode);
         res.setMessage(message);
+        return res;
+    }
+
+    public static BoardDto of(Integer statusCode, String message, BoardDto board, List<GalleryDto> galleryList) {
+        BoardDto res = board;
+        res.setStatusCode(statusCode);
+        res.setMessage(message);
+        res.setGalleryList(galleryList);
         return res;
     }
 }

@@ -428,7 +428,7 @@ export default {
             const formData2 = new FormData()
 
             // 리스트로 넘어오게 된다.
-            formData2.append("files", this.joinInfo.myImages)
+            // formData2.append("files", this.joinInfo.myImages)
 
             for (let i = 0; i < this.joinInfo.myImages.length; i++) {
               formData2.append("files", this.joinInfo.myImages[i])
