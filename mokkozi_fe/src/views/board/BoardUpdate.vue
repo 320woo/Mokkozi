@@ -3,45 +3,68 @@
     <div class="background-div">
       <div class="board-div">
         <v-card
-          class="board-card"
-          max-width="24rem"
-          height="22rem"
+        class="board-card"
+        max-width="24rem"
+        height="24rem"
         >
           <v-card-title style="display:flex; justify-content:space-between">
             <div>
               <v-avatar size="36px" @click="userImageClick(board.userEmail)">
-              <img
-                alt="Avatar"
-                src="@/assets/logo.png"
-              >
+              <img alt="Avatar" src="@/assets/logo.png">
               </v-avatar>
               <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(board.userEmail)">{{ board.nickName }}</span>
             </div>
             <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
-          <template slot="progress">
-            <v-progress-linear
-              color="deep-purple"
-              height="10"
-              indeterminate
-            ></v-progress-linear>
-          </template>
 
+          <!-- 이미지 선택 -->
           <v-file-input
-           :rules="rules"
-            accept="image/png, image/jpeg, image/bmp"
-            placeholder="Pick your img"
-            prepend-icon="mdi-camera"
-            v-model="uploadImage" />
-          <v-img
-            width="24rem"
-            height="auto"
-            max-height="15rem"
-            position="center"
+          class="my-3"
+
+          multiple
+          accept="image/png, image/jpeg, image/bmp"
+          placeholder="새롭게 올릴 이미지를 선택해 주세요. ( 게시글 당 최대 첨부 이미지는 5장입니다.)"
+          prepend-icon="mdi-camera"
+          @change="createImgUrl"
+          v-model="newImages" />
+
+          <!-- 기존에 올린 이미지 미리 보기 -->
+          <v-carousel height="300" class="carousel" v-if="isCarousel" style="margin: 1rem 0rem">
+            <v-carousel-item
+            v-for="(image, index) in boardImages"
+            :key="index"
+            :src="image.file_path"
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+            >
+            <v-btn class="mt-3" @click="deleteImg(index)">삭제</v-btn>
+            </v-carousel-item>
+
+            <!-- 새롭게 올린 이미지 미리 보기 -->
+            <v-carousel-item
+            v-for="(url, index) in newImagesURL"
+            :key="index + boardImages.length"
             :src="url"
-            style="margin-bottom: 0.2rem"
-          ></v-img>
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+            >
+            </v-carousel-item>
+          </v-carousel>
+
+          <!-- 선택한 이미지나 기존에 업로드한 이미지가 없는 경우 -->
+          <v-alert
+          v-if="isCarousel === false"
+          style="margin: 1rem 0rem;"
+          height="300"
+          border="right"
+          color="red"
+          dark>
+          개성있는 본인만의 사진을 올려주세요 👀
+          </v-alert>
+
         </v-card>
+
+        <!-- 수정할 글 내용 -->
         <v-textarea
           class="textarea"
           filled
@@ -50,8 +73,11 @@
           v-model="content"
           placeholder="내용을 입력하세요.."
         ></v-textarea>
+
+        <!-- 수정, 삭제 버튼 -->
         <div style="float: right;">
           <v-btn
+            class="me-3"
             color="#FFB4B4"
             @click="boardUpdate(boardId)">
             수정
@@ -62,6 +88,7 @@
             삭제
           </v-btn>
         </div>
+
       </div>
     </div>
   </v-container>
@@ -69,6 +96,7 @@
 
 <script>
 import axios from 'axios'
+import * as commonFunc from '../../common/commonFunc'
 
 export default {
   name: 'BoardUpdae',
@@ -83,17 +111,15 @@ export default {
     rules: [
       value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
     ],
-    uploadImage: null,
+    boardImages: [], // 기존에 업로드한 이미지 목록
+    newImages: [],   // 추가할 이미지 목록
+    newImagesURL: [],// 추가할 이미지 로컬 URL
+    deleteImages: [],// 삭제할 이미지 목록
+    isCarousel: false,
     content: '',
     board: {}
   }),
-  computed: {
-    url () {
-      if (!this.uploadImage) return
-      return URL.createObjectURL(this.uploadImage)
-    }
-  },
-  mounted () {
+  created () {
     this.getSelectBoard(this.boardId)
   },
   methods: {
@@ -115,26 +141,38 @@ export default {
           Authorization:"Bearer "+ this.$store.state.jwt
         }
       }).then(res => {
-        console.log('게시물 불러오기 성공', res)
+        console.log('게시글 수정 페이지 : 정보는', res)
         this.board = res.data
         this.content = res.data.content
-        // this.uploadImage =
+        this.boardImages = res.data.galleryList
+
+
+        if (res.data.galleryList.length > 0) {
+          this.isCarousel = true
+        }
       }).catch(err => {
         console.log('게시물 불러오기 실패', err)
       })
     },
     // 게시물 수정
     boardUpdate (boardId) { // 이미지 업데이트 부분 필요
+      // 이미지도 함께 수정해야 하므로, formDate를 활용한다.
+      const formData = new FormData()
+
+      for (let i=0; i < this.newImages.length; i++) {
+        formData.append("newFiles", this.newImages[i])  // 파일 형식
+      }
+      formData.append("id", this.boardId)
+      formData.append("deleteFilesIndex", this.deleteImages)  // String 배열 형태
+      formData.append("content", this.content)
+
       axios({
         url: 'http://localhost:8000/api/meet/board',
         method: 'PATCH',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          id: boardId,
-          content: this.content,
-        }
+        data: formData
       }).then(res => {
         console.log('게시물 수정 성공', res)
         this.$router.push({ name: 'BoardDetail', params: { boardId: boardId }})
@@ -156,7 +194,43 @@ export default {
       }).catch(err => {
         console.log('게시물 삭제 실패', err)
       })
-    }
+    },
+    createImgUrl() {
+      // X 버튼을 눌렀을 때, 기존 이미지 + 새로운 이미지가 아예 없으면 isCarousel = false
+      if (this.newImages.length + this.boardImages.length === 0) {
+        this.isCarousel = false
+      }
+      // 그 외에는 새로운 이미지를 추가한 것이므로..
+      else if (this.newImages.length > 0) {
+        this.isCarousel = true
+      }
+
+      // 갯수를 제한한다. (최대 5장)
+      if (this.newImages.length + this.boardImages.length > 5) {
+        alert("이미지는 최대 5장까지 첨부 가능합니다.")
+        this.newImages = []
+      }
+
+      // 그 외에 1개 이상의 파일을 업로드한 경우에는...
+      else {
+        this.newImagesURL = commonFunc.makeLocalURL(this.newImages)
+      }
+    },
+    deleteImg(index) {
+      const deleteImg = confirm("현재 이미지를 지우시겠습니까?")
+      if (deleteImg) {
+        // 삭제할 목록 추가
+        this.deleteImages.push(this.boardImages[index].id)
+        // Carousel에 더이상 표시 안하기 위해
+        this.boardImages.splice(index, 1)
+
+        // 만약 새로 업로드할 이미지와 기존에 존재하는 이미지가 더이상 존재하지 않으면
+        if (this.boardImages.length + this.newImages.length === 0) {
+          this.isCarousel = false
+        }
+
+      }
+    },
   }
 }
 </script>
@@ -188,7 +262,7 @@ export default {
   .board-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: start;
     align-content: center;
     background-color: #ffe8e8;
     padding-bottom: 1rem;
