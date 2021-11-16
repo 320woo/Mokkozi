@@ -37,7 +37,7 @@ public class GalleryController {
     GalleryService galleryService;
 
     /**
-     * 게시글 이미지 혹은 사용자 프로필 이미지를 S3에 업로드한다.
+     * 회원가입시 첨부한 이미지를 업로드한다. ( 로직을 잘못 짰음 ... )
      * @Param file, fileInfo
      * @Return Response Message
      */
@@ -62,7 +62,7 @@ public class GalleryController {
         for (MultipartFile file:model.getFiles()) {
             // 파일 업로드 시, Exception 처리
             try {
-                String file_path = s3Uploader.upload(file, file.getOriginalFilename());
+                String file_path = s3Uploader.upload(file, "images");
 
                 GalleryVO galleryVO = new GalleryVO();
                 galleryVO.setFilePath(file_path);
@@ -72,12 +72,12 @@ public class GalleryController {
                 // 게시글 이미지 업로드인 경우
                 if (model.getEmail().equals("")) {
                     logger.info("GalleryController.upload 67 : 게시글 이미지 저장 결과 : {}",
-                            galleryService.galleryCreate(galleryVO, model.getBoardId()));
+                        galleryService.galleryCreate(galleryVO, model.getBoardId()));
                 }
                 // 프로필 이미지 업로드인 경우
                 else {
                     logger.info("GalleryController.upload 73 : 프로필 이미지 저장 결과 : {}",
-                            galleryService.galleryCreate(galleryVO, model.getEmail()));
+                        galleryService.galleryCreate(galleryVO, model.getEmail()));
                 }
             // S3 파일 업로드가 실패하는 경우, Exception이 발생한다.
             } catch (Exception e) {
@@ -116,7 +116,7 @@ public class GalleryController {
         try {
             logger.info("GalleryController.uploadMyProfile 100 : S3에 파일 업로드합니다.");
             // 2번째 인자는 폴더이름이다.
-            file_path = s3Uploader.upload(model.getFile(), "static");
+            file_path = s3Uploader.upload(model.getFile(), "PublicProfile");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(BaseResponseBody.of(500, "대표 프로필 업로드 실패"));

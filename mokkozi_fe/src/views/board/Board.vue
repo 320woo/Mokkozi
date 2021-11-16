@@ -5,7 +5,7 @@
     <v-icon style="position: fixed; color: #ffb4b4" @click="boardCreateClick"
       >fas fa-plus-circle</v-icon
     >
-    <div class="background-div" v-for="board in boardList" :key="board.id">
+    <div class="background-div" v-for="(board, i) in boardList" :key="i">
       <div class="board-div">
         <v-card class="board-card" max-width="24rem" height="28rem">
           <v-card-title
@@ -58,15 +58,28 @@
             ></v-progress-linear>
           </template>
 
+          <!-- Carousel -->
+          <v-carousel height="300" class="carousel" v-if="boardImgList[i].length > 1" style="margin: 1rem 0rem">
+            <v-carousel-item
+            v-for="(img, i) in boardImgList[i]"
+            :key="i"
+            :src="img.file_path"
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+            ></v-carousel-item>
+          </v-carousel>
+
+          <!-- 이미지가 1장인 경우에는 -->
           <v-img
-            width="24rem"
-            height="auto"
-            max-height="15rem"
-            position="center"
-            src="https://images.dog.ceo/breeds/bulldog-english/murphy.jpg"
-            style="margin-bottom: 0.2rem"
-            @click="boardDetailClick(board.id)"
-          ></v-img>
+          v-else-if="boardImgList[i].length === 1"
+          width="24rem"
+          height="auto"
+          max-height="15rem"
+          position="center"
+          :src="boardImgList[i][0].file_path"
+          style="margin-bottom: 0.2rem"
+          >
+          </v-img>
 
           <v-card-text class="like-text">
             <i
@@ -142,12 +155,10 @@ export default {
   },
   data: () => ({
     boardList: [],
+    boardImgList: [],
     limit: 0, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
     commentContent: "",
   }),
-  mounted() {
-    // this.getBoardList()
-  },
   computed: {
     loginUser() {
       return this.$store.state.user.email;
@@ -165,6 +176,10 @@ export default {
         },
       })
         .then((res) => {
+          console.log(res)
+          // 이미지 목록 지정하자.
+          this.boardImgList = res.data.galleryListDto.galleryList
+
           console.log("인피니트 스크롤롤 받아온 데이터", res.data.boardList);
           console.log(
             "인피니트 스크롤롤 받아온 데이터",

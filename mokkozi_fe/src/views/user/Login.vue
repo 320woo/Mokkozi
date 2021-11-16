@@ -2,7 +2,7 @@
   <v-container fluid>
     <!-- row의 height를 지정해야만 align을 통해 start, center, end로 배치할 수 있다. -->
     <v-row justify="center" align="center">
-      <v-col class="pa-4 mb-15">
+      <v-col class="pa-4 mb-3">
         <div class="login-box" elevation="1" outlined>
           <div class="d-flex flex-wrap justify-center">
             <v-img max-width="400" max-height="200" src="@/assets/text_logo.png"></v-img>
@@ -10,6 +10,7 @@
           <v-form v-model="formValid">
             <v-text-field label="아이디"
             @keyup.enter="login"
+            @change="reset"
             v-model="credentials.email"
             :rules="[rules.mailRequired, rules.email]"
             outlined>
@@ -17,6 +18,7 @@
 
             <v-text-field label="비밀번호"
             @keyup.enter="login"
+            @change="reset"
             v-model="credentials.password"
             :rules="[rules.pwRequired, rules.min]"
             :type="showPW ? 'text' : 'password'"
@@ -36,6 +38,21 @@
         </div>
       </v-col>
     </v-row>
+
+    <!-- dialog 부분 -->
+    <transition name="fade">
+      <v-alert
+      v-if="show"
+      class="mb-0"
+      style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;"
+      color="#FF9292"
+      dark
+      width="100%"
+      icon="mdi-material-design"
+      border="right">
+      아이디 또는 비밀번호를 확인해 주세요
+      </v-alert>
+    </transition>
   </v-container>
 </template>
 
@@ -48,8 +65,9 @@ export default {
   data: () => ({
     credentials: {
       email: '',
-      password: ''
+      password: '',
     },
+    show: false,
     formValid: false,
     showPW: false,
     rules: {
@@ -80,12 +98,13 @@ export default {
         this.$store.dispatch("setEmail", resp.data.email)
         // this.$store.dispatch("setAddress", resp.data.address)
         this.$router.push("Matching")
-        } else {
-          alert("아이디 또는 비밀번호가 일치하지 않습니다.")
-
         }
-
+      }).catch(err => {
+        this.show = true
       })
+    },
+    reset () {
+      this.show = false
     }
 
   }
