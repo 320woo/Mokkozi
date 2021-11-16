@@ -1,21 +1,31 @@
 <template>
-  <v-container fluid style="height: 800px; width: 600px; padding: 0px">
+  <!-- <v-container fluid style="height: 800px; width: 600px; padding: 0px"> -->
     <div id="main-container">
       <div id="join" v-if="!session">
-        <div id="img-div"><img src="https://images.dog.ceo/breeds/spaniel-japanese/n02085782_2690.jpg" /></div>
+        <v-menu offset-y style="float:right">
+          <template v-slot:activator="{ on, attrs }">
+            <p style="float: right"><v-btn color="primary" v-bind="attrs" v-on="on" @click="following">초대</v-btn></p>
+          </template>
+          <v-list v-for="following in followings" :key="following.id" style="padding: 4px 0px">
+            <v-list-item style="cursor: pointer">
+              <v-btn color="#ffb4b4">{{ following.nickname }}</v-btn>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <div id="img-div" style="text-align:center"><img src="@/assets/images/main.png" width="500px" height="500px"/></div>
         <div id="join-dialog" class="jumbotron vertical-center">
-          <h1>Join a video session</h1>
+          <h1>새로운 만남을 경험하세요!</h1>
           <div class="form-group">
-            <p>
+            <!-- <p>
               <label>Participant</label>
               <input v-model="myUserName" class="form-control" type="text" required>
             </p>
             <p>
               <label>Session</label>
               <input v-model="mySessionId" class="form-control" type="text" required>
-            </p>
-            <p class="text-center">
-              <button class="btn btn-lg btn-success" @click="joinSession()">Join!</button>
+            </p> -->
+            <p class="text-center" style="margin-top: 1rem">
+              <v-btn depressed color="primary" @click="joinSession()">입장</v-btn>
             </p>
           </div>
         </div>
@@ -23,9 +33,8 @@
       <div v-if="session" style="500px; padding: 40px 0px 0px 0px">
         <h2 id="session-title">{{ mySessionId }}번 {{ myUserName }}님의 방</h2>
         <div id="main-video" style="position: relative;">
-          <user-video :stream-manager="mainStreamManager" />
+          <user-video :stream-manager="mainStreamManager" style="width: 680px; height: 510px"/>
           <div class="box-div">
-            <!-- <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/> -->
             <user-video v-for="sub in subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)"/>
           </div>
           <v-icon v-if="videoState" class="video-icon" right dark @click="videoOnOff">fas fa-video</v-icon>
@@ -34,7 +43,7 @@
           <v-icon v-else class="audio-icon" right dark @click="audioOnOff">fas fa-microphone-slash</v-icon>
           <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-external-link-alt</v-icon>
         </div>
-        <div id="chat-div" style="height:300px; overflow:scroll;">
+        <div id="chat-div" style="height:200px; overflow:scroll;">
           <v-expansion-panels>
           <v-expansion-panel>
             <v-expansion-panel-header class="font-weight-bold" style="font-size: 20px; height: 60px" @click="CountMessage">
@@ -68,7 +77,7 @@
             </v-expansion-panel-content>
             <v-expansion-panel-content>
               <div>
-                <input style="width: 528px" v-model="message" type="text" placeholder="내용을 입력해주세요.." @keydown.enter="sendMessage">
+                <input style="width: 608px" v-model="message" type="text" placeholder="내용을 입력해주세요.." @keydown.enter="sendMessage">
                 <v-icon style="width: 24px">fas fa-location-arrow</v-icon>
               </div>
             </v-expansion-panel-content>
@@ -77,7 +86,7 @@
         </div>
       </div>
     </div>
-  </v-container>
+  <!-- </v-container> -->
 </template>
 
 <script>
@@ -110,24 +119,39 @@ export default {
       message: '',
       messages: [],
       messageLength: '0',
-      chatOpen: false
+      chatOpen: false,
+      followings: [] // 팔로잉 목록
     }
   },
-  // mounted(){
-  //   Promise.all([
-  //     faceapi.nets.ssdMobilenetv1.loadFromUri('/weights'),
-  //     faceapi.nets.faceLandmark68Net.loadFromUri('/weights'),
-  //     faceapi.nets.faceRecognitionNet.loadFromUri('/weights')
-  //   ]);
-
-  //   navigator.mediaDevices.getUserMedia({
-  //     video:true,
-  //     audio:true,
-  //   }).then((stream)=>{
-  //     this.addVideoStream(stream);
-  //   })
+  // computed: {
+  //   nickName () {
+  //     return this.$store.state.user.nickName
+  //   },
+  //   profile () {
+  //     return this.$store.state.user.profile
+  //   }
   // },
+  mounted () {
+    this.myUserName = this.$store.state.user.nickname
+    // this.mySessionId = 'room' + Math.floor(Math.random() * 100)
+  },
   methods: {
+    // 팔로잉 목록 가져오기
+    following() {
+      console.log("팔로잉 목록");
+      axios({
+        url: "http://localhost:8000/api/meet/user/following",
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+      }).then((resp) => {
+        console.log("팔로잉 목록 : ", resp)
+        this.followings = resp.data.followers
+        console.log("팔로잉 객체 " + resp.data.followers)
+        this.$store.dispatch("setFollowing", resp.data.following)
+      })
+    },
     videoOnOff () {
       this.videoState = !this.videoState
       this.publisher.publishVideo(this.videoState)
@@ -196,7 +220,7 @@ export default {
               resolution: '600x400', // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-              mirror: false // Whether to mirror your local video or not
+              mirror: false, // Whether to mirror your local video or not
             })
             this.mainStreamManager = publisher
             this.publisher = publisher
@@ -356,6 +380,12 @@ export default {
 </script>
 
 <style scoped>
+   .main-container {
+     display: flex;
+     flex-direction: row;
+     justify-content: center;
+     align-items: center;
+   }
   .meeting-container {
     overflow-y: scroll;
   }
@@ -364,8 +394,8 @@ export default {
   }
   .box-div {
     position: absolute;
-    height: 120px;
-    width: 180px;
+    height: 136px;
+    width: 204px;
     bottom: 30px;
     right: 0px;
   }
@@ -391,15 +421,17 @@ export default {
     display: none;
   }
   .my-massage {
+    width: 300px;
     display: flex;
     flex-direction: row;
     justify-content: start;
-    align-items: center;
+    /* align-items: center; */
   }
   .your-massage {
+    margin-left: 300px;
     display: flex;
     flex-direction: row;
     justify-content: end;
-    align-items: center;
+    /* align-items: center; */
   }
 </style>
