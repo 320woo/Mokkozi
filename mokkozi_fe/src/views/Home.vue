@@ -1,22 +1,45 @@
 <template>
-  <!-- 컴포넌트를 2개 넣어야 한다. -->
-  <v-container>
-    <v-row>
-      <v-col>
-        <div class="pa-5 d-flex justify-center flex-wrap flex-column side-page">
-          오른쪽 페이지
+  <v-container class="board-container">
+    <div>
+      <v-card max-height="50rem">
+        <div>
+          <!-- 배경 이미지 부분 -->
+          <div v-for="(item, index) in recommends" :key="index">{{ item }}</div>
+          <!-- 사용자 프로필 이미지 부분 -->
         </div>
-      </v-col>
-    </v-row>
+      </v-card>
+    </div>
   </v-container>
 </template>
-
 <script>
+import axios from "axios";
+import defaultImage from "../assets/images/white.png";
 
 export default {
-  name: 'Home',
-
-  components: {
-  }
-}
+  name: "Home",
+  components: {},
+  created() {
+    this.recommend();
+  },
+  data() {
+    return {
+      defaultImage: defaultImage,
+      recommends: [],
+    };
+  },
+  methods: {
+    recommend() {
+      axios({
+        url: "http://localhost:8000/api/meet/user/recommend/random",
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+      }).then((resp) => {
+        this.recommends = resp.data.random;
+        console.log("회원조회 가즈아: ", resp);
+      });
+    },
+  },
+};
 </script>

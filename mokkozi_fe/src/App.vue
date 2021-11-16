@@ -1,59 +1,86 @@
 <template>
   <v-app>
-    <v-main style="background-color: #FFE8E8;">
-      <v-container>
-        <v-row class="com">
+    <v-main class="font-test" style="background-color: #ffe8e8">
+      <v-container class="com">
+        <v-row
+          no-gutters
+          justify-sm="center"
+          justify-md="center"
+          align="center"
+        >
           <!-- 소개 페이지 -->
-          <v-col class="d-none d-md-flex">
-            <div class="pa-5 d-flex justify-center flex-wrap flex-column side-page">
+          <v-col
+            cols="5"
+            class="d-none d-sm-none d-md-none d-lg-flex logo-page"
+          >
+            <!-- 창 크기에 따라 전시 or 비전시 -->
+            <div class="pa-5 d-flex flex-wrap flex-column">
               <!-- 로고 이미지 -->
               <div class="mb-10">
-                <v-img src="@/assets/logo.png" max-height="200" max-width="200" alt="로고 이미지"></v-img>
+                <v-img
+                  src="@/assets/logo.png"
+                  max-height="200"
+                  max-width="200"
+                  alt="로고 이미지"
+                ></v-img>
               </div>
               <!-- 메인 이미지 -->
               <div class="mb-10">
-                <v-img class="main-img" src="@/assets/images/main.png"  alt="로고 이미지">
+                <v-img
+                  class="main-img"
+                  src="@/assets/images/main.png"
+                  alt="메인 이미지"
+                >
                 </v-img>
               </div>
               <!-- 서비스 소개 문구 -->
-              <div>
+              <div style="text-align: center">
                 <h3>새로운 AR 소개팅 서비스를 체험해 보세요</h3>
-                <br>
-                <p>쉽고 빠르게, 그리고 부담없이 마음에 드는 이성을 찾고 싶다면?<br>
-                지금 바로 모꼬지를 통해 새로운 만남을 경험해 보세요
+                <br />
+                <p>
+                  쉽고 빠르게, 그리고 부담없이 마음에 드는 이성을 찾고
+                  싶다면?<br />
+                  지금 바로 모꼬지를 통해 새로운 만남을 경험해 보세요
                 </p>
               </div>
             </div>
           </v-col>
           <!-- 매번 바뀌는 페이지 -->
-          <v-col>
-            <!-- Hoem.vue -->
-            <router-view/>
+          <v-col class="d-flex flex-row justify-center" cols="7">
+            <top></top>
+            <main>
+              <router-view />
+            </main>
+            <foot></foot>
           </v-col>
         </v-row>
       </v-container>
-
     </v-main>
   </v-app>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
-
-  data: () => ({
-    //
-  })
-}
+  components: {},
+  name: "App",
+  data: () => ({}),
+};
 </script>
 
 <style lang="scss" scoped>
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700&display=swap");
 .com {
-  height: 937px;
+  height: 100%;
   background-color: white;
+  position: relative;
 }
 .main-img {
   border-radius: 30px;
+}
+.logo-page * {
+  margin: auto;
+}
+.font-test {
+  font-family: "Noto Sans KR", sans-serif;
 }
 </style>

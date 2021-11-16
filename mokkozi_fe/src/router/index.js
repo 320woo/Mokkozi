@@ -29,7 +29,35 @@ const routes = [
   {
     path: '/board',
     name: 'Board',
-    component: () => import('../components/Board.vue')
+    component: () => import('../views/board/Board.vue')
+  },
+  {
+    path: '/boardcreate',
+    name: 'BoardCreate',
+    component: () => import('../views/board/BoardCreate.vue')
+  },
+  {
+    path: '/boardupdate/:boardId',
+    name: 'BoardUpdate',
+    component: () => import('../views/board/BoardUpdate.vue'),
+    props: true
+  },
+  {
+    path: '/board/:boardId',
+    name: 'BoardDetail',
+    component: () => import('../views/board/BoardDetail.vue'),
+    props: true
+  },
+  {
+    path: 'board/:boardId/comment',
+    name: 'Comment',
+    component: () => import('../views/board/Comment.vue'),
+    props: true
+  },
+  {
+    path: '/meeting',
+    name: 'Meeting',
+    component: () => import('../views/openvidu/Openvidu.vue')
   },
   {
     path: '/login',
@@ -40,6 +68,27 @@ const routes = [
     path: '/join',
     name: 'Join',
     component: Join
+  },
+  {
+    path: '/face',
+    name: 'FaceDetection',
+    component: () => import('../components/FaceDetection.vue')
+  },
+  {
+    path: '/profile/:userEmail',
+    name: 'Profile',
+    component: () => import('../components/File.vue'),
+    props: true
+  },
+  {
+    path: '/matching',
+    name: 'Matching',
+    component: () => import('../views/matching/Matching.vue')
+  },
+  {
+    path: '/modify',
+    name: 'Modify',
+    component: () => import('../views/user/Modify.vue')
   }
 ]
 
