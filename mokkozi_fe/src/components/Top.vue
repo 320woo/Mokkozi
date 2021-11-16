@@ -16,7 +16,7 @@
                 text="text"
                 rounded="rounded"
                 class="my-2 btn">
-            <router-link to="/matching" style="text-decoration: none; color:white">랜덤미팅</router-link></v-btn>
+            <router-link to="/meeting" style="text-decoration: none; color:white">랜선미팅</router-link></v-btn>
         </v-row>
     </v-footer>
 </template>

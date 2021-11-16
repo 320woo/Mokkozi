@@ -16,14 +16,6 @@
         <div id="join-dialog" class="jumbotron vertical-center">
           <h1>새로운 만남을 경험하세요!</h1>
           <div class="form-group">
-            <!-- <p>
-              <label>Participant</label>
-              <input v-model="myUserName" class="form-control" type="text" required>
-            </p>
-            <p>
-              <label>Session</label>
-              <input v-model="mySessionId" class="form-control" type="text" required>
-            </p> -->
             <p class="text-center" style="margin-top: 1rem">
               <v-btn depressed color="primary" @click="joinSession()">입장</v-btn>
             </p>
@@ -31,7 +23,7 @@
         </div>
       </div>
       <div v-if="session" style="500px; padding: 40px 0px 0px 0px">
-        <h2 id="session-title">{{ mySessionId }}번 {{ myUserName }}님의 방</h2>
+        <h2 id="session-title">{{ mySessionId }} {{ myUserName }}님의 방</h2>
         <div id="main-video" style="position: relative;">
           <user-video :stream-manager="mainStreamManager" style="width: 680px; height: 510px"/>
           <div class="box-div">
@@ -64,14 +56,14 @@
                 <v-avatar color="brown" size="32">
                   <span class="white--text text-h5">KG</span>
                 </v-avatar>
-                <span class="font-weight-bold" style="margin: 0px 3px">{{ message.from }}</span>
+                <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span>
                 <span>{{ message.content }}</span>
               </div>
               <div v-else class="your-massage">
                 <v-avatar color="pink" size="32">
                   <span class="white--text text-h5">WH</span>
                 </v-avatar>
-                <span class="font-weight-bold" style="margin: 0px 3px">{{ message.from }}</span>
+                <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span>
                 <span>{{ message.content }}</span>
               </div>
             </v-expansion-panel-content>
@@ -100,7 +92,7 @@ const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8447'
 const OPENVIDU_SERVER_SECRET = 'mokkozi_secret'
 
 export default {
-  name: 'Openvidu',
+  name: 'Meeting',
   components: {
     UserVideo
   },
@@ -111,7 +103,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'kwang12',
+      mySessionId: 'MOKKOZI',
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
       videoState: true,
       audioState: true,
@@ -120,7 +112,8 @@ export default {
       messages: [],
       messageLength: '0',
       chatOpen: false,
-      followings: [] // 팔로잉 목록
+      followings: [], // 팔로잉 목록
+      profileImg: ''
     }
   },
   // computed: {
@@ -312,6 +305,22 @@ export default {
           .catch(error => reject(error.response))
       })
     },
+    // 닉네임으로 회원 프로필 가져오는 부분 -> 아직 백엔드가 안되어있음
+    getuser(name) {
+      axios({
+        url: "http://localhost:8000/api/meet/user/getuser",
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+        params: {
+          nickname: name,
+        },
+      }).then((resp) => {
+        console.log("회원정보 확인: ", resp);
+        this.profileImg = resp.data.profile;
+      });
+    },
 
     // 메세지 보내는 함수(채팅)
     sendMessage () {
@@ -319,6 +328,7 @@ export default {
         content: this.message,
         from: this.myUserName
       }
+      // this.getuser(messageData.from) 아직 구현이 안되어 있음
       this.message = ''
       this.session.signal({
         data: JSON.stringify(messageData), // Any string (optional)
@@ -333,48 +343,6 @@ export default {
       }
       console.log(this.chatOpen)
     },
-    addVideoStream (stream) {
-
-      const video = stream;
-      const testVideos = document.getElementsByClassName('box-div')
-
-      for(var i=0; i<testVideos.length; i++) {
-        console.log(1111)
-
-      testVideos[i].append(video)
-      // this.streamManager.addVideoElement(video);
-      // video.enabled = true;
-
-        // if(video.paused || video.ended)
-        // {return setTimeout(() => onPlay())}
-
-        if (document.querySelector("canvas")) {
-        document.querySelector("canvas").remove()};
-
-        const minConfidence = 0.3
-        const maxResult = 100
-        const options = new faceapi.SsdMobilenetv1Options({minConfidence,maxResult})
-
-        const canvas = faceapi.createCanvasFromMedia(video);
-        testVideos[i].append(canvas);
-
-        const displaySize = { width:video.width,height:video.height };
-        faceapi.matchDimensions(canvas, displaySize);
-
-        setInterval(async ()=>{
-        const detections = await faceapi
-        .detectAllFaces(video,options)
-        .withFaceLandmarks();
-
-        const resizedDetections = faceapi.resizeResults(detections,displaySize);
-        canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
-        faceapi.draw.drawDetections(canvas,resizedDetections);
-        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
-
-      },100);
-
-      }
-    }
   }
 }
 </script>
@@ -421,17 +389,17 @@ export default {
     display: none;
   }
   .my-massage {
-    width: 300px;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    /* align-items: center; */
-  }
-  .your-massage {
     margin-left: 300px;
     display: flex;
     flex-direction: row;
     justify-content: end;
+    /* align-items: center; */
+  }
+  .your-massage {
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
     /* align-items: center; */
   }
 </style>
