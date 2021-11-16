@@ -2,6 +2,7 @@ package com.b303.mokkozi.user;
 
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.User;
+import com.b303.mokkozi.jwt.CustomUserDetails;
 import com.b303.mokkozi.jwt.TokenProvider;
 import com.b303.mokkozi.user.dto.TokenDto;
 import com.b303.mokkozi.user.dto.UserDto;
@@ -70,31 +71,27 @@ public class UserController {
 
         // 이 토큰을 이용해서 Authenticaion 객체 생성
         logger.info("UserController.login 69 : Authenticaion 객체 생성");
+
+
+        // Dummy가 담긴 User 또는 실제 User 객체를 반환한다.
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // Spring Security에 해당 authenticaion 객체를 저장한다.
+        logger.info("UserController.login 79 : SecurityContextHolder에 authentication 객체를 저장합니다.");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 사용자 닉네임과 프로필 경로를 함께 보낸다.
-        Optional<User> user = userService.findByEmail(credentials.getEmail());
 
-        logger.info("UserController.login 72 : 사용자 정보 : {}", user);
+        CustomUserDetails result = (CustomUserDetails) authentication.getPrincipal();
+        logger.info("UserController.login 85 : authenticaion 정보 : {}", result.getUser());
 
-        if (user.isPresent()) {
-            // 생성한 authenticaion 객체를 이용하여 JWT 토큰을 발급받는다.
-            logger.info("UserController.login 76 : 토큰 발급 완료! : {}", authentication);
-            return ResponseEntity.ok(TokenDto
+        return ResponseEntity.ok(TokenDto
                 .of(200, "로그인에 성공하였습니다. 토큰 발급 완료",
                         tokenProvider.createToken(authentication, "user"),
-                        user.get().getNickname(),
-                        user.get().getProfile(),
-                        user.get().getEmail()
-                        ));
-        }
-        //
-        else {
-            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "유저가 존재하지 않습니다."));
-        }
+                        result.getUser().getNickname(),
+                        result.getUser().getProfile(),
+                        result.getUser().getEmail()
+                ));
+
     }
 
 
