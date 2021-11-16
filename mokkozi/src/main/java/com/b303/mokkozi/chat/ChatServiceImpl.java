@@ -5,7 +5,6 @@ import com.b303.mokkozi.entity.ChatMessage;
 import com.b303.mokkozi.entity.ChatRoom;
 import com.b303.mokkozi.entity.ChatRoomJoin;
 import com.b303.mokkozi.user.UserService;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,16 +39,16 @@ public class ChatServiceImpl implements ChatService{
 
     @Override
     public Page<ChatMessageDto> getChatMsgList(Long chatRoomId, int pageIdx) {
-        // 작성 필요
+
         int size = 10;
         int page = pageIdx <= 0 ? 0 : pageIdx - 1;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
-        Page<ChatMessage> pageTuts = chatMessageRepository.findAll(pageable);
-        //Page<ChatMessageDto> chatMessageList = pageTuts.map(m -> new ChatMessageDto();
-        //return chatMessageList;
-        return null;
+        Page<ChatMessage> pageTuts = chatMessageRepository.findByChatRoomId(pageable, chatRoomId);
+        Page<ChatMessageDto> chatMessageList = pageTuts.map(m -> new ChatMessageDto(m.getId(), m.getRegDate(), m.getMessage(), m.getChatRoom().getId(), m.getUser().getId()));
+
+        return chatMessageList;
     }
 
     @Override
@@ -94,7 +93,15 @@ public class ChatServiceImpl implements ChatService{
             // getList1과 getList2 사이에 공통된 roomId가 있다면 채팅방이 존재함을 알 수 있음
             List<ChatRoomJoin> getList1 = list1.get();
             List<ChatRoomJoin> getList2 = list1.get();
-            return 1L; // (작성중) 해당 roomId를 리턴
+
+            for (ChatRoomJoin tmp1 : getList1) {
+                for (ChatRoomJoin tmp2 : getList2) {
+                    if (tmp1.getChatRoom().getId().equals(tmp2.getChatRoom().getId())) {
+                        return tmp1.getChatRoom().getId(); // 해당 roomId를 리턴
+                    }
+                }
+            }
+            return 0L;
         }
     }
 
