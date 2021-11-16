@@ -1,5 +1,6 @@
 package com.b303.mokkozi.chat.dto;
 
+import com.b303.mokkozi.entity.ChatMessage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;

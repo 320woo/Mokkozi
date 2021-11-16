@@ -55,8 +55,8 @@ const routes = [
     props: true
   },
   {
-    path: '/openvidu',
-    name: 'Openvidu',
+    path: '/meeting',
+    name: 'Meeting',
     component: () => import('../views/openvidu/Openvidu.vue')
   },
   {

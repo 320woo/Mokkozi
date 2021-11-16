@@ -27,7 +27,10 @@ export default new Vuex.Store({
       state.user.profile = profile
     },
     setEmail(state, email) {
-      state.user.email = email;
+      state.user.email = email
+    },
+    setRole(state, role) {
+      state.role = role
     },
     setAddress(state, address) {
       state.user.address = address;
@@ -55,6 +58,9 @@ export default new Vuex.Store({
     },
     setEmail(context, email) {
       context.commit('setEmail', email)
+    },
+    setRole(context, role) {
+      context.commit('setRole', role)
     },
     setAddress(context, address) {
       context.commit('setAddress', address)

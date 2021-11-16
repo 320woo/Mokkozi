@@ -44,7 +44,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             return customUserDetails;
         }
         else {
-            return null;
+            logger.info("CustomUserDetailService.loadUserbyUsername 47 : 입력한 아이디, PW를 갖는 회원이 존재하지 않습니다.");
+            throw new UsernameNotFoundException(userEmail + "is Not Found");
         }
     }
 }

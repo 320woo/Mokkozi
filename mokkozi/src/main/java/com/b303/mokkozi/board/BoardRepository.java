@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
+    Board findById(long id);
 
     Page<Board> findAll(Pageable pageable);
 

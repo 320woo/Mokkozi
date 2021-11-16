@@ -2,16 +2,10 @@ package com.b303.mokkozi.user;
 
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.User;
+import com.b303.mokkozi.jwt.CustomUserDetails;
 import com.b303.mokkozi.jwt.TokenProvider;
-import com.b303.mokkozi.user.dto.TokenDto;
-import com.b303.mokkozi.user.dto.UserDto;
-import com.b303.mokkozi.user.dto.UserFollowDto;
-import com.b303.mokkozi.user.dto.UserRandomDto;
-import com.b303.mokkozi.user.request.CredentialPostReq;
-import com.b303.mokkozi.user.request.EmailPostReq;
-import com.b303.mokkozi.user.request.JoinInfoPostReq;
-import com.b303.mokkozi.user.dto.UserFollowListDto;
-import com.b303.mokkozi.user.request.NicknamePostReq;
+import com.b303.mokkozi.user.dto.*;
+import com.b303.mokkozi.user.request.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -19,6 +13,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -58,7 +53,8 @@ public class UserController {
     @PostMapping("/login")
     @ApiOperation(value = "로그인", notes = "ID, PW 이용 로그인")
     @ApiResponses({@ApiResponse(code = 200, message = "로그인 성공"), @ApiResponse(code = 500, message = "로그인 실패")})
-    public ResponseEntity<? extends BaseResponseBody> login(@RequestBody @ApiParam(value = "회원의 로그인 정보(아이디와 패스워드)", required = true) CredentialPostReq credentials) {
+    public ResponseEntity<? extends BaseResponseBody> login(
+            @RequestBody @ApiParam(value = "회원의 로그인 정보(아이디와 패스워드)", required = true) CredentialPostReq credentials) {
 
         // ID, PW가 담긴 토큰 발급
         logger.info("UserController.login 65 : 이메일: {}, 비밀번호: {}", credentials.getEmail(), credentials.getPassword());
@@ -69,38 +65,42 @@ public class UserController {
 
         // 이 토큰을 이용해서 Authenticaion 객체 생성
         logger.info("UserController.login 69 : Authenticaion 객체 생성");
+
+
+        // Dummy가 담긴 User 또는 실제 User 객체를 반환한다.
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // Spring Security에 해당 authenticaion 객체를 저장한다.
+        logger.info("UserController.login 79 : SecurityContextHolder에 authentication 객체를 저장합니다.");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 사용자 닉네임과 프로필 경로를 함께 보낸다.
-        Optional<User> user = userService.findByEmail(credentials.getEmail());
 
-        logger.info("UserController.login 72 : 사용자 정보 : {}", user);
+        CustomUserDetails result = (CustomUserDetails) authentication.getPrincipal();
+        logger.info("UserController.login 85 : authenticaion 정보 : {}", result.getUser());
 
-        // 생성한 authenticaion 객체를 이용하여 JWT 토큰을 발급받는다.
-        logger.info("UserController.login 76 : 토큰 발급 완료! : {}", authentication);
         return ResponseEntity.ok(TokenDto
                 .of(200, "로그인에 성공하였습니다. 토큰 발급 완료",
                         tokenProvider.createToken(authentication, "user"),
-                        user.get().getNickname(),
-                        user.get().getProfile(),
-                        user.get().getEmail()
-                        ));
+                        result.getUser().getNickname(),
+                        result.getUser().getProfile(),
+                        result.getUser().getEmail()
+                ));
+
     }
-    
+
+
     @GetMapping("/getuser")
     @ApiOperation(value = "유저정보", notes = "이메일로 다른 유저 정보 가져오기")
     @ApiResponses({@ApiResponse(code = 200, message = "유저정보 가져오기 성공"), @ApiResponse(code = 500, message = "유저정보 가져오기 실패")})
     public User getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
     		@ApiIgnore Authentication authentication) {
-    	
+
     	System.out.println("유저정보");
     	User getuser = userService.findByEmail(toUserEmail).get();
-        
+
     	return getuser;
     }
+
 
     @PostMapping("/join")
     @ApiOperation(value = "회원가입", notes = "회원 가입에 필요한 정보를 입력하고 회원가입한다.")
@@ -211,10 +211,11 @@ public class UserController {
     @ApiOperation(value = "랜덤 추천 목록 ", notes = "로그인한 회원을 제외한 랜덤 추천 목록을 반환")
     @ApiResponses({@ApiResponse(code = 200, message = "회원 랜덤 조회 성공"), @ApiResponse(code = 500, message = "회원 랜덤 조회 실패")})
     public ResponseEntity<? extends BaseResponseBody> recommendRandom(
-            @ApiIgnore Authentication authentication
+//            @ApiIgnore Authentication authentication
     ){
         try{
-            User user = (User) authentication.getDetails();
+//            User user = (User) authentication.getDetails();
+            User user = userService.findById((long)1).get();
             List<User> random = userService.getRandomUser(user);
             return ResponseEntity.ok(UserRandomDto.of(200, "회원 랜덤 조회 성공",random));
         } catch (AuthenticationException | NullPointerException e) {
@@ -267,5 +268,52 @@ public class UserController {
             return ResponseEntity.status(200).body(BaseResponseBody.of(404, "사용 가능한 닉네임입니다."));
         }
     }
+
+    // 관리자용 사용자 목록 조회
+    @GetMapping("/list")
+    @ApiOperation(value = "사용자 목록 조회", notes = "관리자는 사용자 목록을 조회할 수 있다.")
+    @ApiResponses({@ApiResponse(code = 200, message = "사용자 목록 성공"), @ApiResponse(code = 400, message = "실패"),
+            @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
+    public ResponseEntity<? extends BaseResponseBody>  getUserList(@RequestParam int page
+            ,@ApiIgnore Authentication authentication
+    ) {
+        try{
+            User user = (User) authentication.getDetails();
+            Page<User> list = userService.getUserList(user,page);
+            return ResponseEntity.ok(UserListDto.of(200, "사용자 목록 조회 성공",list));
+        } catch (AuthenticationException | NullPointerException e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+        }catch (NoSuchElementException e){
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "사용자가 존재하지 않습니다."));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+        }
+    }
+
+        @PatchMapping("/active")
+        @ApiOperation(value = "사용자 활동 변경", notes = "관리자는 사용자 활동 상태를 변경할 수 있다.")
+        @ApiResponses({@ApiResponse(code = 200, message = "사용자 활동 변경 성공"), @ApiResponse(code = 400, message = "실패"),
+                @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
+        public ResponseEntity<? extends BaseResponseBody>  verifyUser(@RequestBody UserActivePatchReq vupr
+            , @ApiIgnore Authentication authentication
+    ) {
+            try{
+                User user = (User) authentication.getDetails();
+                if (!user.getRole().equals("관리자")) new Exception();
+                userService.modifyUserActive(vupr);
+                return ResponseEntity.ok(BaseResponseBody.of(200, "사용자 활동 변경 성공"));
+            } catch (AuthenticationException | NullPointerException e) {
+                return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+            }catch (NoSuchElementException e){
+                e.printStackTrace();
+                return ResponseEntity.status(404).body(BaseResponseBody.of(404, "사용자가 존재하지 않습니다."));
+            }catch (Exception e){
+                e.printStackTrace();
+                return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+            }
+    }
+
 
 }

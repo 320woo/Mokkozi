@@ -24,17 +24,17 @@
               </ValidationProvider>
 
               <!-- 사용 가능한 이메일인 경우 -->
-              <v-alert v-if="joinInfo.emailCheck === true" dense type="info">
+              <v-alert v-if="emailCheck" dense type="info">
                 사용 가능한 이메일입니다.
               </v-alert>
               <!-- 중복된 이메일인 경우 -->
-              <v-alert v-else-if="joinInfo.emailCheck === false" dense outlined type="error" >
+              <v-alert v-else-if="emailCheck === false" dense outlined type="error" >
                 중복된 이메일입니다. 다른 이메일을 입력해 주세요.
               </v-alert>
 
               <!-- 로딩 스피너를 보여준다. -->
               <v-progress-circular
-              v-if="joinInfo.emailLoading"
+              v-if="emailLoading"
               indeterminate
               color="#FF9292"
               size="20" />
@@ -53,17 +53,17 @@
               <!-- 닉네임 유효성 검증 결과 출력 -->
 
               <!-- 사용 가능한 닉네임인 경우 -->
-              <v-alert v-if="joinInfo.nicknameCheck === true" dense type="info">
+              <v-alert v-if="nicknameCheck" dense type="info">
                 사용 가능한 별명입니다.
               </v-alert>
               <!-- 중복된 닉네임인 경우 -->
-              <v-alert v-else-if="joinInfo.nicknameCheck === false" dense outlined type="error" >
+              <v-alert v-else-if="nicknameCheck === false" dense outlined type="error" >
                 중복된 별명입니다. 다른 별명을 입력해 주세요.
               </v-alert>
 
               <!-- 로딩 스피너를 보여준다. -->
               <v-progress-circular
-              v-if="joinInfo.nicknameLoading"
+              v-if="nicknameLoading"
               indeterminate
               color="#FF9292"
               size="20" />
@@ -203,11 +203,11 @@
 
               <!-- 이미지 미리보기 -->
               <v-img
-              v-if="joinInfo.isProfile"
+              v-if="isProfile"
               class="myProfile"
               lazy-src="https://picsum.photos/id/11/10/6"
-              max-height="400"
-              max-width="300"
+              max-width="500"
+              max-height="500"
               :src="joinInfo.profileURL" />
 
               <!-- 마이 프로필에 띄울 이미지 3장 업로드 -->
@@ -226,14 +226,15 @@
               </ValidationProvider>
 
               <!-- 올린 이미지 미리 보기 -->
-              <v-carousel class="carousel" v-if="joinInfo.isCarousel">
-                  <v-carousel-item
-                  v-for="(url, i) in joinInfo.myImagesURL"
-                  :key="i"
-                  :src="url"
-                  reverse-transition="fade-transition"
-                  transition="fade-transition"
-                  ></v-carousel-item>
+              <v-carousel class="carousel" v-if="isCarousel">
+                <v-carousel-item
+                style="width: 500px; height: auto;"
+                v-for="(url, i) in joinInfo.myImagesURL"
+                :key="i"
+                :src="url"
+                reverse-transition="fade-transition"
+                transition="fade-transition"
+                ></v-carousel-item>
               </v-carousel>
 
               <!-- 관심사를 선택하지 않았을 때 출력되는 경고 페이지 -->
@@ -320,6 +321,11 @@ export default {
     nicknameCheck: '',      // 닉네임 중복 확인 인자.
     nicknameLoading: false, // 닉네임 로딩 스피너 표시 유무.
   }),
+  // watch: {
+  //   emailCheck (newVal, oldVal) {
+  //     this.emailCheck = newVal
+  //   }
+  // },
   methods: {
     daumPostCode () {
       new window.daum.Postcode({
@@ -422,7 +428,7 @@ export default {
             const formData2 = new FormData()
 
             // 리스트로 넘어오게 된다.
-            formData2.append("files", this.joinInfo.myImages)
+            // formData2.append("files", this.joinInfo.myImages)
 
             for (let i = 0; i < this.joinInfo.myImages.length; i++) {
               formData2.append("files", this.joinInfo.myImages[i])
@@ -460,7 +466,7 @@ export default {
 
       // X 버튼을 누르는 경우에는, 초기화를 한 것이므로
       if (this.joinInfo.myImages.length === 0) {
-        this.joinInfo.isCarousel = false
+        this.isCarousel = false
       } else {
         const result = []
         // 파일 하나당 가상의 URL 만들기
@@ -469,16 +475,16 @@ export default {
           result.push(previewURL)
         }
         this.joinInfo.myImagesURL = result
-        this.joinInfo.isCarousel = true
+        this.isCarousel = true
       }
     },
     myProfile() {
       // X 버튼 누르는 경우 초기화
       if (this.joinInfo.imgFile === null) {
-        this.joinInfo.isProfile = false
+        this.isProfile = false
       } else {
         this.joinInfo.profileURL = URL.createObjectURL(this.joinInfo.imgFile)
-        this.joinInfo.isProfile = true
+        this.isProfile = true
       }
     },
     validEmail(email) {
@@ -488,16 +494,16 @@ export default {
       }
 
       // 값을 입력하기 시작하면, 중복 시 발생한 경고문구를 제거한다.
-      this.joinInfo.emailCheck = ''
-      this.joinInfo.emailLoading = true
+      this.emailCheck = ''
+      this.emailLoading = true
 
       // Timer값이 null이 아니라면, null로 만들어준다.
-      if (this.joinInfo.timer) {
-        clearTimeout(this.joinInfo.timer)
+      if (this.timer) {
+        clearTimeout(this.timer)
       }
 
       // axios 요청 보낸다.
-      this.joinInfo.timer = setTimeout(() => {
+      this.timer = setTimeout(() => {
         axios({
           url: API_BASE_URL + "/meet/user/validEmail",
           method: 'POST',
@@ -509,20 +515,20 @@ export default {
           // 사용 가능
           if (resp.data.statusCode === 404) {
             console.log("사용할 수 있는 아이디입니다.")
-            this.joinInfo.emailCheck = true
-            this.joinInfo.email = email
+            this.emailCheck = true
+            // Vue.nextTick(callback)
           }
 
           // 사용 불가능
           if (resp.data.statusCode === 200) {
             console.log("중복된 아이디입니다.")
-            this.joinInfo.emailCheck = false
+            this.emailCheck = false
             this.joinInfo.email = ''
           }
 
         })
         // 스피너 표시 초기화
-        this.joinInfo.emailLoading = false
+        this.emailLoading = false
         }, 2000)
     },
     validNickname(value) {
@@ -532,16 +538,16 @@ export default {
       }
 
       // 값을 입력하기 시작하면, 이전에 표시된 경고 또는 승인문구를 제거한다.
-      this.joinInfo.nicknameCheck = ''
-      this.joinInfo.nicknameLoading = true
+      this.nicknameCheck = ''
+      this.nicknameLoading = true
 
       // Timer값이 null이 아니라면, null로 만들어준다.
-      if (this.joinInfo.timer2) {
-        clearTimeout(this.joinInfo.timer2)
+      if (this.timer2) {
+        clearTimeout(this.timer2)
       }
 
       // axios 요청 보낸다.
-      this.joinInfo.timer2 = setTimeout(() => {
+      this.timer2 = setTimeout(() => {
         axios({
           url: API_BASE_URL + "/meet/user/validNickname",
           method: 'POST',
@@ -553,20 +559,19 @@ export default {
           // 사용 가능
           if (resp.data.statusCode === 404) {
             console.log("사용할 수 있는 닉네임입니다.")
-            this.joinInfo.nicknameCheck = true
-            this.joinInfo.nickName = value
+            this.nicknameCheck = true
           }
 
           // 사용 불가능
           if (resp.data.statusCode === 200) {
             console.log("중복된 닉네임입니다.")
-            this.joinInfo.nicknameCheck = false
-            this.joinInfo.nickName = ''
+            this.nicknameCheck = false
+            this.nickName = ''
           }
 
         })
         // 스피너 표시 초기화
-        this.joinInfo.nicknameLoading = false
+        this.nicknameLoading = false
         }, 2000)
     }
   }
@@ -592,13 +597,6 @@ export default {
 .selected {
   background-color: #FF9292;
   border: 1px solid #FF9292;
-}
-.carousel {
-  -webkit-transition: 1000ms;
-  width: 400px;
-  height: 350px;
-  margin: auto;
-  margin-bottom: 15px;
 }
 .myProfile {
   margin: auto;

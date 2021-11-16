@@ -3,56 +3,53 @@
     <div class="background-div">
       <div class="board-div">
         <v-card
-          class="board-card"
-          max-width="24rem"
-          height="22rem"
+        class="board-card"
+        max-width="24rem"
+        height="26rem"
         >
-          <v-card-title style="display:flex; justify-content:space-between">
+          <v-card-title style="display:flex; justify-content:space-between; margin-bottom:1rem">
             <div>
               <v-avatar size="36px" @click="userImageClick(loginUser)">
-              <img
-                alt="Avatar"
-                src="@/assets/logo.png"
-              >
+              <img alt="Avatar" src="@/assets/logo.png">
               </v-avatar>
               <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(loginUser)">MOKKOZI</span>
             </div>
             <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
-          <template slot="progress">
-            <v-progress-linear
-              color="deep-purple"
-              height="10"
-              indeterminate
-            ></v-progress-linear>
-          </template>
 
+          <!-- 이미지 선택 -->
           <v-file-input
-           :rules="rules"
-            accept="image/png, image/jpeg, image/bmp"
-            placeholder="Pick your img"
-            prepend-icon="mdi-camera"
-            v-model="uploadImage" />
-          <v-img
-            width="24rem"
-            height="auto"
-            max-height="15rem"
-            position="center"
+          multiple
+          accept="image/png, image/jpeg, image/bmp"
+          placeholder="이미지를 선택하세요."
+          prepend-icon="mdi-camera"
+          @change="createImgUrl"
+          v-model="boardImages" />
+
+          <!-- 새롭게 올릴 이미지 미리 보기 -->
+          <v-carousel height="300" class="carousel" v-if="isCarousel" style="margin: 1rem 0rem">
+            <v-carousel-item
+            v-for="(url, i) in imagesURL"
+            :key="i"
             :src="url"
-            style="margin-bottom: 0.2rem"
-          ></v-img>
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+            ></v-carousel-item>
+          </v-carousel>
         </v-card>
+
+        <!-- 글 작성 -->
         <v-textarea
-          class="textarea"
-          filled
-          v-model="content"
-          placeholder="내용을 입력하세요.."
+        class="textarea"
+        filled
+        v-model="content"
+        placeholder="내용을 입력하세요.."
         ></v-textarea>
         <v-btn
-          color="#FFB4B4"
-          style="float: right;"
-          @click="createBoard">
-          작성
+        color="#FFB4B4"
+        style="float: right;"
+        @click="createBoard">
+        작성
         </v-btn>
       </div>
     </div>
@@ -61,17 +58,17 @@
 
 <script>
 import axios from 'axios'
+import * as commonFunc from '../../common/commonFunc'
 
 export default {
   name: 'BoardCreate',
   components: {
   },
   data: () => ({
-    rules: [
-      value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!'
-    ],
-    uploadImage: null,
-    content: ''
+    boardImages: [],  // 업로드한 파일.
+    imagesURL: [],    // 업로드한 파일들의 local URL.
+    isCarousel: false,// Carousel 표시 기준 값
+    content: ''       // 게시글 내용
   }),
   computed: {
     url () {
@@ -93,27 +90,48 @@ export default {
       this.$router.push({ name: 'Board' })
     },
     // 게시글 작성 요청
-    // Swagger로 보면 title과 content가 필요하지만 content만 있으면 될 듯?
-    // 사진 보내는 url 필요, FormData() 이용
     createBoard () {
-      // const formData = new FormData()
-      // formData.append('files', this.uploadImage)
+      const formData = new FormData()
+      // 파일의 경우, 하나씩 넣어야 한다.
+      for (let i = 0; i < this.boardImages.length; i++) {
+        formData.append('files', this.boardImages[i])
+      }
+
+      formData.append('content', this.content)
+
+      // console.log("전송할 파일 정보는 : ", formData.get("files"))
+
       axios({
         url: 'http://localhost:8000/api/meet/board',
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
-        data: {
-          content: this.content
-        }
+        data: formData
       }).then(res => {
         console.log('게시물 작성', res)
         this.$router.push({ name: 'Board' })
       }).catch(err => {
         console.log('게시물 작성 실패', err)
       })
-    }
+    },
+    createImgUrl() {
+      // 갯수를 제한한다. (최대 5장)
+      if (this.boardImages.length > 5) {
+        alert("이미지는 최대 5장까지 첨부 가능합니다.")
+        this.boardImages = []
+      }
+
+      // X 버튼을 누르는 경우에는, 업로드한 이미지를 초기화하는 것이므로
+      if (this.boardImages.length === 0) {
+        this.isCarousel = false
+      }
+      // 그 외에 1개 이상의 파일을 업로드한 경우에는...
+      else {
+        this.imagesURL = commonFunc.makeLocalURL(this.boardImages)
+        this.isCarousel = true
+      }
+    },
   }
 }
 </script>
@@ -126,7 +144,7 @@ export default {
   }
   .board-div {
     width: 24rem;
-    height: 39rem;
+    height: 42rem;
     display: inline-block;
     background-color: #ffe8e8;
     padding: 2rem 2rem;
@@ -145,7 +163,7 @@ export default {
   .board-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: start;
     align-content: center;
     background-color: #ffe8e8;
     padding-bottom: 1rem;
