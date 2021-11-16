@@ -3,15 +3,8 @@ package com.b303.mokkozi.user;
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.jwt.TokenProvider;
-import com.b303.mokkozi.user.dto.TokenDto;
-import com.b303.mokkozi.user.dto.UserDto;
-import com.b303.mokkozi.user.dto.UserFollowDto;
-import com.b303.mokkozi.user.dto.UserRandomDto;
-import com.b303.mokkozi.user.request.CredentialPostReq;
-import com.b303.mokkozi.user.request.EmailPostReq;
-import com.b303.mokkozi.user.request.JoinInfoPostReq;
-import com.b303.mokkozi.user.dto.UserFollowListDto;
-import com.b303.mokkozi.user.request.NicknamePostReq;
+import com.b303.mokkozi.user.dto.*;
+import com.b303.mokkozi.user.request.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -19,6 +12,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -103,10 +97,10 @@ public class UserController {
     @ApiResponses({@ApiResponse(code = 200, message = "유저정보 가져오기 성공"), @ApiResponse(code = 500, message = "유저정보 가져오기 실패")})
     public User getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
     		@ApiIgnore Authentication authentication) {
-    	
+
     	System.out.println("유저정보");
     	User getuser = userService.findByEmail(toUserEmail).get();
-        
+
     	return getuser;
     }
 
@@ -276,5 +270,52 @@ public class UserController {
             return ResponseEntity.status(200).body(BaseResponseBody.of(404, "사용 가능한 닉네임입니다."));
         }
     }
+
+    // 관리자용 사용자 목록 조회
+    @GetMapping("/list")
+    @ApiOperation(value = "사용자 목록 조회", notes = "관리자는 사용자 목록을 조회할 수 있다.")
+    @ApiResponses({@ApiResponse(code = 200, message = "사용자 목록 성공"), @ApiResponse(code = 400, message = "실패"),
+            @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
+    public ResponseEntity<? extends BaseResponseBody>  getUserList(@RequestParam int page
+            ,@ApiIgnore Authentication authentication
+    ) {
+        try{
+            User user = (User) authentication.getDetails();
+            Page<User> list = userService.getUserList(user,page);
+            return ResponseEntity.ok(UserListDto.of(200, "사용자 목록 조회 성공",list));
+        } catch (AuthenticationException | NullPointerException e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+        }catch (NoSuchElementException e){
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "사용자가 존재하지 않습니다."));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+        }
+    }
+
+        @PatchMapping("/active")
+        @ApiOperation(value = "사용자 활동 변경", notes = "관리자는 사용자 활동 상태를 변경할 수 있다.")
+        @ApiResponses({@ApiResponse(code = 200, message = "사용자 활동 변경 성공"), @ApiResponse(code = 400, message = "실패"),
+                @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
+        public ResponseEntity<? extends BaseResponseBody>  verifyUser(@RequestBody UserActivePatchReq vupr
+            , @ApiIgnore Authentication authentication
+    ) {
+            try{
+                User user = (User) authentication.getDetails();
+                if (!user.getRole().equals("관리자")) new Exception();
+                userService.modifyUserActive(vupr);
+                return ResponseEntity.ok(BaseResponseBody.of(200, "사용자 활동 변경 성공"));
+            } catch (AuthenticationException | NullPointerException e) {
+                return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+            }catch (NoSuchElementException e){
+                e.printStackTrace();
+                return ResponseEntity.status(404).body(BaseResponseBody.of(404, "사용자가 존재하지 않습니다."));
+            }catch (Exception e){
+                e.printStackTrace();
+                return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+            }
+    }
+
 
 }
