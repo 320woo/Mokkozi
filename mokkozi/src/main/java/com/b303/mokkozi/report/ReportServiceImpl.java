@@ -48,9 +48,12 @@ public class ReportServiceImpl implements ReportService {
         report.setTargetId(rcpr.getTargetId());
         ruRepository.save(report);
 
-
         long pc = target.getPenaltyCount() + 1;
         target.setPenaltyCount(pc);
+
+        if(target.getPenaltyCount()==(long)5)
+            target.setActive("정지");
+
         userRepository.save(target);
 
     }
@@ -64,7 +67,7 @@ public class ReportServiceImpl implements ReportService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "regDate"));
 
         Page<ReportUser> pageTuts = ruRepository.findAll(pageable);
-        Page<ReportUserDto> reportList = pageTuts.map(m -> new ReportUserDto(m, userRepository.findEmailById(m.getTargetId())));
+        Page<ReportUserDto> reportList = pageTuts.map(m -> new ReportUserDto(m, userRepository.findById(m.getTargetId()).get().getEmail()));
         return reportList;
 
 
@@ -73,7 +76,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportUserDto getUserReport(Long reportId) {
         ReportUser report = ruRepository.findById(reportId).orElseThrow(() -> new NoSuchElementException("not found"));
-        ReportUserDto reportDto = new ReportUserDto(report, userRepository.getEmailById(report.getTargetId()));
+        ReportUserDto reportDto = new ReportUserDto(report, userRepository.findById(report.getTargetId()).get().getEmail());
         return reportDto;
     }
 
