@@ -58,7 +58,8 @@ public class UserController {
     @PostMapping("/login")
     @ApiOperation(value = "로그인", notes = "ID, PW 이용 로그인")
     @ApiResponses({@ApiResponse(code = 200, message = "로그인 성공"), @ApiResponse(code = 500, message = "로그인 실패")})
-    public ResponseEntity<? extends BaseResponseBody> login(@RequestBody @ApiParam(value = "회원의 로그인 정보(아이디와 패스워드)", required = true) CredentialPostReq credentials) {
+    public ResponseEntity<? extends BaseResponseBody> login(
+            @RequestBody @ApiParam(value = "회원의 로그인 정보(아이디와 패스워드)", required = true) CredentialPostReq credentials) {
 
         // ID, PW가 담긴 토큰 발급
         logger.info("UserController.login 65 : 이메일: {}, 비밀번호: {}", credentials.getEmail(), credentials.getPassword());
@@ -79,17 +80,24 @@ public class UserController {
 
         logger.info("UserController.login 72 : 사용자 정보 : {}", user);
 
-        // 생성한 authenticaion 객체를 이용하여 JWT 토큰을 발급받는다.
-        logger.info("UserController.login 76 : 토큰 발급 완료! : {}", authentication);
-        return ResponseEntity.ok(TokenDto
+        if (user.isPresent()) {
+            // 생성한 authenticaion 객체를 이용하여 JWT 토큰을 발급받는다.
+            logger.info("UserController.login 76 : 토큰 발급 완료! : {}", authentication);
+            return ResponseEntity.ok(TokenDto
                 .of(200, "로그인에 성공하였습니다. 토큰 발급 완료",
                         tokenProvider.createToken(authentication, "user"),
                         user.get().getNickname(),
                         user.get().getProfile(),
                         user.get().getEmail()
                         ));
+        }
+        //
+        else {
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "유저가 존재하지 않습니다."));
+        }
     }
-    
+
+
     @GetMapping("/getuser")
     @ApiOperation(value = "유저정보", notes = "이메일로 다른 유저 정보 가져오기")
     @ApiResponses({@ApiResponse(code = 200, message = "유저정보 가져오기 성공"), @ApiResponse(code = 500, message = "유저정보 가져오기 실패")})
@@ -101,6 +109,7 @@ public class UserController {
         
     	return getuser;
     }
+
 
     @PostMapping("/join")
     @ApiOperation(value = "회원가입", notes = "회원 가입에 필요한 정보를 입력하고 회원가입한다.")

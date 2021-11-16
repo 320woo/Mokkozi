@@ -80,6 +80,9 @@ export default {
         this.$store.dispatch("setEmail", resp.data.email)
         // this.$store.dispatch("setAddress", resp.data.address)
         this.$router.push("Matching")
+        } else {
+          alert("아이디 또는 비밀번호가 일치하지 않습니다.")
+
         }
 
       })
