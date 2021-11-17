@@ -3,6 +3,7 @@ package com.b303.mokkozi.entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,11 +15,11 @@ import javax.persistence.ManyToOne;
 @Getter
 @Setter
 public class ChatRoomJoin extends BaseEntity {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "room_id", nullable = false)
     private ChatRoom chatRoom;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

@@ -15,14 +15,13 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@OnDelete(action = OnDeleteAction.CASCADE)  // CASCADE 삭제 설정
 public class Board extends BaseEntity{
     @Column(columnDefinition = "BLOB")
     private String content;
     private Date regDate;
     private String active; //활동, 정지
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id")
     private User user;
 

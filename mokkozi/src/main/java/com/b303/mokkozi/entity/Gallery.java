@@ -3,10 +3,7 @@ package com.b303.mokkozi.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -20,11 +17,11 @@ public class Gallery extends BaseEntity{
     @Column(nullable = false)
     private String sort;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id",nullable = true)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "board_id",nullable = true)
     private Board board;
 

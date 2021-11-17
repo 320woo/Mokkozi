@@ -16,7 +16,7 @@ public class ReportUser extends BaseEntity{
     @Column(nullable = false)
     private Long targetId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
