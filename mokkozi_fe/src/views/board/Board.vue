@@ -90,24 +90,37 @@
               style="color: red"
               @click="boardLike(board.id)"
             ></i>
-            like
+            {{ board.likeCount }}명이 이 글을 좋아합니다.
           </v-card-text>
 
           <v-card-text @click="boardDetailClick(board.id)" style="font-size:15px; margin: 4px 0px">
             {{ board.content }}
           </v-card-text>
           <!-- 작성한 댓글이 존재한다면 -->
-          <!-- 댓글 1개까지 출력하기 -->
-          <div v-for="(comment, commentIdx) in commentList[i]" :key="comment.id" style="height: 15px">
+          <!-- 댓글 2개까지 출력하기 -->
+          <!-- <v-card-text v-for="(comment, commentIdx) in commentList[i]" :key="comment.id" style="height: 23px">
             <p v-if="commentIdx < 2" style="float:left; font-size: 12px; margin: 0px">
               {{ comment.content }}
             </p>
+          </v-card-text> -->
+          <div v-if="commentList[i].length === 0" style="height: 15px; font-size: 12px;">
+            <p style="float: left">아직 작성된 댓글이 없습니다 :(</p>
           </div>
-          <div v-if="commentList[i].length === 0" style="height: 15px; font-size: 12px">
-            <p>아직 작성된 댓글이 없습니다 :(</p>
+          <div v-else-if="commentList[i].length === 1">
+            <v-card-text style="height: 20px; float:left; font-size: 12px; margin: 0px">
+              {{ commentList[i][0].content }}
+            </v-card-text>
           </div>
-          <div v-else-if="commentList[i].length >= 3" style="height: 15px;">
-            <p style="float:left; color: gray; cursor: pointer; height: 15px; font-size: 12px; margin: 0px" @click="commentClick"
+          <div v-else-if="commentList[i].length >= 2">
+            <v-card-text style="height: 20px; float:left; font-size: 12px; margin: 0px">
+              {{ commentList[i][0].content }}
+            </v-card-text>
+            <v-card-text style="height: 20px; float:left; font-size: 12px; margin: 0px">
+              {{ commentList[i][1].content }}
+            </v-card-text>
+          </div>
+          <div v-if="commentList[i].length >= 3" style="height: 15px;">
+            <p style="float:left; color: gray; cursor: pointer; height: 15px; font-size: 12px; margin: 0px" @click="commentClick(board.id)"
             >댓글 더 보기..</p>
           </div>
           <!-- 댓글 작성란 -->
@@ -253,27 +266,10 @@ export default {
     commentClick(boardId) {
       this.$router.push({ name: "Comment", params: { boardId: boardId } });
     },
-    // 게시물 리스트 불러오기
-    getBoardList() {
-      axios({
-        url: `http://localhost:8000/api/meet/board?page=${this.limit}`,
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + this.$store.state.jwt,
-        },
-      })
-        .then((res) => {
-          console.log("게시물 불러오기 성공", res);
-          this.boardList = res.data.boardList.content;
-        })
-        .catch((err) => {
-          console.log("게시물 불러오기 실패", err);
-        });
-    },
     // 댓글 작성
     createComment(boardId) {
-
-      console.log("댓글 정보 - 게시글 아이디 : ", boardId, ", 댓글 내용 : ", this.commentContent)
+      if (this.commentContent.trim() !== "") {
+        console.log("댓글 정보 - 게시글 아이디 : ", boardId, ", 댓글 내용 : ", this.commentContent)
       axios({
         url: "http://localhost:8000/api/meet/comment",
         method: "POST",
@@ -292,6 +288,7 @@ export default {
         .catch((err) => {
           console.log("댓글 작성 실패", err);
         });
+      }
     },
     // 좋아요
     boardLike(boardId) {
@@ -307,6 +304,7 @@ export default {
           this.boardList.filter((board) => {
             if (board.id === boardId) {
               board.boardLike = !board.boardLike;
+              board.likeCount += 1
             }
             return board;
           });
@@ -329,6 +327,7 @@ export default {
           this.boardList.filter((board) => {
             if (board.id === boardId) {
               board.boardLike = !board.boardLike;
+              board.likeCount -= 1
             }
             return board;
           });
@@ -367,7 +366,7 @@ export default {
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.0125em;
-  line-height: 2rem;
+  line-height: 15px;
   word-break: break-all;
   padding: 0;
 }
@@ -397,7 +396,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 }
 .v-card__actions {

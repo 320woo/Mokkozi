@@ -55,7 +55,7 @@
           </template>
 
           <!-- Carousel -->
-          <v-carousel height="300" class="carousel" v-if="board.galleryList > 1" style="margin: 1rem 0rem">
+          <v-carousel height="300" class="carousel" v-if="board.galleryList.length > 1" style="margin: 1rem 0rem">
             <v-carousel-item
             v-for="(img) in board.galleryList"
             :key="img.id"
@@ -90,7 +90,7 @@
               style="color: red"
               @click="boardLike(board.id)"
             ></i>
-            like
+            {{ board.likeCount }}명이 이 글을 좋아합니다.
           </v-card-text>
 
           <v-card-text @click="boardDetailClick(board.id)" style="font-size:15px; margin: 4px 0px">
@@ -160,9 +160,6 @@ export default ({
     commentList: "",
     board: [],
   }),
-  // created () {
-  //   this.getSelectBoard(this.boardId)
-  // },
   mounted () {
     this.getSelectBoard(this.boardId)
   },
@@ -203,22 +200,28 @@ export default ({
       })
     },
     // 댓글 작성
-    createComment (boardId) {
+    createComment(boardId) {
+      if (this.commentContent.trim() !== "") {
+        console.log("댓글 정보 - 게시글 아이디 : ", boardId, ", 댓글 내용 : ", this.commentContent)
       axios({
-        url: 'http://localhost:8000/api/meet/comment',
-        method: 'POST',
-        headers:{
-          Authorization:"Bearer "+ this.$store.state.jwt
+        url: "http://localhost:8000/api/meet/comment",
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
         },
         data: {
-          id: boardId,
-          content: this.commentContent
-        }
-      }).then(res => {
-        console.log('댓글 작성 성공', res)
-      }).catch(err => {
-        console.log('댓글 작성 실패', err)
+          boardId: boardId,
+          content: this.commentContent,
+        },
       })
+        .then((res) => {
+          console.log("댓글 작성 성공", res);
+          this.$router.go()
+        })
+        .catch((err) => {
+          console.log("댓글 작성 실패", err);
+        });
+      }
     },
     // 좋아요
     boardLike (boardId) {
@@ -261,7 +264,7 @@ export default ({
   }
   .board-div {
     width: 24rem;
-    height: 32rem;
+    height: 34rem;
     display: inline-block;
     background-color: #ffe8e8;
     padding: 2rem 2rem;

@@ -36,6 +36,17 @@
             transition="fade-transition"
             ></v-carousel-item>
           </v-carousel>
+
+          <!-- 선택한 이미지나 기존에 업로드한 이미지가 없는 경우 -->
+          <v-alert
+          v-if="isCarousel === false"
+          style="margin: 1rem 0rem;"
+          height="300"
+          border="right"
+          color="#FF9292"
+          dark>
+          개성있는 본인만의 사진을 올려주세요 👀
+          </v-alert>
         </v-card>
 
         <!-- 글 작성 -->
