@@ -5,14 +5,13 @@
       width="800px"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="#FFB4B4"
-          dark
+        <v-img
           v-bind="attrs"
           v-on="on"
-        >
-          유저신고
-        </v-btn>
+          max-width="24px"
+          max-height="24px"
+          src="@/assets/siren.png"
+        ></v-img>
       </template>
 
       <v-card>
