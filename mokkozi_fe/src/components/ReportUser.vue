@@ -24,10 +24,10 @@
         <v-divider></v-divider>
         <div style="margin: 24px; padding: 15px; display:flex; justify-content:start; align-items: center; border-style: solid; border-width: 1px;">
           <v-avatar size="150px" @click="userImageClick(board.userEmail)">
-            <img alt="Avatar" src="@/assets/logo.png">
+            <img alt="Avatar" :src="propImage">
           </v-avatar>
           <div style="margin-left: 20px;">
-            <h3>'공항도둑' 사용자 신고</h3>
+            <h3>'{{ nickname }}' 사용자 신고</h3>
             <p>이 사용자를 신고하는 이유를 선택해 주세요.</p>
           </div>
         </div>
@@ -63,7 +63,10 @@ export default {
     reason: '',
     reasonList: [['reason1', '혐오성/음란한 사진'], ['reason2', '사진도용'],
                  ['reason3', '금전요구사기'], ['reason4', '허위 프로필 정보'],
-                 ['reason5', '성매매/성희롱'], ['reason6', '기타']]
+                 ['reason5', '성매매/성희롱'], ['reason6', '기타']],
+    propImage: '',
+    nickname: '',
+    userId: null
   }),
   props: {
     userEmail: {
@@ -71,9 +74,27 @@ export default {
     }
   },
   mounted () {
+    this.getuser()
     this.reason = ''
   },
   methods: {
+    getuser() {
+      axios({
+        url: "http://localhost:8000/api/meet/user/getuser",
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+        params: {
+          toUserEmail: this.userEmail,
+        },
+      }).then((resp) => {
+        console.log("회원정보 확인: ", resp);
+        this.propImage = resp.data.profile
+        this.userId = resp.data.id
+        this.nickname = resp.data.nickname
+      })
+    },
     selectReason (id, reason) { // 하나만 선택할 수 있도록 바꿔야 한다
       const show = document.querySelector('#' + id)
       if (this.reason.length && show.classList.contains('selected')) {
@@ -109,7 +130,7 @@ export default {
             Authorization:"Bearer "+ this.$store.state.jwt
           },
           data: {
-            targetId: 2, // 아이디 값으로 요청 보내야함
+            targetId: this.userId, // 아이디 값으로 요청 보내야함
             content: this.reason
           }
         }).then(res => {

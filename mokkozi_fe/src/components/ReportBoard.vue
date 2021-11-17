@@ -106,7 +106,7 @@ export default {
             Authorization:"Bearer "+ this.$store.state.jwt
           },
           data: {
-            id: this.boardId,
+            boardId: this.boardId,
             content: this.boardReason
           }
         }).then(res => {
