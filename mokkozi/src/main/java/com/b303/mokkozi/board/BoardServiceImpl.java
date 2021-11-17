@@ -50,7 +50,7 @@ public class BoardServiceImpl implements BoardService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
         Page<Board> pageTuts = boardRepository.findAll(pageable);
-        Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
+        Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent(),ublRepository.countByBoardId(m.getId())));
 
         return boardList;
     }
@@ -96,7 +96,8 @@ public class BoardServiceImpl implements BoardService {
                 galleryService.galleryCreate(galleryVO, board.getId().toString());
             }
         }
-        return new BoardDto(board, boardLike);
+        long likeCount = ublRepository.countByBoardId(board.getId());
+        return new BoardDto(board, boardLike, likeCount);
 
 
     }
@@ -128,7 +129,8 @@ public class BoardServiceImpl implements BoardService {
     public BoardDto getBoardDetail(User user, Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("not found"));
         boolean boardLike = ublRepository.findByUserIdAndBoardId(user.getId(), board.getId()).isPresent();
-        return new BoardDto(board, boardLike);
+        long likeCount = ublRepository.countByBoardId(board.getId());
+        return new BoardDto(board, boardLike,likeCount);
     }
 
     @Override
@@ -143,7 +145,7 @@ public class BoardServiceImpl implements BoardService {
         Pageable pageable = PageRequest.of(pageIdx, size, Sort.by(Sort.Direction.DESC, "id"));
         if (type.equals("writer")) {
             Page<Board> pageTuts = boardRepository.findByUserIdContaining(pageable, keyword);
-            Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent()));
+            Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent(),ublRepository.countByBoardId(m.getId())));
             return boardList;
         } else if (type.equals("tag")) {
             //태그..?
@@ -208,8 +210,8 @@ public class BoardServiceImpl implements BoardService {
             log.info("BoardServiceImpl.modifyBoard 182: {}개의 새로운 파일을 업로드하였습니다.", count);
 
             boolean boardLike = ublRepository.findByUserIdAndBoardId(user.getId(), board.getId()).isPresent();
-
-            return new BoardDto(board, boardLike);
+            long likeCount = ublRepository.countByBoardId(board.getId());
+            return new BoardDto(board, boardLike,likeCount);
 
         } else throw new AccessDeniedException("");
     }
