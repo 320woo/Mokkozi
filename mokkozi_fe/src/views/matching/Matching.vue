@@ -22,7 +22,7 @@ export default {
       console.log("테스트합니다.")
       console.log("토큰 정보 : ", this.$store.state.jwt)
       axios({
-        url: 'http://localhost:8000/api/meet/user/test',
+        url: process.env.VUE_APP_API_URL + '/api/meet/user/test',
         method: "POST",
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt

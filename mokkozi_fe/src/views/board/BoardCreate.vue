@@ -102,7 +102,7 @@ export default {
       // console.log("전송할 파일 정보는 : ", formData.get("files"))
 
       axios({
-        url: 'http://localhost:8000/api/meet/board',
+        url: process.env.VUE_APP_API_URL + '/api/meet/board',
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt

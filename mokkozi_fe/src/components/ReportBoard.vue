@@ -100,7 +100,7 @@ export default {
     report () {
       if (this.boardReason.length) {
         axios({
-          url: 'http://localhost:8000/api/meet/report/board',
+          url: process.env.VUE_APP_API_URL + '/api/meet/report/board',
           method: 'POST',
           headers:{
             Authorization:"Bearer "+ this.$store.state.jwt

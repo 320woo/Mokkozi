@@ -77,7 +77,7 @@ export default {
     // 댓글 불러오기
     getCommentList (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/comment?${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/comment?${boardId}`,
         methods: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -91,7 +91,7 @@ export default {
     // 댓글 작성
     createComment () {
       axios({
-        url: 'http://localhost:8000/api/meet/comment',
+        url: process.env.VUE_APP_API_URL + '/api/meet/comment',
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt

@@ -82,8 +82,9 @@ export default {
       this.$router.push('Join')
     },
     login () {
+      
       axios({
-        url: 'https://localhost:8080/api/meet/user/login',
+        url: process.env.VUE_APP_API_URL + '/api/meet/user/login',
         method: 'POST',
         data: {
           email: this.credentials.email,

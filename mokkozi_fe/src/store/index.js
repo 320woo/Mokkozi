@@ -14,6 +14,7 @@ export default new Vuex.Store({
       address: '',
     },
     role: '',
+    BASE_URL: 'https://localhost:8000'
   },
   // Actions에서 commit() 함수를 통해 호출. state를 직접적으로 수정한다.
   mutations: {

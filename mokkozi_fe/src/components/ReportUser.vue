@@ -80,7 +80,7 @@ export default {
   methods: {
     getuser() {
       axios({
-        url: "http://localhost:8000/api/meet/user/getuser",
+        url: process.env.VUE_APP_API_URL + "/api/meet/user/getuser",
         method: "GET",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
@@ -124,7 +124,7 @@ export default {
       console.log(this.reason)
       if (this.reason.length) {
          axios({
-          url: 'http://localhost:8000/api/meet/report/user',
+          url: process.env.VUE_APP_API_URL + '/api/meet/report/user',
           method: 'POST',
           headers:{
             Authorization:"Bearer "+ this.$store.state.jwt
