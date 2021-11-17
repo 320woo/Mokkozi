@@ -107,13 +107,12 @@ export default {
   methods: {
     connect () {
       // SockJs를 생성한다.
-      let socket = new SockJS(process.env.VUE_APP_API_URL)
+      let socket = new SockJS(process.env.VUE_APP_API_URL + "/ws-stomp")
       let stompClient = Stomp.over(socket)
 
-      console.log(`소켓 연결을 시도합니다. 서버 주소는 ${serverURL}`)
+      console.log(`소켓 연결을 시도합니다. 서버 주소는 ${process.env.VUE_APP_API_URL}`)
 
-      stompClient.connect(
-        {},
+      stompClient.connect({},
         frame => {
           // 소켓 연결 성공
           this.connected = true

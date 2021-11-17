@@ -1,6 +1,6 @@
 package com.b303.mokkozi.user;
 
-import com.b303.mokkozi.entity.QUserFollow;
+//import com.b303.mokkozi.entity.QUserFollow;
 import com.b303.mokkozi.entity.UserFollow;
 import com.b303.mokkozi.user.dto.UserFollowDto;
 import com.querydsl.core.types.Projections;
@@ -24,7 +24,7 @@ public class UserFollowRepositoryImpl {
 
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
-    QUserFollow qUserFollow = QUserFollow.userFollow;
+//    QUserFollow qUserFollow = QUserFollow.userFollow;
 
     private UserFollowDto toDto(UserFollow uf){
 
@@ -38,14 +38,14 @@ public class UserFollowRepositoryImpl {
                 " WHERE uf.fromUser.id in (SELECT u.toUser.id FROM UserFollow u WHERE u.fromUser.id is "+ id +" )" +
                 " AND uf.toUser.id is "+id;
 
-        List<UserFollowDto> list = new ArrayList<>();
-                Optional.ofNullable(em.createQuery(str)
-                .getResultList()).stream().forEach(m->).orElse(null);
+//        List<UserFollowDto> list = new ArrayList<>();
+//                Optional.ofNullable(em.createQuery(str)
+//                .getResultList()).stream().forEach(m-> ).orElse(null);
+//
+//        return list;
 
-        return list;
 
-
-
+        return null;
     }
 
 }

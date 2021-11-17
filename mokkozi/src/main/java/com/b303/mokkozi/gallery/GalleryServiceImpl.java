@@ -137,8 +137,8 @@ public class GalleryServiceImpl implements GalleryService{
         for (Gallery gallery:galleryList) {
             GalleryDto galleryDto = new GalleryDto();
             galleryDto.setFile_path(gallery.getFilePath());
-            galleryDto.setBoardId(gallery.getBoard().getId().toString());
             galleryDto.setTitle(gallery.getTitle());
+            galleryDto.setEmail(gallery.getUser().getEmail());
             galleryDto.setId(gallery.getId());
 
             result.add(galleryDto);

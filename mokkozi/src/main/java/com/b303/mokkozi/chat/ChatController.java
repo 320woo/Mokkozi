@@ -13,14 +13,17 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -30,12 +33,13 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/meet/chat")
 public class ChatController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
     ChatService chatService;
@@ -43,27 +47,27 @@ public class ChatController {
     @Autowired
     UserService userService;
 
-    private final SimpMessagingTemplate  template;
+    private final SimpMessagingTemplate template;
 
     // 채팅방 목록 조회
     @GetMapping("/me")
     @ApiOperation(value = "채팅방 목록 조회", notes = "내가 참여한 채팅방 목록을 조회한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
-            @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
+            @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<Optional<List<ChatRoomJoin>>> getChatRoomList(@ApiIgnore Authentication authentication) {
-            // jwt 토큰 값을  파라미터로 받아와서 인증 및 해당 유저의 id를 확인
-            User user = (User) authentication.getDetails();
-            Long id = user.getId();
+        // jwt 토큰 값을  파라미터로 받아와서 인증 및 해당 유저의 id를 확인
+        User user = (User) authentication.getDetails();
+        Long id = user.getId();
 
-            // 해당 id를 기준으로 채팅방 목록을 조회하여 리턴한다.
-            return new ResponseEntity<>(chatService.getChatRoomList(id), HttpStatus.OK);
+        // 해당 id를 기준으로 채팅방 목록을 조회하여 리턴한다.
+        return new ResponseEntity<>(chatService.getChatRoomList(id), HttpStatus.OK);
     }
 
     // 해당 채팅방의 메시지 목록을 불러오기
     @GetMapping("/me/{chatRoomId}")
     @ApiOperation(value = "해당 채팅방의 메시지 목록 조회", notes = "메시지 목록을 조회한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
-            @ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
+            @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
     public ResponseEntity<? extends BaseResponseBody> getChatMsgList(
             @PathVariable Long chatRoomId,
             @RequestParam @ApiParam(value = "채팅 메시지 페이지 Index", defaultValue = "0") int page) {
@@ -98,5 +102,16 @@ public class ChatController {
         // 생성된 chat_room 을 FK로 하여 상대방과 내 ID를 컬럼값으로 갖는 데이터를 저장한다.
 
         return null;
+    }
+
+    @GetMapping("/alarm/stomp")
+    @ApiOperation(value = "Stomp 테스트")
+    public String stompAlarm() {
+        return "/stomp";
+    }
+
+    @MessageMapping("/{userId")
+    public void message(@DestinationVariable("userId") Long userId) {
+        messagingTemplate.convertAndSend("/sub/" + userId, "alarm socket connection completed.");
     }
 }
