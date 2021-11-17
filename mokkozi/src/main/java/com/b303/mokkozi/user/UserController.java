@@ -229,6 +229,26 @@ public class UserController {
         }
     }
 
+    //랜덤 추천 비회원ver.
+    @GetMapping("/recommend/guest_random")
+    @ApiOperation(value = "랜덤 추천 목록 ", notes = "로그인한 회원을 제외한 랜덤 추천 목록을 반환")
+    @ApiResponses({@ApiResponse(code = 200, message = "회원 랜덤 조회 성공"), @ApiResponse(code = 500, message = "회원 랜덤 조회 실패")})
+    public ResponseEntity<? extends BaseResponseBody> recommendRandomNotLogin(
+    ){
+        try{
+            List<User> random = userService.getRandomUserNotLogin();
+            return ResponseEntity.ok(UserRandomDto.of(200, "회원 랜덤 조회 성공",random));
+        } catch (AuthenticationException | NullPointerException e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+        } catch (NoSuchElementException e){
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 정보입니다."));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+        }
+    }
+
 
     @PostMapping("/validEmail")
     @ApiOperation(value = "이메일 검증", notes = "입력한 이메일이 이미 존재하는지 검증합니다.")

@@ -23,4 +23,14 @@ public class UserRepositoryImpl {
                 .getResultList()).orElse(null);
     }
 
+    @Transactional
+    public List<User> getRandomUserNotLogin(){
+        int maxResults = 5;
+        String str = "SELECT u FROM User u " +
+                "WHERE u.active LIKE '활동' " +
+                "ORDER BY RAND()";
+        return Optional.ofNullable(em.createQuery(str).setMaxResults(maxResults)
+                .getResultList()).orElse(null);
+    }
+
 }
