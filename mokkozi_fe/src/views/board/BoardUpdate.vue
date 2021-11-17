@@ -57,7 +57,7 @@
           style="margin: 1rem 0rem;"
           height="300"
           border="right"
-          color="red"
+          color="#FF9292"
           dark>
           개성있는 본인만의 사진을 올려주세요 👀
           </v-alert>
@@ -159,7 +159,6 @@ export default {
       // 이미지도 함께 수정해야 하므로, formDate를 활용한다.
       const formData = new FormData()
 
-
       // 새로운 파일이 하나라도 있으면 아래의 과정을 거친다 (없으면 Null을 보낸다.)
       for (let i=0; i < this.newImages.length; i++) {
         formData.append("newFiles", this.newImages[i])  // 파일 형식
@@ -248,7 +247,7 @@ export default {
   }
   .board-div {
     width: 24rem;
-    height: 39rem;
+    height: 40rem;
     display: inline-block;
     background-color: #ffe8e8;
     padding: 2rem 2rem;

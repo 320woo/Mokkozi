@@ -1,151 +1,164 @@
 <template>
-<div class="board-container" style="width: 700px; height:47rem;">
-  <v-btn color="#ffb4b4" class="create-btn" @click="boardCreateClick"
-    >+</v-btn>
-  <div class="background-div" v-for="(board, i) in boardList" :key="i">
-    <div class="board-div">
-      <v-card class="board-card" max-width="24rem" height="30rem">
-        <v-card-title
-          style="
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.2rem;
-          "
-        >
-          <div>
-            <v-avatar size="36px" @click="userImageClick(board.userEmail)">
-              <img alt="Avatar" :src="board.profileUrl" />
-            </v-avatar>
-            <span
-              class="font-weight-bold"
-              style="margin-left: 0.5rem"
-              @click="userNicknameClick(board.userEmail)"
-              >{{ board.nickName }}</span
-            >
-          </div>
-          <v-menu offset-y>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon color="black" dark v-bind="attrs" v-on="on"
-                >fas fa-ellipsis-h</v-icon
-              >
-            </template>
-            <v-list>
-              <v-list-item v-if="board.userEmail === loginUser">
-                <v-list-item-title>
-                  <v-btn
-                    style="cursor: pointer;"
-                    color="#FFB4B4"
-                    dark
-                    @click="boardUpdateClick(board.id)">수정하기</v-btn>
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <report-board :boardId="board.id" />
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-card-title>
-        <!-- <i class="fas fa-ellipsis-h"></i> -->
-        <template slot="progress">
-          <v-progress-linear
-            color="deep-purple"
-            height="10"
-            indeterminate
-          ></v-progress-linear>
-        </template>
-
-        <!-- Carousel -->
-        <v-carousel height="300" class="carousel" v-if="boardImgList[i].length > 1" style="margin: 1rem 0rem">
-          <v-carousel-item
-          v-for="(img, i) in boardImgList[i]"
-          :key="i"
-          :src="img.file_path"
-          reverse-transition="fade-transition"
-          transition="fade-transition"
-          ></v-carousel-item>
-        </v-carousel>
-
-        <!-- 이미지가 1장인 경우에는 -->
-        <v-img
-        v-else-if="boardImgList[i].length === 1"
-        width="320px"
-        height="300px"
-        max-height="300px"
-        position="center"
-        :src="boardImgList[i][0].file_path"
-        style="margin-bottom: 0.2rem"
-        >
-        </v-img>
-
-        <v-card-text class="like-text">
-          <i
-            v-if="board.boardLike"
-            class="fas fa-heart"
-            style="color: red"
-            @click="boardUnLike(board.id)"
-          ></i>
-          <i
-            v-else
-            class="far fa-heart"
-            style="color: red"
-            @click="boardLike(board.id)"
-          ></i>
-          like
-        </v-card-text>
-
-        <v-card-text @click="boardDetailClick(board.id)" style="font-size:15px; margin: 4px 0px">
-          {{ board.content }}
-        </v-card-text>
-        <!-- 작성한 댓글이 존재한다면 -->
-        <!-- 댓글 1개까지 출력하기 -->
-        <div v-for="(comment, commentIdx) in commentList[i]" :key="comment.id" style="height: 15px">
-          <p v-if="commentIdx < 2" style="float:left; font-size: 12px; margin: 0px">
-            {{ comment.content }}
-          </p>
-        </div>
-        <div v-if="commentList[i].length === 0" style="height: 15px; font-size: 12px">
-          <p>아직 작성된 댓글이 없습니다 :(</p>
-        </div>
-        <div v-else-if="commentList[i].length >= 3" style="height: 15px;">
-          <p style="float:left; color: gray; cursor: pointer; height: 15px; font-size: 12px; margin: 0px" @click="commentClick"
-          >댓글 더 보기..</p>
-        </div>
-        <!-- 댓글 작성란 -->
-        <div style="display:flex; justify-content: space-between;">
-          <input
-            v-model="commentContent"
+  <div class="board-container" style="width: 700px; height:47rem;">
+    <v-btn color="#ffb4b4" class="create-btn" @click="boardCreateClick"
+      >+</v-btn>
+    <div class="background-div" v-for="(board, i) in boardList" :key="i">
+      <div class="board-div">
+        <v-card class="board-card" max-width="24rem" height="30rem">
+          <v-card-title
             style="
-            height: 24px;
-            font-size: 0.875rem;
-            border: none;
-            width: 16rem;
-            outline-style: none;
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 0.2rem;
             "
-            type="text"
-            placeholder="댓글 달기"
-          />
-          <v-btn
-            color="#FFB4B4"
-            style="padding: 0px 5px;"
-            min-width="40px"
-            height="24px"
-            @click="createComment(board.id)"
           >
-            작성
-          </v-btn>
-        </div>
-      </v-card>
+            <div>
+              <v-avatar size="36px" @click="userImageClick(board.userEmail)">
+                <img alt="Avatar" :src="board.profileUrl" />
+              </v-avatar>
+              <span
+                class="font-weight-bold"
+                style="margin-left: 0.5rem"
+                @click="userNicknameClick(board.userEmail)"
+                >{{ board.nickName }}</span
+              >
+            </div>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon color="black" dark v-bind="attrs" v-on="on"
+                  >fas fa-ellipsis-h</v-icon
+                >
+              </template>
+              <v-list>
+                <v-list-item v-if="board.userEmail === loginUser">
+                  <v-list-item-title>
+                    <v-btn
+                      style="cursor: pointer;"
+                      color="#FFB4B4"
+                      dark
+                      @click="boardUpdateClick(board.id)">수정하기</v-btn>
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <report-board :boardId="board.id" />
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-card-title>
+          <!-- <i class="fas fa-ellipsis-h"></i> -->
+          <template slot="progress">
+            <v-progress-linear
+              color="deep-purple"
+              height="10"
+              indeterminate
+            ></v-progress-linear>
+          </template>
+
+          <!-- Carousel -->
+          <v-carousel height="300" class="carousel" v-if="boardImgList[i].length > 1" style="margin: 1rem 0rem">
+            <v-carousel-item
+            v-for="(img, i) in boardImgList[i]"
+            :key="i"
+            :src="img.file_path"
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+            ></v-carousel-item>
+          </v-carousel>
+
+          <!-- 이미지가 1장인 경우에는 -->
+          <v-img
+          v-else-if="boardImgList[i].length === 1"
+          width="320px"
+          height="300px"
+          max-height="300px"
+          position="center"
+          :src="boardImgList[i][0].file_path"
+          style="margin-bottom: 0.2rem"
+          >
+          </v-img>
+
+          <v-card-text class="like-text">
+            <i
+              v-if="board.boardLike"
+              class="fas fa-heart"
+              style="color: red"
+              @click="boardUnLike(board.id)"
+            ></i>
+            <i
+              v-else
+              class="far fa-heart"
+              style="color: red"
+              @click="boardLike(board.id)"
+            ></i>
+            {{ board.likeCount }}명이 이 글을 좋아합니다.
+          </v-card-text>
+
+          <v-card-text @click="boardDetailClick(board.id)" style="font-size:15px; margin: 4px 0px">
+            {{ board.content }}
+          </v-card-text>
+          <!-- 작성한 댓글이 존재한다면 -->
+          <!-- 댓글 2개까지 출력하기 -->
+          <!-- <v-card-text v-for="(comment, commentIdx) in commentList[i]" :key="comment.id" style="height: 23px">
+            <p v-if="commentIdx < 2" style="float:left; font-size: 12px; margin: 0px">
+              {{ comment.content }}
+            </p>
+          </v-card-text> -->
+          <div v-if="commentList[i].length === 0" style="height: 15px; font-size: 12px;">
+            <p style="float: left">아직 작성된 댓글이 없습니다 :(</p>
+          </div>
+          <div v-else-if="commentList[i].length === 1">
+            <v-card-text style="height: 20px; float:left; font-size: 12px; margin: 0px">
+              {{ commentList[i][0].content }}
+            </v-card-text>
+          </div>
+          <div v-else-if="commentList[i].length >= 2">
+            <v-card-text style="height: 20px; float:left; font-size: 12px; margin: 0px">
+              {{ commentList[i][0].content }}
+            </v-card-text>
+            <v-card-text style="height: 20px; float:left; font-size: 12px; margin: 0px">
+              {{ commentList[i][1].content }}
+            </v-card-text>
+          </div>
+          <div v-if="commentList[i].length >= 3" style="height: 15px;">
+            <p style="float:left; color: gray; cursor: pointer; height: 15px; font-size: 12px; margin: 0px" @click="commentClick(board.id)"
+            >댓글 더 보기..</p>
+          </div>
+          <!-- 댓글 작성란 -->
+          <div style="display:flex; justify-content: space-between;">
+            <input
+              v-model="commentContent"
+              style="
+              height: 24px;
+              font-size: 0.875rem;
+              border: none;
+              width: 16rem;
+              outline-style: none;
+              "
+              type="text"
+              placeholder="댓글 달기"
+            />
+            <v-btn
+              color="#FFB4B4"
+              style="padding: 0px 5px;"
+              min-width="40px"
+              height="24px"
+              @click="createComment(board.id)"
+            >
+              작성
+            </v-btn>
+          </div>
+        </v-card>
+      </div>
     </div>
-  </div>
-  <!-- infinite scroll -->
-  <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
-    <div
-      slot="no-more"
-      style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px"
-    >
-      목록의 끝입니다 :)
-    </div>
-  </infinite-loading>
+    <!-- infinite scroll -->
+    <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
+      <div
+        slot="no-more"
+        style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px"
+      >
+        목록의 끝입니다 :)
+      </div>
+    </infinite-loading>
   </div>
 </template>
 
@@ -253,27 +266,10 @@ export default {
     commentClick(boardId) {
       this.$router.push({ name: "Comment", params: { boardId: boardId } });
     },
-    // 게시물 리스트 불러오기
-    getBoardList() {
-      axios({
-        url: process.env.VUE_APP_API_URL + `/api/meet/board?page=${this.limit}`,
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + this.$store.state.jwt,
-        },
-      })
-        .then((res) => {
-          console.log("게시물 불러오기 성공", res);
-          this.boardList = res.data.boardList.content;
-        })
-        .catch((err) => {
-          console.log("게시물 불러오기 실패", err);
-        });
-    },
     // 댓글 작성
     createComment(boardId) {
-
-      console.log("댓글 정보 - 게시글 아이디 : ", boardId, ", 댓글 내용 : ", this.commentContent)
+      if (this.commentContent.trim() !== "") {
+        console.log("댓글 정보 - 게시글 아이디 : ", boardId, ", 댓글 내용 : ", this.commentContent)
       axios({
         url: process.env.VUE_APP_API_URL + "/api/meet/comment",
         method: "POST",
@@ -292,6 +288,7 @@ export default {
         .catch((err) => {
           console.log("댓글 작성 실패", err);
         });
+      }
     },
     // 좋아요
     boardLike(boardId) {
@@ -307,6 +304,7 @@ export default {
           this.boardList.filter((board) => {
             if (board.id === boardId) {
               board.boardLike = !board.boardLike;
+              board.likeCount += 1
             }
             return board;
           });
@@ -329,6 +327,7 @@ export default {
           this.boardList.filter((board) => {
             if (board.id === boardId) {
               board.boardLike = !board.boardLike;
+              board.likeCount -= 1
             }
             return board;
           });
@@ -367,7 +366,7 @@ export default {
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.0125em;
-  line-height: 2rem;
+  line-height: 15px;
   word-break: break-all;
   padding: 0;
 }
@@ -397,7 +396,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 }
 .v-card__actions {

@@ -43,7 +43,7 @@ const routes = [
     props: true
   },
   {
-    path: 'board/:boardId/comment',
+    path: '/comment/:boardId',
     name: 'Comment',
     component: () => import('../views/board/Comment.vue'),
     props: true
