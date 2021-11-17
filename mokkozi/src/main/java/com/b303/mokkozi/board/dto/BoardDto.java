@@ -1,6 +1,7 @@
 package com.b303.mokkozi.board.dto;
 
 
+import com.b303.mokkozi.comment.dto.CommentDto;
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.gallery.dto.GalleryDto;
@@ -29,6 +30,7 @@ public class BoardDto extends BaseResponseBody {
     private boolean boardLike; //현재 로그인한 사용자의 게시글 좋아요 여부
     private String profileUrl;
     private List<GalleryDto> galleryList;
+    private List<CommentDto> commentList;
     private Long likeCount;
 
 //    private List<CommentDto> comment;
@@ -57,11 +59,13 @@ public class BoardDto extends BaseResponseBody {
         return res;
     }
 
-    public static BoardDto of(Integer statusCode, String message, BoardDto board, List<GalleryDto> galleryList) {
+    public static BoardDto of(Integer statusCode, String message, BoardDto board,
+                              List<GalleryDto> galleryList, List<CommentDto> commentList) {
         BoardDto res = board;
         res.setStatusCode(statusCode);
         res.setMessage(message);
         res.setGalleryList(galleryList);
+        res.setCommentList(commentList);
         return res;
     }
 }

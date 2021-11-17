@@ -106,7 +106,9 @@ public class BoardController {
             // 이미지 정보도 함께 가져온다. 이 때 빈 리스트일 수도 있다. ( [] ) -> 게시글 목록 갯수와 일치시키기 위해
             List<GalleryDto> galleryList = galleryService.getGalleryList(boardService.getBoardById(boardId));
 
-            return ResponseEntity.ok(BoardDto.of(200, "게시글 상세 조회 완료.", boardDto, galleryList));
+            List<CommentDto> commentList = commentService.getCommentList(boardId);
+
+            return ResponseEntity.ok(BoardDto.of(200, "게시글 상세 조회 완료.", boardDto, galleryList, commentList));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e) {

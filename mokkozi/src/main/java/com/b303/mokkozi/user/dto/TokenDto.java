@@ -15,8 +15,9 @@ public class TokenDto extends BaseResponseBody {
     private String nickName;
     private String profile;
     private String email;
+    private String role;
 
-    public static TokenDto of(Integer statusCode, String message, String token, String nickName, String profile, String email) {
+    public static TokenDto of(Integer statusCode, String message, String token, String nickName, String profile, String email, String role) {
         TokenDto res = new TokenDto();
         res.setStatusCode(statusCode);
         res.setMessage(message);
@@ -24,6 +25,7 @@ public class TokenDto extends BaseResponseBody {
         res.setNickName(nickName);
         res.setProfile(profile);
         res.setEmail(email);
+        res.setRole(role);
         return res;
     }
 }
