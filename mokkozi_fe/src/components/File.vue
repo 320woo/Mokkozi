@@ -150,19 +150,19 @@
                 <div>저는 이런 사람을 만나고 싶어요</div>
                 <div>무교, 술을 잘마심, 친절함</div>
               </div>
+
+              <v-divider class="mt-4 mb-3"></v-divider>
+              <div style="text-align: center">게시물</div>
               <div>
                 <v-row>
                   <v-col
-                    v-for="n in 9"
+                    v-for="n in this.images"
                     :key="n"
-                    class="d-flex child-flex mt-10"
+                    class="d-flex child-flex mt-3"
                     cols="4"
                   >
                     <v-img
-                      :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                      :lazy-src="`https://picsum.photos/10/6?image=${
-                        n * 5 + 10
-                      }`"
+                      :src="n.file_path"
                       aspect-ratio="1"
                       class="grey lighten-2"
                     >
@@ -172,10 +172,6 @@
                           align="center"
                           justify="center"
                         >
-                          <v-progress-circular
-                            indeterminate
-                            color="grey lighten-5"
-                          ></v-progress-circular>
                         </v-row>
                       </template>
                     </v-img>
@@ -204,6 +200,7 @@ export default {
     this.getuser();
     this.follower();
     this.following();
+    this.profile_image();
   },
   components: {
     ReportUser,
@@ -217,6 +214,7 @@ export default {
     nickname: "",
     followers: [],
     followings: [],
+    images: [],
     num1: "",
     num2: "",
   }),
@@ -301,6 +299,19 @@ export default {
         this.$store.dispatch("setFollowing", resp.data.following);
       });
     },
+    profile_image() {
+      console.log("프로필 피드사진 목록");
+      axios({
+        url: process.env.VUE_APP_API_URL + "/api/meet/gallery/findByEmail",
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+      }).then((resp) => {
+        console.log("사진 목록 : ", resp.data.galleryList);
+        this.images = resp.data.galleryList;
+      });
+    },
   },
 };
 </script>
@@ -328,8 +339,10 @@ export default {
 }
 .report-icon {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  bottom: auto;
+  top: 40px;
+  left: auto;
+  right: 40px;
   cursor: pointer;
 }
 </style>

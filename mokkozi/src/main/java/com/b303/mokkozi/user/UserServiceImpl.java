@@ -36,9 +36,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepositoryImpl userRepositoryImpl;
 
-    @Autowired
-    UserFollowRepositoryImpl ufRepositoryImpl;
-
+//    @Autowired
+//    UserFollowRepositoryImpl ufRepositoryImpl;
 
     @Override
     public Optional<User> findByEmail(String email) {
@@ -161,13 +160,13 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public List<UserFollowDto> getEachFollow(User user) {
-        List<UserFollowDto> list = ufRepositoryImpl.getEachFollow(user.getId());
-
-//        Page<UserFollow> pageTuts = userFollowRepository.findByFromUser_IdIsAnd()
-        return null;
-    }
+//    @Override
+//    public List<UserFollowDto> getEachFollow(User user) {
+//        List<UserFollowDto> list = ufRepositoryImpl.getEachFollow(user.getId());
+//
+////        Page<UserFollow> pageTuts = userFollowRepository.findByFromUser_IdIsAnd()
+//        return null;
+//    }
 
     @Override
     public List<User> getRandomUser(User user) {
