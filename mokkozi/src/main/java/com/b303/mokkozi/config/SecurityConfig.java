@@ -56,7 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 이제부터 수행하는 경우는 HttpServletRequest에 Authentication Token이 포함된 경우이다.
                 // 단, 로그인 API, 회원가입 API의 경우 토큰이 없는 상태에서 요청이 들어오기 때문에, 모두 permitAll 처리 한다.
                 .and()
-                .authorizeRequests()
+                .authorizeRequests()                
+                .antMatchers("/api/meet/user/recommend/guest_random").permitAll()
                 .antMatchers("/api/meet/user/login").permitAll()
                 .antMatchers("/api/meet/user/join").permitAll()
                 .antMatchers("/api/meet/user/validEmail").permitAll()

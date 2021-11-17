@@ -3,7 +3,10 @@
     <div>
       <v-card class="board-card" max-height="50rem">
         <div class="profile" style="height: 100%; position: relative">
-          <report-user :userEmail="this.$route.params.userEmail" class="report-icon" />
+          <report-user
+            :userEmail="this.$route.params.userEmail"
+            class="report-icon"
+          />
           <!-- 배경 이미지 부분 -->
           <img class="bg-img" :src="defaultImage" alt="커버사진" />
           <!-- 사용자 프로필 이미지 부분 -->
@@ -192,7 +195,7 @@
 <script>
 import defaultImage from "../assets/images/커버.png";
 import camera from "../assets/images/camera.png";
-import ReportUser from "./ReportUser"
+import ReportUser from "./ReportUser";
 import axios from "axios";
 
 export default {
@@ -203,7 +206,7 @@ export default {
     this.following();
   },
   components: {
-    ReportUser
+    ReportUser,
   },
   data: () => ({
     defaultImage: defaultImage,
