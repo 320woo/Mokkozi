@@ -109,6 +109,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+
     @Override
     public void createFollow(User fromUser, String toUserEmail) {
         User toUser = userRepository.findByEmail(toUserEmail).orElseThrow(() -> new NoSuchElementException("not found"));
@@ -159,6 +160,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getRandomUser(User user) {
         List<User> list = userRepositoryImpl.getRandomUser(user.getId());
+        return list;
+    }
+
+    @Override
+    public List<User> getRandomUserNotLogin() {
+        List<User> list = userRepositoryImpl.getRandomUserNotLogin();
         return list;
     }
 
