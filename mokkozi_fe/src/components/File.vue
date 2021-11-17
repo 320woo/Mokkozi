@@ -28,8 +28,8 @@
             </div>
           </div>
           <div class="user-info">
-            <div>이름 : {{ this.nickname }}</div>
-            <div>이메일 : {{ this.email }}</div>
+            <div>{{ this.nickname }}</div>
+            <div>{{ this.email }}</div>
           </div>
           <div class="user-follow">
             <v-btn
@@ -43,16 +43,10 @@
             </v-btn>
           </div>
           <!-- <div class="user-follow">
-            <v-btn
-              @click="unfollow"
-              dark="dark"
-              dense="dense"
-              color="#FFB4B4"
-              class="my-2 font-weight-black"
-            >
-              팔로우 취소
-            </v-btn>
-          </div> -->
+                            <v-btn @click="unfollow" dark="dark" dense="dense" color="#FFB4B4" class="my-2 font-weight-black">
+                               팔로우 취소
+                            </v-btn>
+                        </div> -->
           <!-- 인적 사항 부분 -->
           <div>
             <v-card
@@ -77,7 +71,7 @@
                           v-on="on"
                         >
                           <div class="font-weight-black">팔로워</div>
-                          <div class="font-weight-medium">50</div>
+                          <div class="font-weight-medium">{{ num2 }}</div>
                         </div>
                       </template>
                       <v-card>
@@ -97,16 +91,6 @@
                                 />
                               </v-avatar>
                               {{ item.nickname }}
-                              <v-btn
-                                @click="unfollow"
-                                dark="dark"
-                                dense="dense"
-                                color="#FFB4B4"
-                                class="my-2 font-weight-black"
-                                style="margin-left: 175px"
-                              >
-                                삭제
-                              </v-btn>
                             </div>
                           </v-card-text>
                         </div>
@@ -124,7 +108,9 @@
                           v-on="on"
                         >
                           <div class="font-weight-black">팔로잉</div>
-                          <div class="font-weight-medium">50</div>
+                          <div class="font-weight-medium">
+                            {{ num1 }}
+                          </div>
                         </div>
                       </template>
                       <v-card>
@@ -144,16 +130,6 @@
                                 />
                               </v-avatar>
                               {{ item.nickname }}
-                              <v-btn
-                                @click="unfollow"
-                                dark="dark"
-                                dense="dense"
-                                color="#FFB4B4"
-                                class="my-2 font-weight-black"
-                                style="margin-left: 175px"
-                              >
-                                삭제
-                              </v-btn>
                             </div>
                           </v-card-text>
                         </div>
@@ -221,6 +197,8 @@ export default {
   name: "File",
   created() {
     this.getuser();
+    this.follower();
+    this.following();
   },
   components: {},
   data: () => ({
@@ -232,6 +210,8 @@ export default {
     nickname: "",
     followers: [],
     followings: [],
+    num1: "",
+    num2: "",
   }),
   methods: {
     getuser() {
@@ -247,8 +227,8 @@ export default {
       }).then((resp) => {
         console.log("회원정보 확인: ", resp);
         this.propImage = resp.data.profile;
-        this.email = resp.data.email;
         this.nickname = resp.data.nickname;
+        this.email = resp.data.email;
       });
     },
 
@@ -276,7 +256,6 @@ export default {
           Authorization: "Bearer " + this.$store.state.jwt,
         },
         params: {
-          //각 유저마다 갖고 있는 followid
           followId: this.$route.params.userEmail,
         },
       }).then((resp) => {
@@ -285,7 +264,6 @@ export default {
     },
 
     follower() {
-      console.log("팔로워 목록");
       axios({
         url: "http://localhost:8000/api/meet/user/followers",
         method: "GET",
@@ -295,7 +273,9 @@ export default {
       }).then((resp) => {
         console.log("팔로워 수 : ", resp);
         this.followers = resp.data.followers;
-        console.log("팔로워 객체 " + resp.data.followers);
+        console.log(resp.data.followers.length);
+        // this.followers_length = resp.data.followers.length;
+        this.num2 = resp.data.followers.length;
         this.$store.dispatch("setFollowers", resp.data.followers);
       });
     },
@@ -310,7 +290,7 @@ export default {
       }).then((resp) => {
         console.log("팔로잉 목록 : ", resp);
         this.followings = resp.data.followers;
-        console.log("팔로잉 객체 " + resp.data.followers);
+        this.num1 = resp.data.followers.length;
         this.$store.dispatch("setFollowing", resp.data.following);
       });
     },
