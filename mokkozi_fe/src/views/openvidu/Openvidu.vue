@@ -90,7 +90,7 @@
 import axios from 'axios'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from '../../components/UserVideo'
-import * as faceapi from 'face-api.js'
+// import * as faceapi from 'face-api.js'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 const OPENVIDU_SERVER_URL = 'https://k5b303.p.ssafy.io:8447'
@@ -108,7 +108,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'MOKKOZI',
+      mySessionId: 'MOKKOZI2',
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
       videoState: true,
       audioState: true,

@@ -55,7 +55,7 @@
             <!-- 닉네임 -->
             <ValidationProvider
               name="닉네임"
-              rules="required"
+              rules="required|max:6"
               v-slot="{ errors }"
             >
               <v-text-field
@@ -94,7 +94,7 @@
             <!-- 비밀번호 -->
             <ValidationProvider
               name="비밀번호"
-              rules="required"
+              rules="required|min:10|max:15"
               v-slot="{ errors }"
             >
               <v-text-field
@@ -424,7 +424,7 @@
 </template>
 
 <script>
-import { required, email, size } from "vee-validate/dist/rules";
+import { required, email, size, max, min } from "vee-validate/dist/rules";
 import { ValidationObserver, ValidationProvider, extend } from "vee-validate";
 import axios from "axios";
 import router from "../../router";
@@ -442,6 +442,16 @@ extend("required", {
 extend("fileRequired", {
   ...size,
   message: '{_field_}의 최대 용량은 2MB입니다.',
+})
+
+extend("max", {
+  ...max,
+  message: '{_field_}의 최대 길이는 {length}자입니다.'
+})
+
+extend("min", {
+  ...min,
+  message: '{_field_}의 최소 길이는 {length}자입니다.'
 })
 
 export default {

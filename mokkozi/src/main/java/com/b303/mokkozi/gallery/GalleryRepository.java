@@ -15,4 +15,6 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
 
     List<Gallery> findAllByBoardId(Long boardId);
 
+    List<Gallery> findAllByUserId(Long userId);
+
 }
