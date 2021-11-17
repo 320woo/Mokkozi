@@ -1,6 +1,7 @@
 package com.b303.mokkozi.user;
 
 import com.b303.mokkozi.entity.User;
+import com.b303.mokkozi.user.dto.UserFollowDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -32,5 +33,4 @@ public class UserRepositoryImpl {
         return Optional.ofNullable(em.createQuery(str).setMaxResults(maxResults)
                 .getResultList()).orElse(null);
     }
-
 }
