@@ -405,7 +405,7 @@ export default {
             "Content-Type": "application/json"
           },
           data: {
-            email: this.joinInfo.emailtrim(),
+            email: this.joinInfo.email.trim(),
             nickname: this.joinInfo.nickName.trim(),
             password: this.joinInfo.password.trim(),
             address: this.joinInfo.address,

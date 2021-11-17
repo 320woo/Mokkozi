@@ -4,33 +4,40 @@
     <v-icon style="position: fixed; color: #FFB4B4;" @click="backToBoardClick">fas fa-chevron-left</v-icon>
     <div class="background-div">
       <div class="board-div">
-        <v-card
-          class="board-card"
-          max-width="24rem"
-          height="28rem"
-        >
-          <v-card-title style="display:flex; justify-content:space-between; margin-bottom: 0.2rem">
+        <v-card class="board-card" max-width="24rem" height="30rem">
+          <v-card-title
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 0.2rem;
+            "
+          >
             <div>
               <v-avatar size="36px" @click="userImageClick(board.userEmail)">
-              <img
-                alt="Avatar"
-                src="@/assets/logo.png"
-              >
+                <img alt="Avatar" :src="board.profileUrl" />
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(board.userEmail)">{{ board.nickName }}</span>
+              <span
+                class="font-weight-bold"
+                style="margin-left: 0.5rem"
+                @click="userNicknameClick(board.userEmail)"
+                >{{ board.nickName }}</span
+              >
             </div>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
-                  <v-icon
-                  color="black"
-                  dark
-                  v-bind="attrs"
-                  v-on="on"
-                  >fas fa-ellipsis-h</v-icon>
+                <v-icon color="black" dark v-bind="attrs" v-on="on"
+                  >fas fa-ellipsis-h</v-icon
+                >
               </template>
               <v-list>
                 <v-list-item v-if="board.userEmail === loginUser">
-                  <v-list-item-title style="cursor: pointer;" @click="boardUpdateClick(board.id)">수정하기</v-list-item-title>
+                  <v-list-item-title>
+                    <v-btn
+                      style="cursor: pointer;"
+                      color="#FFB4B4"
+                      dark
+                      @click="boardUpdateClick(board.id)">수정하기</v-btn>
+                  </v-list-item-title>
                 </v-list-item>
                 <v-list-item>
                   <report-board :boardId="board.id" />
@@ -47,33 +54,82 @@
             ></v-progress-linear>
           </template>
 
+          <!-- Carousel -->
+          <v-carousel height="300" class="carousel" v-if="board.galleryList > 1" style="margin: 1rem 0rem">
+            <v-carousel-item
+            v-for="(img) in board.galleryList"
+            :key="img.id"
+            :src="img.file_path"
+            reverse-transition="fade-transition"
+            transition="fade-transition"
+            ></v-carousel-item>
+          </v-carousel>
+
+          <!-- 이미지가 1장인 경우에는 -->
           <v-img
-            width="24rem"
-            height="auto"
-            max-height="15rem"
-            position="center"
-            :src="image"
-            style="margin-bottom: 0.2rem"
-          ></v-img>
+          v-else-if="board.galleryList.length === 1"
+          width="320px"
+          height="300px"
+          max-height="300px"
+          position="center"
+          :src="board.galleryList[0].file_path"
+          style="margin-bottom: 0.2rem"
+          >
+          </v-img>
 
           <v-card-text class="like-text">
-            <i v-if="board.boardLike" class="fas fa-heart" style="color:red" @click="boardUnLike(board.id)"></i>
-            <i v-else class="far fa-heart" style="color:red" @click="boardLike(board.id)"></i>
-             like
+            <i
+              v-if="board.boardLike"
+              class="fas fa-heart"
+              style="color: red"
+              @click="boardUnLike(board.id)"
+            ></i>
+            <i
+              v-else
+              class="far fa-heart"
+              style="color: red"
+              @click="boardLike(board.id)"
+            ></i>
+            like
           </v-card-text>
 
-          <v-card-text>
+          <v-card-text @click="boardDetailClick(board.id)" style="font-size:15px; margin: 4px 0px">
             {{ board.content }}
           </v-card-text>
-          <v-card-text style="color: gray">댓글 더 보기..</v-card-text>
-          <div>
-            <input v-model="commentContent" style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem"
-              type="text" placeholder="댓글 달기">
+          <!-- 작성한 댓글이 존재한다면 -->
+          <!-- 댓글 1개까지 출력하기 -->
+          <div v-for="(comment) in board.commentList" :key="comment.id" style="height: 15px">
+            <p v-if="board.commentList.length < 2" style="float:left; font-size: 12px; margin: 0px">
+              {{ comment.content }}
+            </p>
+          </div>
+          <div v-if="board.commentList.length === 0" style="height: 15px; font-size: 12px">
+            <p>아직 작성된 댓글이 없습니다 :(</p>
+          </div>
+          <div v-else-if="board.commentList.length >= 3" style="height: 15px;">
+            <p style="float:left; color: gray; cursor: pointer; height: 15px; font-size: 12px; margin: 0px" @click="commentClick"
+            >댓글 더 보기..</p>
+          </div>
+          <!-- 댓글 작성란 -->
+          <div style="display:flex; justify-content: space-between;">
+            <input
+              v-model="commentContent"
+              style="
+              height: 24px;
+              font-size: 0.875rem;
+              border: none;
+              width: 16rem;
+              outline-style: none;
+              "
+              type="text"
+              placeholder="댓글 달기"
+            />
             <v-btn
               color="#FFB4B4"
-              width="4rem"
-              height="1.25rem"
-              @click="createComment(boardId)"
+              style="padding: 0px 5px;"
+              min-width="40px"
+              height="24px"
+              @click="createComment(board.id)"
             >
               작성
             </v-btn>
@@ -101,8 +157,8 @@ export default ({
   data: () => ({
     image: 'https://images.dog.ceo/breeds/bulldog-english/murphy.jpg',
     commentContent: '',
-    board: {},
-    like: false
+    commentList: "",
+    board: [],
   }),
   // created () {
   //   this.getSelectBoard(this.boardId)
@@ -140,7 +196,7 @@ export default ({
           Authorization:"Bearer "+ this.$store.state.jwt
         }
       }).then(res => {
-        console.log('게시물 불러오기 성공', res)
+        console.log('게시물 불러오기 성공', res.data)
         this.board = res.data
       }).catch(err => {
         console.log('게시물 불러오기 실패', err)
