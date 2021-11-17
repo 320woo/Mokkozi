@@ -18,44 +18,56 @@
             <v-toolbar-title class="font-weight-bold">댓글</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-list-item-avatar @click="userImageClick">
-              <img src="https://picsum.photos/250/300?image=1008">
+              <img :src="board.profileUrl">
             </v-list-item-avatar>
           </v-toolbar>
         <v-divider style="margin: 0.5rem 0rem;"></v-divider>
 
-
-        <div style="display: flex; flex-direction: row; justify-content: center">
+        <div v-for="comment in conmmentList" :key="comment.id"  style="display: flex; flex-direction: row; justify-content: center">
           <div style="width: 3rem;">
             <v-list-item-avatar>
-              <img src="https://picsum.photos/250/300?image=821">
+              <img :src="comment.file_path">
             </v-list-item-avatar>
           </div>
           <div style="width: 17rem;">
             <v-list-item-content>
-              <span class="font-weight-bold" style="text-align: start;">Spike Lee</span>
-              <span class="comment-text">I'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhood</span>
+              <span class="font-weight-bold" style="text-align: start;">{{ comment.nickName }}</span>
+              <span class="comment-text">{{ comment.content }}</span>
             </v-list-item-content>
           </div>
         </div>
 
-        <div>
-            <input v-model="commentContent" style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem"
-              type="text" placeholder="댓글 달기">
+        <div style="display:flex; justify-content: space-between;">
+          <input
+              v-model="commentContent"
+              style="
+              height: 24px;
+              font-size: 0.875rem;
+              border: none;
+              width: 16rem;
+              outline-style: none;
+              "
+              type="text"
+              placeholder="댓글 달기"
+            />
             <v-btn
               color="#FFB4B4"
-              width="4rem"
-              height="1.25rem"
-              @click="createComment"
+              style="padding: 0px 5px;"
+              min-width="40px"
+              height="24px"
+              @click="createComment(board.id)"
             >
               작성
             </v-btn>
-          </div>
+        </div>
       </v-card>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios"
+
 export default {
   name: 'Comment',
   components: {},
@@ -65,8 +77,14 @@ export default {
     }
   },
   data: () => ({
-    commentContent: ''
+    commentContent: '',
+    conmmentList: '',
+    board: ''
   }),
+  mounted () {
+    this.getCommentList(this.boardId)
+    this.getSelectBoard(this.boardId)
+  },
   methods: {
     backToBoardClick () {
       this.$router.push({ name: 'Board' })
@@ -74,40 +92,60 @@ export default {
     userImageClick () {
       this.$router.push({ name: 'Profile' })
     },
+    // 게시물 불러오기
+    getSelectBoard (boardId) {
+      axios({
+        url: process.env.VUE_APP_API_URL + `/api/meet/board/${boardId}`,
+        methods: 'GET',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
+        }
+      }).then(res => {
+        console.log('게시물 불러오기 성공', res.data)
+        this.board = res.data
+      }).catch(err => {
+        console.log('게시물 불러오기 실패', err)
+      })
+    },
     // 댓글 불러오기
     getCommentList (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/comment?${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/comment?${boardId}`,
         methods: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         }
       }).then(res => {
         console.log('댓글 불러오기', res)
+        this.conmmentList = res.data.commentList
       }).catch(err => {
         console.log('댓글 불러오기 실패', err)
       })
     },
     // 댓글 작성
-    createComment () {
+    createComment(boardId) {
+      if (this.commentContent.trim() !== "") {
+        console.log("댓글 정보 - 게시글 아이디 : ", boardId, ", 댓글 내용 : ", this.commentContent)
       axios({
-        url: 'http://localhost:8000/api/meet/comment',
+        url: process.env.VUE_APP_API_URL + '/api/meet/comment',
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
         data: {
-          content: this.commentContent
-        }
-      }).then(res => {
-        console.log('댓글 작성 성공', res)
-      }).catch(err => {
-        console.log('댓글 작성 실패', err)
+          boardId: boardId,
+          content: this.commentContent,
+        },
       })
+        .then((res) => {
+          console.log("댓글 작성 성공", res);
+          this.$router.go()
+        })
+        .catch((err) => {
+          console.log("댓글 작성 실패", err);
+        });
+      }
     },
-  },
-  created: function () {
-    getCommentList(boardId)
   },
 }
 </script>

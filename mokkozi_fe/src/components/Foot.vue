@@ -78,6 +78,7 @@ export default {
     bottom: 0px;
     left: auto;
     width: 700px;
+    z-index: 10;
     elevation: level;
 }
 

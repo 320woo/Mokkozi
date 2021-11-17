@@ -16,7 +16,7 @@
   bottom: auto;
   top: 225px;
   left: auto;
-  right: 340px;
+  right: 380px;
 }
 .user-follow {
   /* 사용자 프로필 이미지 프레임 */
@@ -156,4 +156,8 @@
   font-size: 16px;
   font-weight: 600;
   padding: 10px;
+}
+
+.main {
+  
 }

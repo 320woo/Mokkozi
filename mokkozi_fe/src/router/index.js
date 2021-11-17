@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Test from '../views/test/Test.vue'
 import Login from '../views/user/Login.vue'
 import Join from '../views/user/Join.vue'
 
@@ -21,11 +20,6 @@ const routes = [
   //   // which is lazy-loaded when the route is visited.
   //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   // },
-  {
-    path: '/test',
-    name: 'Test',
-    component: Test
-  },
   {
     path: '/board',
     name: 'Board',
@@ -49,7 +43,7 @@ const routes = [
     props: true
   },
   {
-    path: 'board/:boardId/comment',
+    path: '/comment/:boardId',
     name: 'Comment',
     component: () => import('../views/board/Comment.vue'),
     props: true

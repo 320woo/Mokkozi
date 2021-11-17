@@ -1,4 +1,9 @@
 <template>
+  <v-sheet
+  height="800"
+  class="overflow-hidden"
+  style="position: relative;"
+  >
   <v-app>
     <v-main class="font-test" style="background-color: #ffe8e8">
       <v-container class="com">
@@ -14,7 +19,7 @@
             class="d-none d-sm-none d-md-none d-lg-flex logo-page"
           >
             <!-- 창 크기에 따라 전시 or 비전시 -->
-            <div class="pa-5 d-flex flex-wrap flex-column">
+            <div class="pa-5 d-flex flex-wrap flex-column mt-0 pt-0">
               <!-- 로고 이미지 -->
               <div class="mb-10">
                 <v-img
@@ -56,14 +61,52 @@
         </v-row>
       </v-container>
     </v-main>
-  </v-app>
+    <v-btn class="chatBtn" @click.stop="drawer = !drawer">
+      My Chat
+    </v-btn>
+
+
+
+      <v-navigation-drawer v-model="drawer" absolute temporary>
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>John Leider</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider></v-divider>
+
+        <v-list dense>
+          <v-list-item
+            v-for="item in items"
+            :key="item.title"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+    </v-app>
+  </v-sheet>
 </template>
 
 <script>
 export default {
   components: {},
   name: "App",
-  data: () => ({}),
+  data: () => ({
+    drawer: false,
+  }),
 };
 </script>
 
@@ -82,5 +125,10 @@ export default {
 }
 .font-test {
   font-family: "Noto Sans KR", sans-serif;
+}
+.chatBtn {
+  position: fixed;
+  bottom: 50px;
+  right: 30px;
 }
 </style>

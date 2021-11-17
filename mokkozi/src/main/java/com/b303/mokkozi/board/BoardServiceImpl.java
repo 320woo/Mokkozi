@@ -3,11 +3,10 @@ package com.b303.mokkozi.board;
 import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
+import com.b303.mokkozi.comment.CommentService;
+import com.b303.mokkozi.comment.dto.CommentDto;
 import com.b303.mokkozi.config.S3Uploader;
-import com.b303.mokkozi.entity.Board;
-import com.b303.mokkozi.entity.Gallery;
-import com.b303.mokkozi.entity.User;
-import com.b303.mokkozi.entity.UserBoardLike;
+import com.b303.mokkozi.entity.*;
 import com.b303.mokkozi.gallery.GalleryService;
 import com.b303.mokkozi.gallery.dto.GalleryDto;
 import com.b303.mokkozi.gallery.request.GalleryVO;
@@ -36,6 +35,9 @@ public class BoardServiceImpl implements BoardService {
     GalleryService galleryService;
 
     @Autowired
+    CommentService commentService;
+
+    @Autowired
     BoardRepository boardRepository;
 
     @Autowired
@@ -49,7 +51,7 @@ public class BoardServiceImpl implements BoardService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
-        Page<Board> pageTuts = boardRepository.findAll(pageable);
+        Page<Board> pageTuts = boardRepository.findByActiveLike(pageable, "활동");
         Page<BoardDto> boardList = pageTuts.map(m -> new BoardDto(m, ublRepository.findByUserIdAndBoardId(user.getId(), m.getId()).isPresent(),ublRepository.countByBoardId(m.getId())));
 
         return boardList;
@@ -62,7 +64,7 @@ public class BoardServiceImpl implements BoardService {
         Board board = new Board();
         board.setContent(bwpr.getContent());
         board.setUser(user);
-        board.setActive("1");
+        board.setActive("활동");
         // DB에 저장한 객체를 반환한다.
         board = boardRepository.save(board);
         log.info("BoardServiceImpl.createBoard 67 : 저장한 게시글 정보는 {}", board.getId());
@@ -70,7 +72,7 @@ public class BoardServiceImpl implements BoardService {
         boolean boardLike = ublRepository.findByUserIdAndBoardId(user.getId(), board.getId()).isPresent();
 
         // 파일이 없는 경우도 있을 수 있다! 이 경우에는 끝난다.
-        if (bwpr.getFiles().size() == 0) {
+        if (bwpr.getFiles() == null) {
             log.info("BoardServiceImpl.createBoard 72 : 첨부한 이미지가 없습니다.");
         }
         // 1개 이상의 파일을 첨부한 경우
@@ -116,13 +118,13 @@ public class BoardServiceImpl implements BoardService {
             String key = galleryDto.getFile_path().replaceAll("https://mokkozi.s3.ap-northeast-2.amazonaws.com/", "");
             s3Uploader.delete(key);
 
-            // ** CASCADE 설정을 해서, 삭제하지 않아도 된다 **
-//            galleryService.deleteGallery(galleryDto.getId());
+            // 이미지 삭제하기
+            galleryService.deleteGallery(galleryDto.getId());
         }
-        // 댓글 목록 역시 CASCADE 설정을 해서 별도로 삭제하지 않아도 된다.
 
-        // 게시글을 삭제하면, CASCADE 설정에 의해 자동으로 댓글, 갤러리가 삭제된다.
-        boardRepository.deleteById(board.getId());
+        // Board의 상태를 변경한다.
+        board.setActive("삭제"); // 삭제된 걸 의미한다.
+        boardRepository.save(board);
     }
 
     @Override
@@ -191,22 +193,27 @@ public class BoardServiceImpl implements BoardService {
 
             int count = 0;
             // 3. S3에 새로운 이미지 업로드하기
-            for (MultipartFile file:model.getNewFiles()) {
-                try {
-                    String file_path = s3Uploader.upload(file, "images");
 
-                    // 4. DB에 새로운 이미지 추가하기
-                    GalleryVO galleryVO = new GalleryVO();
-                    galleryVO.setFilePath(file_path);
-                    galleryVO.setTitle(file.getOriginalFilename());
-                    galleryVO.setSort("board");
+            if (model.getNewFiles() != null) {
+                for (MultipartFile file:model.getNewFiles()) {
+                    try {
+                        String file_path = s3Uploader.upload(file, "images");
 
-                    galleryService.galleryCreate(galleryVO, model.getId().toString());
-                    count++;
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        // 4. DB에 새로운 이미지 추가하기
+                        GalleryVO galleryVO = new GalleryVO();
+                        galleryVO.setFilePath(file_path);
+                        galleryVO.setTitle(file.getOriginalFilename());
+                        galleryVO.setSort("board");
+
+                        galleryService.galleryCreate(galleryVO, model.getId().toString());
+                        count++;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            // newFiles가 null인 경우에는 올릴 대상이 없다.
+
             log.info("BoardServiceImpl.modifyBoard 182: {}개의 새로운 파일을 업로드하였습니다.", count);
 
             boolean boardLike = ublRepository.findByUserIdAndBoardId(user.getId(), board.getId()).isPresent();

@@ -21,7 +21,7 @@ public class Board extends BaseEntity{
     private Date regDate;
     private String active; //활동, 정지
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

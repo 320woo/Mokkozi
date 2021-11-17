@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface BoardRepository extends JpaRepository<Board, Long> {
     Board findById(long id);
 
+    Page<Board> findByActiveLike(Pageable pageable, String active);
+
     Page<Board> findAll(Pageable pageable);
 
     Page<Board> findByUserIdContaining(Pageable pageable, String keyword);

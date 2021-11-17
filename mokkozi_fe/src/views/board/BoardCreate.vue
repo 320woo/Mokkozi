@@ -10,9 +10,9 @@
           <v-card-title style="display:flex; justify-content:space-between; margin-bottom:1rem">
             <div>
               <v-avatar size="36px" @click="userImageClick(loginUser)">
-              <img alt="Avatar" src="@/assets/logo.png">
+              <img alt="Avatar" :src="this.$store.state.user.profile">
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(loginUser)">MOKKOZI</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(loginUser)">{{this.$store.state.user.nickname}}</span>
             </div>
             <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
@@ -21,7 +21,7 @@
           <v-file-input
           multiple
           accept="image/png, image/jpeg, image/bmp"
-          placeholder="이미지를 선택하세요."
+          placeholder="최대 5장까지 올릴 수 있습니다."
           prepend-icon="mdi-camera"
           @change="createImgUrl"
           v-model="boardImages" />
@@ -36,6 +36,17 @@
             transition="fade-transition"
             ></v-carousel-item>
           </v-carousel>
+
+          <!-- 선택한 이미지나 기존에 업로드한 이미지가 없는 경우 -->
+          <v-alert
+          v-if="isCarousel === false"
+          style="margin: 1rem 0rem;"
+          height="300"
+          border="right"
+          color="#FF9292"
+          dark>
+          개성있는 본인만의 사진을 올려주세요 👀
+          </v-alert>
         </v-card>
 
         <!-- 글 작성 -->
@@ -102,7 +113,7 @@ export default {
       // console.log("전송할 파일 정보는 : ", formData.get("files"))
 
       axios({
-        url: 'http://localhost:8000/api/meet/board',
+        url: process.env.VUE_APP_API_URL + '/api/meet/board',
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt

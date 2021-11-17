@@ -82,8 +82,9 @@ export default {
       this.$router.push('Join')
     },
     login () {
+      
       axios({
-        url: 'http://localhost:8000/api/meet/user/login',
+        url: process.env.VUE_APP_API_URL + '/api/meet/user/login',
         method: 'POST',
         data: {
           email: this.credentials.email,
@@ -91,13 +92,21 @@ export default {
         }
       }).then(resp => {
         if (resp.status === 200) {
-        console.log("로그인 성공! 로그인 반환 정보 : ", resp)
-        this.$store.dispatch("setJwt", resp.data.token)
-        this.$store.dispatch("setNickname", resp.data.nickName)
-        this.$store.dispatch("setProfile", resp.data.profile)
-        this.$store.dispatch("setEmail", resp.data.email)
-        // this.$store.dispatch("setAddress", resp.data.address)
-        this.$router.push("Matching")
+          console.log("로그인 성공! 로그인 반환 정보 : ", resp)
+          this.$store.dispatch("setJwt", resp.data.token)
+          this.$store.dispatch("setNickname", resp.data.nickName)
+          this.$store.dispatch("setProfile", resp.data.profile)
+          this.$store.dispatch("setEmail", resp.data.email)
+          this.$store.dispatch("setRole", resp.data.role)
+          // this.$store.dispatch("setAddress", resp.data.address)
+
+          // Role에 따라 다른 곳으로 보낸다.
+          if (resp.data.role === '사용자') {
+            this.$router.push("Matching")
+          }
+          else {
+            // 관리자 메인 페이지로 이동한다.
+          }
         }
       }).catch(err => {
         this.show = true
