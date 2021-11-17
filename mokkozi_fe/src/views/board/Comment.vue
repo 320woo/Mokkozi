@@ -95,7 +95,7 @@ export default {
     // 게시물 불러오기
     getSelectBoard (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/board/${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/board/${boardId}`,
         methods: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -110,7 +110,7 @@ export default {
     // 댓글 불러오기
     getCommentList (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/comment?boardId=${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/comment?${boardId}`,
         methods: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -127,10 +127,10 @@ export default {
       if (this.commentContent.trim() !== "") {
         console.log("댓글 정보 - 게시글 아이디 : ", boardId, ", 댓글 내용 : ", this.commentContent)
       axios({
-        url: "http://localhost:8000/api/meet/comment",
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + this.$store.state.jwt,
+        url: process.env.VUE_APP_API_URL + '/api/meet/comment',
+        method: 'POST',
+        headers:{
+          Authorization:"Bearer "+ this.$store.state.jwt
         },
         data: {
           boardId: boardId,

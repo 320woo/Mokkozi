@@ -1,4 +1,9 @@
 <template>
+  <v-sheet
+  height="800"
+  class="overflow-hidden"
+  style="position: relative;"
+  >
   <v-app>
     <v-main class="font-test" style="background-color: #ffe8e8">
       <v-container class="com">
@@ -56,36 +61,13 @@
         </v-row>
       </v-container>
     </v-main>
-    <v-btn class="chatBtn">
-      채팅 고고
+    <v-btn class="chatBtn" @click.stop="drawer = !drawer">
+      My Chat
     </v-btn>
 
 
-    <v-sheet
-    height="400"
-    class="overflow-hidden"
-    style="position: relative;"
-    >
-      <v-container class="fill-height">
-        <v-row
-          align="center"
-          justify="center"
-        >
-          <v-btn
-            color="pink"
-            dark
-            @click.stop="drawer = !drawer"
-          >
-            Toggle
-          </v-btn>
-        </v-row>
-      </v-container>
 
-      <v-navigation-drawer
-        v-model="drawer"
-        absolute
-        temporary
-      >
+      <v-navigation-drawer v-model="drawer" absolute temporary>
         <v-list-item>
           <v-list-item-avatar>
             <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
@@ -114,8 +96,8 @@
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-    </v-sheet>
-  </v-app>
+    </v-app>
+  </v-sheet>
 </template>
 
 <script>

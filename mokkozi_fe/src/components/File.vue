@@ -223,7 +223,7 @@ export default {
   methods: {
     getuser() {
       axios({
-        url: "http://localhost:8000/api/meet/user/getuser",
+        url: process.env.VUE_APP_API_URL + "/api/meet/user/getuser",
         method: "GET",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
@@ -242,7 +242,7 @@ export default {
     follow() {
       console.log(this.$route.params.userEmail);
       axios({
-        url: "http://localhost:8000/api/meet/user/follow",
+        url: process.env.VUE_APP_API_URL + "/api/meet/user/follow",
         method: "POST",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
@@ -257,7 +257,7 @@ export default {
 
     unfollow() {
       axios({
-        url: "http://localhost:8000/api/meet/user/unfollow",
+        url: process.env.VUE_APP_API_URL + "/api/meet/user/unfollow",
         method: "DELETE",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
@@ -272,7 +272,7 @@ export default {
 
     follower() {
       axios({
-        url: "http://localhost:8000/api/meet/user/followers",
+        url: process.env.VUE_APP_API_URL + "/api/meet/user/followers",
         method: "GET",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
@@ -289,7 +289,7 @@ export default {
     following() {
       console.log("팔로잉 목록");
       axios({
-        url: "http://localhost:8000/api/meet/user/following",
+        url: process.env.VUE_APP_API_URL + "/api/meet/user/following",
         method: "GET",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,

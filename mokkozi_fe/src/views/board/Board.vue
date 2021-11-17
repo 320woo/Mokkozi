@@ -190,7 +190,7 @@ export default {
     infiniteHandler($state) {
       const EACH_LEN = 10;
       axios({
-        url: `http://localhost:8000/api/meet/board?page=${this.limit + 1}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/board?page=${this.limit + 1}`,
         method: "GET",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
@@ -271,7 +271,7 @@ export default {
       if (this.commentContent.trim() !== "") {
         console.log("댓글 정보 - 게시글 아이디 : ", boardId, ", 댓글 내용 : ", this.commentContent)
       axios({
-        url: "http://localhost:8000/api/meet/comment",
+        url: process.env.VUE_APP_API_URL + "/api/meet/comment",
         method: "POST",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
@@ -293,7 +293,7 @@ export default {
     // 좋아요
     boardLike(boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/board/like?boardId=${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/board/like?boardId=${boardId}`,
         method: "POST",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
@@ -316,7 +316,7 @@ export default {
     // 좋아요 취소
     boardUnLike(boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/board/unlike?boardId=${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/board/unlike?boardId=${boardId}`,
         method: "DELETE",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,

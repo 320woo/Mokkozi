@@ -69,7 +69,7 @@ export default {
     },
     login () {
       axios({
-        url: 'http://localhost:8000/api/meet/user/login',
+        url: process.env.VUE_APP_API_URL + '/api/meet/user/login',
         method: 'POST',
         data: {
           email: this.credentials.email,
@@ -85,7 +85,7 @@ export default {
         this.$router.push("Matching")
       },
       {
-        url: 'http://localhost:8000/api/meet/user/followers',
+        url: process.env.VUE_APP_API_URL + '/api/meet/user/followers',
         method: 'GET',
       }).then(resp => {
         console.log("팔로워 정보 : ", resp)

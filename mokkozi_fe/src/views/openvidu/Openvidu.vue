@@ -138,7 +138,7 @@ export default {
     following() {
       console.log("팔로잉 목록");
       axios({
-        url: "http://localhost:8000/api/meet/user/following",
+        url: process.env.VUE_APP_API_URL + "/api/meet/user/following",
         method: "GET",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
@@ -313,7 +313,7 @@ export default {
     // 닉네임으로 회원 프로필 가져오는 부분 -> 아직 백엔드가 안되어있음
     getuser(name) {
       axios({
-        url: "http://localhost:8000/api/meet/user/getuser",
+        url: process.env.VUE_APP_API_URL + "/api/meet/user/getuser",
         method: "GET",
         headers: {
           Authorization: "Bearer " + this.$store.state.jwt,
