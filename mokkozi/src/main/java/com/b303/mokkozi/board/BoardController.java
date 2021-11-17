@@ -13,6 +13,7 @@ import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.gallery.GalleryService;
 import com.b303.mokkozi.gallery.dto.GalleryDto;
 import com.b303.mokkozi.gallery.dto.GalleryListDto;
+import com.b303.mokkozi.user.UserService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -45,6 +46,9 @@ public class BoardController {
     @Autowired
     GalleryService galleryService;
 
+    @Autowired
+    UserService userService;
+
     //게시글 목록 조회
     @GetMapping("")
     @ApiOperation(value = "게시글 목록 조회", notes = "게시글 목록을 조회한다.")
@@ -53,12 +57,13 @@ public class BoardController {
     public ResponseEntity<? extends BaseResponseBody> getBoardList(
 
             @RequestParam @ApiParam(value = "게시글 페이지 Index", defaultValue = "0") int page
-            , @ApiIgnore Authentication authentication
+//            , @ApiIgnore Authentication authentication
     ) {
         log.info("BoardController.getBoardList 46 : 함수 시작.");
 
         try {
-            User user = (User) authentication.getDetails();
+//            User user = (User) authentication.getDetails();
+            User user = userService.findById((long)11).get();
             log.info("BoardController.getBoardList 50 : User : {}", user.getEmail());
 //            if(user!=null){}
             Page<BoardDto> boardList = boardService.getBoardList(user,page);

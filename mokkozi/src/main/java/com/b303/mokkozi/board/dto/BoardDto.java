@@ -29,12 +29,13 @@ public class BoardDto extends BaseResponseBody {
     private boolean boardLike; //현재 로그인한 사용자의 게시글 좋아요 여부
     private String profileUrl;
     private List<GalleryDto> galleryList;
+    private Long likeCount;
 
 //    private List<CommentDto> comment;
 
 
     @Builder
-    public BoardDto(Board board, boolean boardLike) {
+    public BoardDto(Board board, boolean boardLike,Long likeCount) {
 
         this.id = board.getId();
         this.content = board.getContent();
@@ -46,6 +47,7 @@ public class BoardDto extends BaseResponseBody {
         this.profileUrl = board.getUser().getProfile();
 
         this.boardLike = boardLike;
+        this.likeCount = likeCount;
     }
 
     public static BoardDto of(Integer statusCode, String message, BoardDto board) {
