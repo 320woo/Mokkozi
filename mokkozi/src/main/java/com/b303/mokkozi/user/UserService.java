@@ -39,4 +39,6 @@ public interface UserService {
     void modifyUserActive(UserActivePatchReq vupr);
 
     List<User> getRandomUserNotLogin();
+
+    List<UserFollowDto> getEachFollow(User user);
 }
