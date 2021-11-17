@@ -107,20 +107,23 @@
             <p style="float: left">아직 작성된 댓글이 없습니다 :(</p>
           </div>
           <div v-else-if="commentList[i].length === 1">
-            <v-card-text style="height: 20px; float:left; font-size: 12px; margin: 0px">
+            <v-avatar size="36px" @click="userImageClick(board.userEmail)">
+              <img alt="Avatar" :src="commentList[i][0].profileUrl" />
+            </v-avatar>
+            <v-card-text style="height: 20px; text-align:start; font-size: 12px; margin: 0px">
               {{ commentList[i][0].content }}
             </v-card-text>
           </div>
           <div v-else-if="commentList[i].length >= 2">
-            <v-card-text style="height: 20px; float:left; font-size: 12px; margin: 0px">
+            <v-card-text style="height: 20px; text-align:start; font-size: 12px; margin: 0px">
               {{ commentList[i][0].content }}
             </v-card-text>
-            <v-card-text style="height: 20px; float:left; font-size: 12px; margin: 0px">
+            <v-card-text style="height: 20px; text-align:start; font-size: 12px; margin: 0px">
               {{ commentList[i][1].content }}
             </v-card-text>
           </div>
           <div v-if="commentList[i].length >= 3" style="height: 15px;">
-            <p style="float:left; color: gray; cursor: pointer; height: 15px; font-size: 12px; margin: 0px" @click="commentClick(board.id)"
+            <p style="text-align:start; color: gray; cursor: pointer; height: 15px; font-size: 12px; margin: 0px" @click="commentClick(board.id)"
             >댓글 더 보기..</p>
           </div>
           <!-- 댓글 작성란 -->
@@ -136,6 +139,7 @@
               "
               type="text"
               placeholder="댓글 달기"
+              @keydown.enter="createComment(board.id)"
             />
             <v-btn
               color="#FFB4B4"
