@@ -36,6 +36,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepositoryImpl userRepositoryImpl;
 
+    @Autowired
+    UserFollowRepositoryImpl ufRepositoryImpl;
+
+
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -104,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void modifyUserActive(UserActivePatchReq vupr) {
-        User user = userRepository.findById(vupr.getUserId()).orElseThrow(()->new NoSuchElementException("not found"));
+        User user = userRepository.findById(vupr.getUserId()).orElseThrow(() -> new NoSuchElementException("not found"));
         user.setActive(vupr.getActive());
         userRepository.save(user);
     }
@@ -113,7 +117,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createFollow(User fromUser, String toUserEmail) {
         User toUser = userRepository.findByEmail(toUserEmail).orElseThrow(() -> new NoSuchElementException("not found"));
-        if (!userFollowRepository.existsByFromUserIdAndToUserId(fromUser.getId(), toUser.getId()))
+        if (!userFollowRepository.existsByFromUserIdAndToUserId(fromUser.getId(), toUser.getId()) && fromUser.getId() != toUser.getId())
             userFollowRepository.save(UserFollow.builder()
                     .fromUser(fromUser)
                     .toUser(toUser)
@@ -135,7 +139,7 @@ public class UserServiceImpl implements UserService {
         size = size <= 0 ? 1 : size;
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
-        Page<UserFollow> pageTuts = userFollowRepository.findByToUserId(pageable,user.getId());
+        Page<UserFollow> pageTuts = userFollowRepository.findByToUserId(pageable, user.getId());
         Page<UserFollowDto> followerList = pageTuts.map(m -> new UserFollowDto(m.getId(), m.getFromUser().getId(), m.getFromUser().getNickname(), m.getFromUser().getProfile()));
 
         return followerList.getContent();
@@ -150,11 +154,19 @@ public class UserServiceImpl implements UserService {
         size = size <= 0 ? 1 : size;
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
 
-        Page<UserFollow> pageTuts = userFollowRepository.findByFromUserId(pageable,user.getId());
+        Page<UserFollow> pageTuts = userFollowRepository.findByFromUserId(pageable, user.getId());
         Page<UserFollowDto> followerList = pageTuts.map(m -> new UserFollowDto(m.getId(), m.getToUser().getId(), m.getToUser().getNickname(), m.getToUser().getProfile()));
 
         return followerList.getContent();
 
+    }
+
+    @Override
+    public List<UserFollowDto> getEachFollow(User user) {
+        List<UserFollowDto> list = ufRepositoryImpl.getEachFollow(user.getId());
+
+//        Page<UserFollow> pageTuts = userFollowRepository.findByFromUser_IdIsAnd()
+        return null;
     }
 
     @Override
