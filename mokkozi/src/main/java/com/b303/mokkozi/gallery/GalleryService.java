@@ -3,6 +3,7 @@ package com.b303.mokkozi.gallery;
 import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.Gallery;
+import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.gallery.dto.GalleryDto;
 import com.b303.mokkozi.gallery.dto.GalleryListDto;
 import com.b303.mokkozi.gallery.request.GalleryVO;
@@ -20,6 +21,9 @@ public interface GalleryService {
 
     // 하나의 게시글에 대한 이미지 목록을 받아온다.
     List<GalleryDto> getGalleryList(Board board);
+
+    // 사용자 PK를 이용하여 이미지 목록을 받아온다.
+    List<GalleryDto> getGalleryListByUser(User user);
 
     // 게시글 목록을 받아서, 게시글 목록에 대한 전체 이미지를 찾는다.
     GalleryListDto getGalleryLists(Page<BoardDto> boardList);

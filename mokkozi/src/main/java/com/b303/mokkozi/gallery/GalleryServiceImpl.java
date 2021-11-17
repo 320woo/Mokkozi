@@ -129,6 +129,25 @@ public class GalleryServiceImpl implements GalleryService{
     }
 
     @Override
+    public List<GalleryDto> getGalleryListByUser(User user) {
+        List<Gallery> galleryList = galleryRepository.findAllByUserId(user.getId());
+
+        List<GalleryDto> result = new ArrayList<>();
+        // GalleryDto로 변환한다.
+        for (Gallery gallery:galleryList) {
+            GalleryDto galleryDto = new GalleryDto();
+            galleryDto.setFile_path(gallery.getFilePath());
+            galleryDto.setBoardId(gallery.getBoard().getId().toString());
+            galleryDto.setTitle(gallery.getTitle());
+            galleryDto.setId(gallery.getId());
+
+            result.add(galleryDto);
+        }
+
+        return result;
+    }
+
+    @Override
     public void deleteGallery(Long id) {
         Gallery gallery = galleryRepository.findById(id).orElseThrow(() -> new NoSuchElementException("not found"));
         galleryRepository.delete(gallery);
