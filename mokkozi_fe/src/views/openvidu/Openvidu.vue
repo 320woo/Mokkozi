@@ -23,7 +23,7 @@
         </div>
       </div>
       <div v-if="session" style="500px; padding: 40px 0px 0px 0px">
-        <h2 id="session-title">{{ mySessionId }} {{ myUserName }}님의 방</h2>
+        <h2 id="session-title" style="margin-top:10px">{{ mySessionId }} {{ myUserName }}님의 방</h2>
         <div id="main-video" style="position: relative;">
           <user-video :stream-manager="mainStreamManager" style="width: 680px; height: 510px"/>
           <div class="box-div">
@@ -33,44 +33,49 @@
           <v-icon v-else class="video-icon" right dark @click="videoOnOff">fas fa-video-slash</v-icon>
           <v-icon v-if="audioState" class="audio-icon" right dark @click="audioOnOff">fas fa-microphone</v-icon>
           <v-icon v-else class="audio-icon" right dark @click="audioOnOff">fas fa-microphone-slash</v-icon>
-          <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-external-link-alt</v-icon>
+          <!-- <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-external-link-alt</v-icon> -->
+          <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-door-open</v-icon>
         </div>
-        <div id="chat-div" style="height:200px; overflow:scroll;">
-          <v-expansion-panels>
+        <div id="chat-div" style="height:290px; overflow:scroll;">
+          <v-expansion-panels style="border: solid; border-color: #dcdcdc">
           <v-expansion-panel>
             <v-expansion-panel-header class="font-weight-bold" style="font-size: 20px; height: 60px" @click="CountMessage">
               채팅
               <template v-slot:actions>
                 <v-badge
-                  color="green"
+                  depressed
+                  color="primary"
                   :content="messageLength"
                 >
-                  <v-icon color="#FFB4B4">
+                  <!-- <v-icon color="#FFB4B4">
                     fas fa-comment
-                  </v-icon>
+                  </v-icon> -->
                 </v-badge>
               </template>
             </v-expansion-panel-header>
-            <v-expansion-panel-content v-for="(message, i) in messages" :key="i">
-              <div v-if="message.from == myUserName" class="my-massage">
-                <v-avatar color="brown" size="32">
+            <v-divider></v-divider>
+            <v-expansion-panel-content style="margin-top: 10px" v-for="(message, i) in messages" :key="i">
+              <div v-if="message.from == myUserName" class="my-message">
+                <!-- <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span> -->
+                <span class="my-message-content">{{ message.content }}</span>
+                <v-avatar color="brown" size="36">
                   <span class="white--text text-h5">KG</span>
                 </v-avatar>
-                <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span>
-                <span>{{ message.content }}</span>
               </div>
-              <div v-else class="your-massage">
-                <v-avatar color="pink" size="32">
+              <div v-else class="your-message">
+                <v-avatar color="pink" size="36">
                   <span class="white--text text-h5">WH</span>
                 </v-avatar>
-                <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span>
-                <span>{{ message.content }}</span>
+                <!-- <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span> -->
+                <span class="your-message-content">{{ message.content }}</span>
               </div>
             </v-expansion-panel-content>
             <v-expansion-panel-content>
-              <div>
-                <input style="width: 608px" v-model="message" type="text" placeholder="내용을 입력해주세요.." @keydown.enter="sendMessage">
-                <v-icon style="width: 24px">fas fa-location-arrow</v-icon>
+              <v-divider></v-divider>
+              <div style="margin-top:10px">
+                <input style="width: 586px;" class="input-box" v-model="message" type="text" placeholder="내용을 입력해주세요.." @keydown.enter="sendMessage">
+                <!-- <v-icon style="width: 24px">fas fa-location-arrow</v-icon> -->
+                <v-btn style="min-width: 40px; height:24px; padding: 0px 5px; color: white;" color="#FFB4B4" @click="sendMessage">전송</v-btn>
               </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -166,7 +171,7 @@ export default {
         this.messages.push(eventData)
         console.log('메세지 내용 출력', this.messages)
         if (!this.chatOpen) {
-          this.message = 0
+          this.message = ''
           this.messageLength++
         }
         // 스크롤이 자동으로 맞춰서 내려가게 한다
@@ -317,24 +322,26 @@ export default {
           nickname: name,
         },
       }).then((resp) => {
-        console.log("회원정보 확인: ", resp);
-        this.profileImg = resp.data.profile;
-      });
+        console.log("회원정보 확인: ", resp)
+        this.profileImg = resp.data.profile
+      })
     },
 
     // 메세지 보내는 함수(채팅)
     sendMessage () {
-      const messageData = {
-        content: this.message,
-        from: this.myUserName
+      if (this.message.trim() !== "") { // 공백만 있을 때 입력 불가능
+        const messageData = {
+          content: this.message,
+          from: this.myUserName
+        }
+        // this.getuser(messageData.from) 아직 구현이 안되어 있음
+        this.message = ''
+        this.session.signal({
+          data: JSON.stringify(messageData), // Any string (optional)
+          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+          type: 'chat' // The type of message (optional)
+        })
       }
-      // this.getuser(messageData.from) 아직 구현이 안되어 있음
-      this.message = ''
-      this.session.signal({
-        data: JSON.stringify(messageData), // Any string (optional)
-        to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-        type: 'chat' // The type of message (optional)
-      })
     },
     CountMessage () {
       this.chatOpen = !this.chatOpen
@@ -388,18 +395,41 @@ export default {
   #chat-div::-webkit-scrollbar {
     display: none;
   }
-  .my-massage {
+  .my-message {
     margin-left: 300px;
     display: flex;
     flex-direction: row;
     justify-content: end;
     /* align-items: center; */
   }
-  .your-massage {
+  .your-message {
     width: 300px;
     display: flex;
     flex-direction: row;
     justify-content: start;
     /* align-items: center; */
+  }
+  .my-message-content {
+    border: solid 1px;
+    border-radius: 5px;
+    border-color: #FFB4B4;
+    background-color: #FFB4B4;
+    margin-right: 5px;
+    color: white;
+    padding: 5px;
+    font-weight: bold;
+  }
+  .your-message-content {
+    border: solid 1px;
+    border-radius: 5px;
+    border-color: #FFB4B4;
+    background-color: #FFB4B4;
+    margin-left: 5px;
+    color: white;
+    padding: 5px;
+    font-weight: bold;
+  }
+  .input-box {
+    outline-style: none;
   }
 </style>
