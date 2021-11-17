@@ -14,7 +14,7 @@
             class="d-none d-sm-none d-md-none d-lg-flex logo-page"
           >
             <!-- 창 크기에 따라 전시 or 비전시 -->
-            <div class="pa-5 d-flex flex-wrap flex-column">
+            <div class="pa-5 d-flex flex-wrap flex-column mt-0 pt-0">
               <!-- 로고 이미지 -->
               <div class="mb-10">
                 <v-img

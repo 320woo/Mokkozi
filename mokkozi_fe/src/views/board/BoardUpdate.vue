@@ -159,9 +159,14 @@ export default {
       // 이미지도 함께 수정해야 하므로, formDate를 활용한다.
       const formData = new FormData()
 
+
+      // 새로운 파일이 하나라도 있으면 아래의 과정을 거친다 (없으면 Null을 보낸다.)
       for (let i=0; i < this.newImages.length; i++) {
         formData.append("newFiles", this.newImages[i])  // 파일 형식
       }
+
+      console.log("NewFiles  : ", formData.get("newFiles"))
+
       formData.append("id", this.boardId)
       formData.append("deleteFilesIndex", this.deleteImages)  // String 배열 형태
       formData.append("content", this.content)

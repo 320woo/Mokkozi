@@ -1,170 +1,164 @@
 <template>
-  <v-container fluid style="height: 800px" class="board-container">
-    <h1 style="display: flex; justify-content: center">게시판</h1>
-    <br />
-    <v-icon style="position: fixed; color: #ffb4b4" @click="boardCreateClick"
-      >fas fa-plus-circle</v-icon
-    >
-    <div class="background-div" v-for="(board, i) in boardList" :key="i">
-      <div class="board-div">
-        <v-card class="board-card" max-width="24rem" height="28rem">
-          <v-card-title
-            style="
-              display: flex;
-              justify-content: space-between;
-              margin-bottom: 0.2rem;
-            "
-          >
-            <div>
-              <v-avatar size="36px" @click="userImageClick(board.userEmail)">
-                <img alt="Avatar" src="@/assets/logo.png" />
-              </v-avatar>
-              <span
-                class="font-weight-bold"
-                style="margin-left: 0.5rem"
-                @click="userNicknameClick(board.userEmail)"
-                >{{ board.nickName }}</span
-              >
-            </div>
-            <v-menu offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon color="black" dark v-bind="attrs" v-on="on"
-                  >fas fa-ellipsis-h</v-icon
-                >
-              </template>
-              <v-list>
-                <v-list-item v-if="board.userEmail === loginUser">
-                  <v-list-item-title
-                    style="cursor: pointer"
-                    @click="boardUpdateClick(board.id)"
-                    >수정하기</v-list-item-title
-                  >
-                </v-list-item>
-                <v-list-item>
-                  <report-board :boardId="board.id" />
-                </v-list-item>
-                <v-list-item>
-                  <report-user :userEmail="board.userEmail" />
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-card-title>
-          <!-- <i class="fas fa-ellipsis-h"></i> -->
-          <template slot="progress">
-            <v-progress-linear
-              color="deep-purple"
-              height="10"
-              indeterminate
-            ></v-progress-linear>
-          </template>
-
-          <!-- Carousel -->
-          <v-carousel height="300" class="carousel" v-if="boardImgList[i].length > 1" style="margin: 1rem 0rem">
-            <v-carousel-item
-            v-for="(img, i) in boardImgList[i]"
-            :key="i"
-            :src="img.file_path"
-            reverse-transition="fade-transition"
-            transition="fade-transition"
-            ></v-carousel-item>
-          </v-carousel>
-
-          <!-- 이미지가 1장인 경우에는 -->
-          <v-img
-          v-else-if="boardImgList[i].length === 1"
-          width="24rem"
-          height="auto"
-          max-height="15rem"
-          position="center"
-          :src="boardImgList[i][0].file_path"
-          style="margin-bottom: 0.2rem"
-          >
-          </v-img>
-
-          <v-card-text class="like-text">
-            <i
-              v-if="board.boardLike"
-              class="fas fa-heart"
-              style="color: red"
-              @click="boardUnLike(board.id)"
-            ></i>
-            <i
-              v-else
-              class="far fa-heart"
-              style="color: red"
-              @click="boardLike(board.id)"
-            ></i>
-            like
-          </v-card-text>
-
-          <v-card-text @click="boardDetailClick(board.id)">
-            {{ board.content }}
-          </v-card-text>
-          <v-card-text> Help </v-card-text>
-          <v-card-text style="color: gray" @click="commentClick"
-            >댓글 더 보기..</v-card-text>
-
-          <!-- 작성한 댓글이 존재한다면 -->
-          <!-- 댓글 3개까지 출력하기 -->
-          <div v-for="(comment, commentIdx) in commentList[i]" :key="comment.id">
-            <div v-if="commentIdx < 3">
-              {{ comment.content }}
-            </div>
-          </div>
-
-          <div v-if="commentList[i].length === 0">
-            아직 작성된 댓글이 없습니다. :(
-          </div>
-
-          <!-- 댓글 작성란 -->
+<div class="board-container" style="width: 700px; height:47rem;">
+  <v-btn color="#ffb4b4" class="create-btn" @click="boardCreateClick"
+    >+</v-btn>
+  <div class="background-div" v-for="(board, i) in boardList" :key="i">
+    <div class="board-div">
+      <v-card class="board-card" max-width="24rem" height="30rem">
+        <v-card-title
+          style="
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.2rem;
+          "
+        >
           <div>
-            <input
-              v-model="commentContent"
-              style="
-              height: 1.25rem;
-              font-size: 0.875rem;
-              border: none;
-              width: 16rem;
-              "
-              type="text"
-              placeholder="댓글 달기"
-            />
-            <v-btn
-              color="#FFB4B4"
-              width="4rem"
-              height="1.25rem"
-              @click="createComment(board.id)"
+            <v-avatar size="36px" @click="userImageClick(board.userEmail)">
+              <img alt="Avatar" :src="board.profileUrl" />
+            </v-avatar>
+            <span
+              class="font-weight-bold"
+              style="margin-left: 0.5rem"
+              @click="userNicknameClick(board.userEmail)"
+              >{{ board.nickName }}</span
             >
-              작성
-            </v-btn>
           </div>
-        </v-card>
-      </div>
+          <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon color="black" dark v-bind="attrs" v-on="on"
+                >fas fa-ellipsis-h</v-icon
+              >
+            </template>
+            <v-list>
+              <v-list-item v-if="board.userEmail === loginUser">
+                <v-list-item-title>
+                  <v-btn
+                    style="cursor: pointer;"
+                    color="#FFB4B4"
+                    dark
+                    @click="boardUpdateClick(board.id)">수정하기</v-btn>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+                <report-board :boardId="board.id" />
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-card-title>
+        <!-- <i class="fas fa-ellipsis-h"></i> -->
+        <template slot="progress">
+          <v-progress-linear
+            color="deep-purple"
+            height="10"
+            indeterminate
+          ></v-progress-linear>
+        </template>
+
+        <!-- Carousel -->
+        <v-carousel height="300" class="carousel" v-if="boardImgList[i].length > 1" style="margin: 1rem 0rem">
+          <v-carousel-item
+          v-for="(img, i) in boardImgList[i]"
+          :key="i"
+          :src="img.file_path"
+          reverse-transition="fade-transition"
+          transition="fade-transition"
+          ></v-carousel-item>
+        </v-carousel>
+
+        <!-- 이미지가 1장인 경우에는 -->
+        <v-img
+        v-else-if="boardImgList[i].length === 1"
+        width="320px"
+        height="300px"
+        max-height="300px"
+        position="center"
+        :src="boardImgList[i][0].file_path"
+        style="margin-bottom: 0.2rem"
+        >
+        </v-img>
+
+        <v-card-text class="like-text">
+          <i
+            v-if="board.boardLike"
+            class="fas fa-heart"
+            style="color: red"
+            @click="boardUnLike(board.id)"
+          ></i>
+          <i
+            v-else
+            class="far fa-heart"
+            style="color: red"
+            @click="boardLike(board.id)"
+          ></i>
+          like
+        </v-card-text>
+
+        <v-card-text @click="boardDetailClick(board.id)" style="font-size:15px; margin: 4px 0px">
+          {{ board.content }}
+        </v-card-text>
+        <!-- 작성한 댓글이 존재한다면 -->
+        <!-- 댓글 1개까지 출력하기 -->
+        <div v-for="(comment, commentIdx) in commentList[i]" :key="comment.id" style="height: 15px">
+          <p v-if="commentIdx < 2" style="float:left; font-size: 12px; margin: 0px">
+            {{ comment.content }}
+          </p>
+        </div>
+        <div v-if="commentList[i].length === 0" style="height: 15px; font-size: 12px">
+          <p>아직 작성된 댓글이 없습니다 :(</p>
+        </div>
+        <div v-else-if="commentList[i].length >= 3" style="height: 15px;">
+          <p style="float:left; color: gray; cursor: pointer; height: 15px; font-size: 12px; margin: 0px" @click="commentClick"
+          >댓글 더 보기..</p>
+        </div>
+        <!-- 댓글 작성란 -->
+        <div style="display:flex; justify-content: space-between;">
+          <input
+            v-model="commentContent"
+            style="
+            height: 24px;
+            font-size: 0.875rem;
+            border: none;
+            width: 16rem;
+            outline-style: none;
+            "
+            type="text"
+            placeholder="댓글 달기"
+          />
+          <v-btn
+            color="#FFB4B4"
+            style="padding: 0px 5px;"
+            min-width="40px"
+            height="24px"
+            @click="createComment(board.id)"
+          >
+            작성
+          </v-btn>
+        </div>
+      </v-card>
     </div>
-    <!-- infinite scroll -->
-    <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
-      <div
-        slot="no-more"
-        style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px"
-      >
-        목록의 끝입니다 :)
-      </div>
-    </infinite-loading>
-  </v-container>
+  </div>
+  <!-- infinite scroll -->
+  <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
+    <div
+      slot="no-more"
+      style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px"
+    >
+      목록의 끝입니다 :)
+    </div>
+  </infinite-loading>
+  </div>
 </template>
 
 <script>
-import axios from "axios";
-import InfiniteLoading from "vue-infinite-loading";
-import ReportBoard from "../../components/ReportBoard";
-import ReportUser from "../../components/ReportUser";
+import axios from "axios"
+import InfiniteLoading from "vue-infinite-loading"
+import ReportBoard from "../../components/ReportBoard"
 
 export default {
   name: "Board",
   components: {
     InfiniteLoading,
     ReportBoard,
-    ReportUser,
   },
   data: () => ({
     boardList: [],
@@ -192,7 +186,17 @@ export default {
         .then((res) => {
           console.log(res)
           // 이미지 목록 지정하자.
+          // if (res.data.galleryListDto.galleryList.length === 0) {
+
+          // }
           this.boardImgList = res.data.galleryListDto.galleryList
+          console.log('this.boardImgList', res.data.galleryListDto.galleryList)
+          this.boardImgList.filter((boardImg) => {
+            if (boardImg.length === 0) {
+              return boardImg.push({'file_path' : 'https://mokkozi.s3.ap-northeast-2.amazonaws.com/mokkozi_default_img.jpg'})
+            }
+          })
+          console.log('this.boardImgList', res.data.galleryListDto.galleryList)
           console.log("댓글 내용은..!", res.data.commentLists)
           this.commentList = res.data.commentLists
 
@@ -340,6 +344,7 @@ export default {
 <style scoped>
 .board-container {
   overflow-y: scroll;
+  position: relative;
 }
 .board-container::-webkit-scrollbar {
   display: none;
@@ -350,7 +355,7 @@ export default {
 }
 .board-div {
   width: 24rem;
-  height: 32rem;
+  height: 34rem;
   display: inline-block;
   background-color: #ffe8e8;
   padding: 2rem 2rem;
@@ -403,5 +408,15 @@ export default {
 }
 .like-text {
   font-weight: 500;
+}
+.create-btn {
+  border-radius: 60rem;
+  min-width: 60px;
+  min-height: 60px;
+  position: absolute;
+  right: 20px;
+  top: 50px;
+  color: white;
+  font-size: 40px;
 }
 </style>

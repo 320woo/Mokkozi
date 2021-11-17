@@ -2,7 +2,8 @@
   <v-container class="board-container">
     <div>
       <v-card class="board-card" max-height="50rem">
-        <div class="profile" style="height: 100%">
+        <div class="profile" style="height: 100%; position: relative">
+          <report-user :userEmail="this.$route.params.userEmail" class="report-icon" />
           <!-- 배경 이미지 부분 -->
           <img class="bg-img" :src="defaultImage" alt="커버사진" />
           <!-- 사용자 프로필 이미지 부분 -->
@@ -191,6 +192,7 @@
 <script>
 import defaultImage from "../assets/images/커버.png";
 import camera from "../assets/images/camera.png";
+import ReportUser from "./ReportUser"
 import axios from "axios";
 
 export default {
@@ -200,7 +202,9 @@ export default {
     this.follower();
     this.following();
   },
-  components: {},
+  components: {
+    ReportUser
+  },
   data: () => ({
     defaultImage: defaultImage,
     propImage: "",
@@ -318,5 +322,11 @@ export default {
 }
 .v-card-title {
   text-align: center;
+}
+.report-icon {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  cursor: pointer;
 }
 </style>

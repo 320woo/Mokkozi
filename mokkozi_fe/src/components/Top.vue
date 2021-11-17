@@ -2,12 +2,12 @@
     <v-footer class="top" color="#FFB4B4" padless="padless" elevation="4">
         <v-row justify="space-around" align="center" no-gutters="no-gutters">
             <v-btn
-                dark
-                dense
-                color="white"
-                text="text"
-                rounded="rounded"
-                class="my-2 btn">
+            dark
+            dense
+            color="white"
+            text="text"
+            rounded="rounded"
+            class="my-2 btn">
             <router-link to="/board" style="text-decoration: none; color:white">게시판</router-link></v-btn>
             <v-btn
                 dark
@@ -43,7 +43,7 @@ export default {
     position: fixed;
     left: auto;
     top: 0;
-    width: 700px;
+    width: 700px; 
     z-index: 10;
     }
 </style>
