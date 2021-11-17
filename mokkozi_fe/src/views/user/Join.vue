@@ -40,7 +40,7 @@
               size="20" />
 
               <!-- 닉네임 -->
-              <ValidationProvider name="닉네임" rules="required" v-slot="{ errors }">
+              <ValidationProvider name="닉네임" rules="required|max:6" v-slot="{ errors }">
                 <v-text-field
                 label="닉네임"
                 v-model="joinInfo.nickName"
@@ -263,7 +263,7 @@
 </template>
 
 <script>
-import { required, email, size } from 'vee-validate/dist/rules'
+import { required, email, size, max } from 'vee-validate/dist/rules'
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate'
 import axios from 'axios'
 import router from '../../router'
@@ -273,6 +273,11 @@ const API_BASE_URL = 'http://localhost:8000/api'
 extend('emailValidate', {
   ...email,
   message: '이메일을 입력해 주세요.'
+})
+
+extend('max', {
+  ...max,
+  message: '{_field_}의 최대 길이는 {length}자입니다.',
 })
 
 extend('required', {
