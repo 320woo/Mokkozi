@@ -43,7 +43,7 @@ export default {
     position: fixed;
     left: auto;
     top: 0;
-    width: 700px;
+    width: 700px; 
     z-index: 10;
     }
 </style>
