@@ -134,7 +134,7 @@ export default ({
     // 게시물 불러오기
     getSelectBoard (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/board/${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/board/${boardId}`,
         methods: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -149,7 +149,7 @@ export default ({
     // 댓글 작성
     createComment (boardId) {
       axios({
-        url: 'http://localhost:8000/api/meet/comment',
+        url: process.env.VUE_APP_API_URL + '/api/meet/comment',
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -167,7 +167,7 @@ export default ({
     // 좋아요
     boardLike (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/board/like?boardId=${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/board/like?boardId=${boardId}`,
         method: 'POST',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -182,7 +182,7 @@ export default ({
     // 좋아요 취소
     boardUnLike (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/board/unlike?boardId=${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/board/unlike?boardId=${boardId}`,
         method: 'DELETE',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt

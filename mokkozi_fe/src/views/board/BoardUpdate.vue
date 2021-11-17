@@ -135,7 +135,7 @@ export default {
     // 게시물 불러오기
     getSelectBoard (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/board/${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/board/${boardId}`,
         method: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -172,7 +172,7 @@ export default {
       formData.append("content", this.content)
 
       axios({
-        url: 'http://localhost:8000/api/meet/board',
+        url: process.env.VUE_APP_API_URL + '/api/meet/board',
         method: 'PATCH',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -188,7 +188,7 @@ export default {
     // 게시물 삭제
     boardDelete (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/board?boardId=${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/board?boardId=${boardId}`,
         method: 'DELETE',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
