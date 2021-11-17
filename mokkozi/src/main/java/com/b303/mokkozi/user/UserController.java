@@ -81,9 +81,9 @@ public class UserController {
                         tokenProvider.createToken(authentication, "user"),
                         result.getUser().getNickname(),
                         result.getUser().getProfile(),
-                        result.getUser().getEmail()
+                        result.getUser().getEmail(),
+                        result.getUser().getRole()
                 ));
-
     }
 
 
