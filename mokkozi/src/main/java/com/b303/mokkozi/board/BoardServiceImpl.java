@@ -64,7 +64,7 @@ public class BoardServiceImpl implements BoardService {
         Board board = new Board();
         board.setContent(bwpr.getContent());
         board.setUser(user);
-        board.setActive("1");
+        board.setActive("활동");
         // DB에 저장한 객체를 반환한다.
         board = boardRepository.save(board);
         log.info("BoardServiceImpl.createBoard 67 : 저장한 게시글 정보는 {}", board.getId());
