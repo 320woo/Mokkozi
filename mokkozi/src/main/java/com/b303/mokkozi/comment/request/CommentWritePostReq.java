@@ -12,7 +12,7 @@ import lombok.Setter;
 public class CommentWritePostReq {
 
     @ApiModelProperty(name = "게시판 Id", example = "1")
-    Board boardId;
+    String boardId;
 
     @ApiModelProperty(name = "댓글 내용", example = "댓글 내용")
     String content;

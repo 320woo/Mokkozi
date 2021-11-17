@@ -4,6 +4,8 @@ import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.board.dto.BoardListDto;
+import com.b303.mokkozi.comment.CommentService;
+import com.b303.mokkozi.comment.dto.CommentDto;
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.Gallery;
@@ -11,6 +13,7 @@ import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.gallery.GalleryService;
 import com.b303.mokkozi.gallery.dto.GalleryDto;
 import com.b303.mokkozi.gallery.dto.GalleryListDto;
+import com.b303.mokkozi.user.UserService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -38,7 +41,13 @@ public class BoardController {
     BoardService boardService;
 
     @Autowired
+    CommentService commentService;
+
+    @Autowired
     GalleryService galleryService;
+
+    @Autowired
+    UserService userService;
 
     //게시글 목록 조회
     @GetMapping("")
@@ -48,12 +57,13 @@ public class BoardController {
     public ResponseEntity<? extends BaseResponseBody> getBoardList(
 
             @RequestParam @ApiParam(value = "게시글 페이지 Index", defaultValue = "0") int page
-            , @ApiIgnore Authentication authentication
+//            , @ApiIgnore Authentication authentication
     ) {
         log.info("BoardController.getBoardList 46 : 함수 시작.");
 
         try {
-            User user = (User) authentication.getDetails();
+//            User user = (User) authentication.getDetails();
+            User user = userService.findById((long)11).get();
             log.info("BoardController.getBoardList 50 : User : {}", user.getEmail());
 //            if(user!=null){}
             Page<BoardDto> boardList = boardService.getBoardList(user,page);
@@ -62,7 +72,11 @@ public class BoardController {
             GalleryListDto galleryListDto = galleryService.getGalleryLists(boardList);
             log.info("BoardController.getBoardList 62 : 이미지 목록은..? : {}", galleryListDto.getGalleryList());
 
-            return ResponseEntity.ok(BoardListDto.of(200, "게시글 목록 조회 완료.", boardList, galleryListDto));
+            // 댓글도 불러온다.
+            List<List<CommentDto>> commentLists = new ArrayList<>();
+            boardList.map(m -> commentLists.add(commentService.getCommentList(m.getId())));
+
+            return ResponseEntity.ok(BoardListDto.of(200, "게시글 목록 조회 완료.", boardList, galleryListDto, commentLists));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e) {

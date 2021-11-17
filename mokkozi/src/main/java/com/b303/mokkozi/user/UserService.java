@@ -37,4 +37,6 @@ public interface UserService {
     Page<User> getUserList(User user, int page);
 
     void modifyUserActive(UserActivePatchReq vupr);
+
+    List<User> getRandomUserNotLogin();
 }

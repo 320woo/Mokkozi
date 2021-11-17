@@ -3,10 +3,7 @@ package com.b303.mokkozi.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -17,11 +14,11 @@ public class Comment extends BaseEntity{
     private String content;
     private Date regDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "board_id",nullable = false)
     private Board board;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 

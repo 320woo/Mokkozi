@@ -102,16 +102,29 @@
           </v-card-text>
           <v-card-text> Help </v-card-text>
           <v-card-text style="color: gray" @click="commentClick"
-            >댓글 더 보기..</v-card-text
-          >
+            >댓글 더 보기..</v-card-text>
+
+          <!-- 작성한 댓글이 존재한다면 -->
+          <!-- 댓글 3개까지 출력하기 -->
+          <div v-for="(comment, commentIdx) in commentList[i]" :key="comment.id">
+            <div v-if="commentIdx < 3">
+              {{ comment.content }}
+            </div>
+          </div>
+
+          <div v-if="commentList[i].length === 0">
+            아직 작성된 댓글이 없습니다. :(
+          </div>
+
+          <!-- 댓글 작성란 -->
           <div>
             <input
               v-model="commentContent"
               style="
-                height: 1.25rem;
-                font-size: 0.875rem;
-                border: none;
-                width: 16rem;
+              height: 1.25rem;
+              font-size: 0.875rem;
+              border: none;
+              width: 16rem;
               "
               type="text"
               placeholder="댓글 달기"
@@ -157,7 +170,8 @@ export default {
     boardList: [],
     boardImgList: [],
     limit: 0, // 무한 스크롤이 되면서 갱신될 페이지를 저장하는 변수
-    commentContent: "",
+    commentContent: '', // 새롭게 작성할 댓글의 내용
+    commentList: "",
   }),
   computed: {
     loginUser() {
@@ -179,6 +193,8 @@ export default {
           console.log(res)
           // 이미지 목록 지정하자.
           this.boardImgList = res.data.galleryListDto.galleryList
+          console.log("댓글 내용은..!", res.data.commentLists)
+          this.commentList = res.data.commentLists
 
           console.log("인피니트 스크롤롤 받아온 데이터", res.data.boardList);
           console.log(
@@ -252,6 +268,8 @@ export default {
     },
     // 댓글 작성
     createComment(boardId) {
+
+      console.log("댓글 정보 - 게시글 아이디 : ", boardId, ", 댓글 내용 : ", this.commentContent)
       axios({
         url: "http://localhost:8000/api/meet/comment",
         method: "POST",
@@ -259,12 +277,13 @@ export default {
           Authorization: "Bearer " + this.$store.state.jwt,
         },
         data: {
-          id: boardId,
+          boardId: boardId,
           content: this.commentContent,
         },
       })
         .then((res) => {
           console.log("댓글 작성 성공", res);
+          this.$router.go()
         })
         .catch((err) => {
           console.log("댓글 작성 실패", err);

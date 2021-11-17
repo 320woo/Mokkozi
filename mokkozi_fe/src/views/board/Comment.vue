@@ -22,6 +22,8 @@
             </v-list-item-avatar>
           </v-toolbar>
         <v-divider style="margin: 0.5rem 0rem;"></v-divider>
+
+
         <div style="display: flex; flex-direction: row; justify-content: center">
           <div style="width: 3rem;">
             <v-list-item-avatar>
@@ -35,97 +37,7 @@
             </v-list-item-content>
           </div>
         </div>
-        <div style="display: flex; flex-direction: row; justify-content: center">
-          <div style="width: 3rem;">
-            <v-list-item-avatar>
-              <img src="https://picsum.photos/250/300?image=821">
-            </v-list-item-avatar>
-          </div>
-          <div style="width: 17rem;">
-            <v-list-item-content>
-              <span class="font-weight-bold" style="text-align: start;">Spike Lee</span>
-              <span class="comment-text">I'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhood</span>
-            </v-list-item-content>
-          </div>
-        </div>
-        <div style="display: flex; flex-direction: row; justify-content: center">
-          <div style="width: 3rem;">
-            <v-list-item-avatar>
-              <img src="https://picsum.photos/250/300?image=821">
-            </v-list-item-avatar>
-          </div>
-          <div style="width: 17rem;">
-            <v-list-item-content>
-              <span class="font-weight-bold" style="text-align: start;">Spike Lee</span>
-              <span class="comment-text">I'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhood</span>
-            </v-list-item-content>
-          </div>
-        </div>
-        <div style="display: flex; flex-direction: row; justify-content: center">
-          <div style="width: 3rem;">
-            <v-list-item-avatar>
-              <img src="https://picsum.photos/250/300?image=821">
-            </v-list-item-avatar>
-          </div>
-          <div style="width: 17rem;">
-            <v-list-item-content>
-              <span class="font-weight-bold" style="text-align: start;">Spike Lee</span>
-              <span class="comment-text">I'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhood</span>
-            </v-list-item-content>
-          </div>
-        </div>
-        <div style="display: flex; flex-direction: row; justify-content: center">
-          <div style="width: 3rem;">
-            <v-list-item-avatar>
-              <img src="https://picsum.photos/250/300?image=821">
-            </v-list-item-avatar>
-          </div>
-          <div style="width: 17rem;">
-            <v-list-item-content>
-              <span class="font-weight-bold" style="text-align: start;">Spike Lee</span>
-              <span class="comment-text">I'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhood</span>
-            </v-list-item-content>
-          </div>
-        </div>
-        <div style="display: flex; flex-direction: row; justify-content: center">
-          <div style="width: 3rem;">
-            <v-list-item-avatar>
-              <img src="https://picsum.photos/250/300?image=821">
-            </v-list-item-avatar>
-          </div>
-          <div style="width: 17rem;">
-            <v-list-item-content>
-              <span class="font-weight-bold" style="text-align: start;">Spike Lee</span>
-              <span class="comment-text">I'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhood</span>
-            </v-list-item-content>
-          </div>
-        </div>
-        <div style="display: flex; flex-direction: row; justify-content: center">
-          <div style="width: 3rem;">
-            <v-list-item-avatar>
-              <img src="https://picsum.photos/250/300?image=821">
-            </v-list-item-avatar>
-          </div>
-          <div style="width: 17rem;">
-            <v-list-item-content>
-              <span class="font-weight-bold" style="text-align: start;">Spike Lee</span>
-              <span class="comment-text">I'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhood</span>
-            </v-list-item-content>
-          </div>
-        </div>
-        <div style="display: flex; flex-direction: row; justify-content: center">
-          <div style="width: 3rem;">
-            <v-list-item-avatar>
-              <img src="https://picsum.photos/250/300?image=821">
-            </v-list-item-avatar>
-          </div>
-          <div style="width: 17rem;">
-            <v-list-item-content>
-              <span class="font-weight-bold" style="text-align: start;">Spike Lee</span>
-              <span class="comment-text">I'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhoodI'll be in your neighborhood</span>
-            </v-list-item-content>
-          </div>
-        </div>
+
         <div>
             <input v-model="commentContent" style="height: 1.25rem; font-size: 0.875rem; border: none; width: 16rem"
               type="text" placeholder="댓글 달기">
@@ -147,12 +59,14 @@
 export default {
   name: 'Comment',
   components: {},
+  props: {
+    boardId: {
+      type: Number
+    }
+  },
   data: () => ({
     commentContent: ''
   }),
-  mounted () {
-    getCommentList()
-  },
   methods: {
     backToBoardClick () {
       this.$router.push({ name: 'Board' })
@@ -163,7 +77,7 @@ export default {
     // 댓글 불러오기
     getCommentList (boardId) {
       axios({
-        url: `http://localhost:8000/api/meet/comment/${boardId}`,
+        url: `http://localhost:8000/api/meet/comment?${boardId}`,
         methods: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -191,7 +105,10 @@ export default {
         console.log('댓글 작성 실패', err)
       })
     },
-  }
+  },
+  created: function () {
+    getCommentList(boardId)
+  },
 }
 </script>
 
