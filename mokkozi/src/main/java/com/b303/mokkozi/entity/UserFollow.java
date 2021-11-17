@@ -16,11 +16,11 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 public class UserFollow extends BaseEntity{
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name="from_user_id")
     private User fromUser;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name="to_user_id")
     private User toUser;
 

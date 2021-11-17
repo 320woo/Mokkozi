@@ -13,11 +13,11 @@ import javax.persistence.ManyToOne;
 @Entity
 public class UserBoardLike extends BaseEntity{
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
 
