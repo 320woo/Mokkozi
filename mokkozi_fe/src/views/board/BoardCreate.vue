@@ -10,9 +10,9 @@
           <v-card-title style="display:flex; justify-content:space-between; margin-bottom:1rem">
             <div>
               <v-avatar size="36px" @click="userImageClick(loginUser)">
-              <img alt="Avatar" src="@/assets/logo.png">
+              <img alt="Avatar" :src="this.$store.state.user.profile">
               </v-avatar>
-              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(loginUser)">MOKKOZI</span>
+              <span class="font-weight-bold" style="margin-left: 0.5rem" @click="userNicknameClick(loginUser)">{{this.$store.state.user.nickname}}</span>
             </div>
             <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
           </v-card-title>
@@ -21,7 +21,7 @@
           <v-file-input
           multiple
           accept="image/png, image/jpeg, image/bmp"
-          placeholder="이미지를 선택하세요."
+          placeholder="최대 5장까지 올릴 수 있습니다."
           prepend-icon="mdi-camera"
           @change="createImgUrl"
           v-model="boardImages" />
