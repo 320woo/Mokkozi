@@ -10,8 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +29,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/meet/user")
 public class UserController {
@@ -48,8 +48,6 @@ public class UserController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    private Logger logger = LoggerFactory.getLogger(UserController.class);
-
     @PostMapping("/login")
     @ApiOperation(value = "로그인", notes = "ID, PW 이용 로그인")
     @ApiResponses({@ApiResponse(code = 200, message = "로그인 성공"), @ApiResponse(code = 500, message = "로그인 실패")})
@@ -57,26 +55,26 @@ public class UserController {
             @RequestBody @ApiParam(value = "회원의 로그인 정보(아이디와 패스워드)", required = true) CredentialPostReq credentials) {
 
         // ID, PW가 담긴 토큰 발급
-        logger.info("UserController.login 65 : 이메일: {}, 비밀번호: {}", credentials.getEmail(), credentials.getPassword());
-        logger.info("UserController.login 66 : Authenticaion 토큰 생성. 이 과정에서 해당 사용자가 존재하는지, 비밀번호는 맞는지를 확인합니다.");
-        // 아이디 또는 비밀번호가 맞지 않는 경우 에러 메시지를 출력한다. (Logger 형태)
+        log.info("UserController.login 65 : 이메일: {}, 비밀번호: {}", credentials.getEmail(), credentials.getPassword());
+        log.info("UserController.login 66 : Authenticaion 토큰 생성. 이 과정에서 해당 사용자가 존재하는지, 비밀번호는 맞는지를 확인합니다.");
+        // 아이디 또는 비밀번호가 맞지 않는 경우 에러 메시지를 출력한다. (log 형태)
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword());
 
         // 이 토큰을 이용해서 Authenticaion 객체 생성
-        logger.info("UserController.login 69 : Authenticaion 객체 생성");
+        log.info("UserController.login 69 : Authenticaion 객체 생성");
 
 
         // Dummy가 담긴 User 또는 실제 User 객체를 반환한다.
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // Spring Security에 해당 authenticaion 객체를 저장한다.
-        logger.info("UserController.login 79 : SecurityContextHolder에 authentication 객체를 저장합니다.");
+        log.info("UserController.login 79 : SecurityContextHolder에 authentication 객체를 저장합니다.");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
         CustomUserDetails result = (CustomUserDetails) authentication.getPrincipal();
-        logger.info("UserController.login 85 : authenticaion 정보 : {}", result.getUser());
+        log.info("UserController.login 85 : authenticaion 정보 : {}", result.getUser());
 
         return ResponseEntity.ok(TokenDto
                 .of(200, "로그인에 성공하였습니다. 토큰 발급 완료",
@@ -95,10 +93,25 @@ public class UserController {
     public User getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
     		@ApiIgnore Authentication authentication) {
 
-    	System.out.println("유저정보");
     	User getuser = userService.findByEmail(toUserEmail).get();
 
     	return getuser;
+    }
+
+    @GetMapping("/getUserByNickname")
+    @ApiOperation(value = "유저정보", notes = "닉네임으로 다른 유저 정보 가져오기")
+    @ApiResponses({@ApiResponse(code = 200, message = "유저정보 가져오기 성공"), @ApiResponse(code = 500, message = "유저정보 가져오기 실패")})
+    public ResponseEntity<? extends BaseResponseBody> getuserByNickname(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String nickName,
+                        @ApiIgnore Authentication authentication) {
+
+        Optional<User> result = userService.findByNickname(nickName);
+        if (result.isPresent()) {
+            return ResponseEntity.status(200).body(UserDto.of(200, "닉네임으로 유저 객체 받아오기 성공", result.get()));
+        }
+        else {
+            return ResponseEntity.status(200).body(BaseResponseBody.of(404, "유저를 찾을 수 없습니다."));
+        }
+
     }
 
 
@@ -106,7 +119,7 @@ public class UserController {
     @ApiOperation(value = "회원가입", notes = "회원 가입에 필요한 정보를 입력하고 회원가입한다.")
     @ApiResponses({@ApiResponse(code = 200, message = "회원가입 성공"), @ApiResponse(code = 500, message = "회원가입 실패")})
     public ResponseEntity<? extends BaseResponseBody> join(@RequestBody @ApiParam(value="회원가입 시 필요한 정보") JoinInfoPostReq joinInfo) {
-        logger.info("회원가입 시 받아온 정보는 {}", joinInfo.toString());
+        log.info("회원가입 시 받아온 정보는 {}", joinInfo.toString());
 
         // 사용자가 입력한 암호를 한번 인코딩해야 한다.
         joinInfo.setPassword(passwordEncoder.encode(joinInfo.getPassword()));
@@ -257,15 +270,15 @@ public class UserController {
             @ApiResponse(code = 404, message = "아이디 사용 가능"),
             @ApiResponse(code = 500, message = "에러 발생")})
     public ResponseEntity<? extends BaseResponseBody> validEmail(@RequestBody EmailPostReq email) {
-        logger.info("UseController.validEmail 235 : 이메일 검증합니다. {} ", email.getEmail());
+        log.info("UseController.validEmail 235 : 이메일 검증합니다. {} ", email.getEmail());
 
         Optional<User> user = userService.findByEmail(email.getEmail());
         if (user.isPresent()) {
-            logger.info("UseController.validEmail 245 : 사용자가 존재합니다.");
+            log.info("UseController.validEmail 245 : 사용자가 존재합니다.");
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "이미 사용자가 존재합니다."));
         }
         else {
-            logger.info("UseController.validEmail 249 : 사용 가능한 아이디입니다.");
+            log.info("UseController.validEmail 249 : 사용 가능한 아이디입니다.");
             return ResponseEntity.status(200).body(BaseResponseBody.of(404, "사용 가능한 아이디입니다."));
         }
     }
@@ -277,14 +290,14 @@ public class UserController {
             @ApiResponse(code = 404, message = "닉네임 사용 가능"),
             @ApiResponse(code = 500, message = "에러 발생")})
     public ResponseEntity<? extends BaseResponseBody> validNickname(@RequestBody NicknamePostReq nickname) {
-        logger.info("UseController.validNickname 362 : 닉네임 검증합니다 : {} ", nickname.getNickname());
+        log.info("UseController.validNickname 362 : 닉네임 검증합니다 : {} ", nickname.getNickname());
 
         Optional<User> user = userService.findByNickname(nickname.getNickname());
         if (user.isPresent()) {
-            logger.info("UseController.validNickname 266 : 사용자가 존재합니다.");
+            log.info("UseController.validNickname 266 : 사용자가 존재합니다.");
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "이미 사용자가 존재합니다."));
         } else {
-            logger.info("UseController.validEmail 249 : 사용 가능한 닉네임입니다.");
+            log.info("UseController.validEmail 249 : 사용 가능한 닉네임입니다.");
             return ResponseEntity.status(200).body(BaseResponseBody.of(404, "사용 가능한 닉네임입니다."));
         }
     }
@@ -312,12 +325,12 @@ public class UserController {
         }
     }
 
-        @PatchMapping("/active")
-        @ApiOperation(value = "사용자 활동 변경", notes = "관리자는 사용자 활동 상태를 변경할 수 있다.")
-        @ApiResponses({@ApiResponse(code = 200, message = "사용자 활동 변경 성공"), @ApiResponse(code = 400, message = "실패"),
-                @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
-        public ResponseEntity<? extends BaseResponseBody>  verifyUser(@RequestBody UserActivePatchReq vupr
-            , @ApiIgnore Authentication authentication
+    @PatchMapping("/active")
+    @ApiOperation(value = "사용자 활동 변경", notes = "관리자는 사용자 활동 상태를 변경할 수 있다.")
+    @ApiResponses({@ApiResponse(code = 200, message = "사용자 활동 변경 성공"), @ApiResponse(code = 400, message = "실패"),
+            @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})
+    public ResponseEntity<? extends BaseResponseBody>  verifyUser(@RequestBody UserActivePatchReq vupr
+        , @ApiIgnore Authentication authentication
     ) {
             try{
                 User user = (User) authentication.getDetails();
@@ -334,6 +347,8 @@ public class UserController {
                 return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
             }
     }
+
+
 
 
 }

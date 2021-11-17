@@ -22,4 +22,13 @@ public class UserDto extends BaseResponseBody {
 
         return res;
     }
+
+    public static UserDto of(Integer statusCode, String message, User user) {
+        UserDto res = new UserDto();
+        res.setStatusCode(statusCode);
+        res.setMessage(message);
+        res.setUser(user);
+
+        return res;
+    }
 }
