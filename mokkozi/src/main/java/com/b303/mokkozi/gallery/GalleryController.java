@@ -4,6 +4,9 @@ import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.config.S3Uploader;
 import com.b303.mokkozi.entity.Gallery;
 import com.b303.mokkozi.entity.User;
+import com.b303.mokkozi.gallery.dto.GalleriesDto;
+import com.b303.mokkozi.gallery.dto.GalleryDto;
+import com.b303.mokkozi.gallery.dto.GalleryListDto;
 import com.b303.mokkozi.gallery.request.ImageWrapper;
 import com.b303.mokkozi.gallery.request.ProfileWrapper;
 import com.b303.mokkozi.gallery.request.GalleryVO;
@@ -15,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -135,6 +139,21 @@ public class GalleryController {
 
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "대표 프로필 업로드 성공!"));
     }
+
+    @PostMapping("/findByEmail")
+    @ApiOperation(value = "이메일 통해 이미지를 불러온다.", notes = "사용자 이메일을 통해 프로필 이미지를 불러온다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "이미지 불러오기 성공"),
+            @ApiResponse(code = 500, message = "이미지 불러오기 실패"),
+            @ApiResponse(code = 401, message = "권한 인증 실패")})
+    public ResponseEntity<? extends BaseResponseBody> findByEmail(Authentication authentication) {
+        // Authentication 통해 UserEmail을 받는다.
+        User user = (User) authentication.getDetails();
+
+        List<GalleryDto> result = galleryService.getGalleryListByUser(user);
+        return ResponseEntity.status(200).body(GalleriesDto.of(200, "갤러리 목록 불러오기 성공", result));
+    }
+
 }
 
 

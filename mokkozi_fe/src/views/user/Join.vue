@@ -55,7 +55,7 @@
             <!-- 닉네임 -->
             <ValidationProvider
               name="닉네임"
-              rules="required"
+              rules="required|max:6"
               v-slot="{ errors }"
             >
               <v-text-field
@@ -94,7 +94,7 @@
             <!-- 비밀번호 -->
             <ValidationProvider
               name="비밀번호"
-              rules="required"
+              rules="required|min:10|max:15"
               v-slot="{ errors }"
             >
               <v-text-field
@@ -424,7 +424,7 @@
 </template>
 
 <script>
-import { required, email, size } from "vee-validate/dist/rules";
+import { required, email, size, max, min } from "vee-validate/dist/rules";
 import { ValidationObserver, ValidationProvider, extend } from "vee-validate";
 import axios from "axios";
 import router from "../../router";
@@ -442,6 +442,16 @@ extend("required", {
 extend("fileRequired", {
   ...size,
   message: '{_field_}의 최대 용량은 2MB입니다.',
+})
+
+extend("max", {
+  ...max,
+  message: '{_field_}의 최대 길이는 {length}자입니다.'
+})
+
+extend("min", {
+  ...min,
+  message: '{_field_}의 최소 길이는 {length}자입니다.'
 })
 
 export default {
@@ -556,7 +566,7 @@ export default {
       this.joinInfo.imgFile = formData;
 
       axios({
-          url: process.env.VUE_APP_API_URL + '/meet/user/join',
+          url: process.env.VUE_APP_API_URL + '/api/meet/user/join',
           method: 'POST',
           headers: {
             "Content-Type": "application/json"
@@ -580,7 +590,7 @@ export default {
           );
           // 프로필 이미지 등록 시작합니다.
           axios({
-            url: process.env.VUE_APP_API_URL + "/meet/gallery/myProfile",
+            url: process.env.VUE_APP_API_URL + "/api/meet/gallery/myProfile",
             method: "POST",
             headers: {
               "Content-Type": "multipart/form-data",
@@ -606,7 +616,7 @@ export default {
             console.log("사용자 이미지 리스트 정보 : ", this.joinInfo.myImages);
 
             axios({
-              url: process.env.VUE_APP_API_URL + "/meet/gallery/images",
+              url: process.env.VUE_APP_API_URL + "/api/meet/gallery/images",
               method: "POST",
               headers: {
                 "Content-Type": "multipart/form-data",
@@ -673,7 +683,7 @@ export default {
       // axios 요청 보낸다.
       this.timer = setTimeout(() => {
         axios({
-          url: process.env.VUE_APP_API_URL + "/meet/user/validEmail",
+          url: process.env.VUE_APP_API_URL + "/api/meet/user/validEmail",
           method: "POST",
           data: {
             email: this.joinInfo.email,
@@ -715,7 +725,7 @@ export default {
       // axios 요청 보낸다.
       this.timer2 = setTimeout(() => {
         axios({
-          url: process.env.VUE_APP_API_URL + "/meet/user/validNickname",
+          url: process.env.VUE_APP_API_URL + "/api/meet/user/validNickname",
           method: "POST",
           data: {
             nickname: this.joinInfo.nickName,
