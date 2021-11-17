@@ -4,6 +4,8 @@ import com.b303.mokkozi.board.dto.BoardDto;
 import com.b303.mokkozi.board.request.BoardModifyPatchReq;
 import com.b303.mokkozi.board.request.BoardWritePostReq;
 import com.b303.mokkozi.board.dto.BoardListDto;
+import com.b303.mokkozi.comment.CommentService;
+import com.b303.mokkozi.comment.dto.CommentDto;
 import com.b303.mokkozi.common.response.BaseResponseBody;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.Gallery;
@@ -38,6 +40,9 @@ public class BoardController {
     BoardService boardService;
 
     @Autowired
+    CommentService commentService;
+
+    @Autowired
     GalleryService galleryService;
 
     //게시글 목록 조회
@@ -62,7 +67,11 @@ public class BoardController {
             GalleryListDto galleryListDto = galleryService.getGalleryLists(boardList);
             log.info("BoardController.getBoardList 62 : 이미지 목록은..? : {}", galleryListDto.getGalleryList());
 
-            return ResponseEntity.ok(BoardListDto.of(200, "게시글 목록 조회 완료.", boardList, galleryListDto));
+            // 댓글도 불러온다.
+            List<List<CommentDto>> commentLists = new ArrayList<>();
+            boardList.map(m -> commentLists.add(commentService.getCommentList(m.getId())));
+
+            return ResponseEntity.ok(BoardListDto.of(200, "게시글 목록 조회 완료.", boardList, galleryListDto, commentLists));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e) {

@@ -14,9 +14,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class CommentListDto extends BaseResponseBody {
-    private List<Comment> commentList;
+    private List<CommentDto> commentList;
 
-    public static CommentListDto of(Integer statusCode, String message, List<Comment> commentList) {
+    public static CommentListDto of(Integer statusCode, String message, List<CommentDto> commentList) {
         CommentListDto res = new CommentListDto();
         res.setStatusCode(statusCode);
         res.setMessage(message);
