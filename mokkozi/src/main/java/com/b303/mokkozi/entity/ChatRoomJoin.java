@@ -15,11 +15,11 @@ import javax.persistence.ManyToOne;
 @Getter
 @Setter
 public class ChatRoomJoin extends BaseEntity {
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     private ChatRoom chatRoom;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

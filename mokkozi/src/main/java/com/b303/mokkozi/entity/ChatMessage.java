@@ -13,11 +13,11 @@ public class ChatMessage extends BaseEntity{
     private String message;
     private Date regDate;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "room_id",nullable = false)
     private ChatRoom chatRoom;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 

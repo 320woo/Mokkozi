@@ -16,7 +16,7 @@ public class ReportBoard extends BaseEntity{
     private String result;
 
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "board_id",nullable = false)
     private Board board;
 

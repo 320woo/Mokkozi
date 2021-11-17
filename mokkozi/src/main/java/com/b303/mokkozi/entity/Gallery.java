@@ -17,11 +17,11 @@ public class Gallery extends BaseEntity{
     @Column(nullable = false)
     private String sort;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id",nullable = true)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "board_id",nullable = true)
     private Board board;
 

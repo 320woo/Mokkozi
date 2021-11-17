@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 @Setter
 public class UserInterest extends BaseEntity{
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
