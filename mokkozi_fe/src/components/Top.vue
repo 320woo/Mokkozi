@@ -9,7 +9,7 @@
             text="text"
             rounded="rounded"
             class="my-2 btn">
-            <router-link to="/board" style="text-decoration: none; color:white">게시판</router-link></v-btn>
+            <router-link to="/board" style="text-decoration: none; color:white; font-size:18px;">게시판</router-link></v-btn>
             <v-btn
               v-else
               dark
@@ -28,7 +28,7 @@
                 text="text"
                 rounded="rounded"
                 class="my-2 btn">
-            <router-link to="/meeting" style="text-decoration: none; color:white">랜선미팅</router-link></v-btn>
+            <router-link to="/meeting" style="text-decoration: none; color:white; font-size:18px;">랜선미팅</router-link></v-btn>
             <v-btn
                 v-else
                 dark
