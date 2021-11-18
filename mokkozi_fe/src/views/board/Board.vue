@@ -216,7 +216,7 @@ export default {
           console.log('this.boardImgList', res.data.galleryListDto.galleryList)
           this.boardImgList.filter((boardImg) => {
             if (boardImg.length === 0) {
-              return boardImg.push({'file_path' : 'https://mokkozi.s3.ap-northeast-2.amazonaws.com/board.jpg'})
+              return boardImg.push({'file_path' : 'https://mokkozi-s3.s3.ap-northeast-2.amazonaws.com/board.jpg'})
             }
           })
           console.log('this.boardImgList', res.data.galleryListDto.galleryList)

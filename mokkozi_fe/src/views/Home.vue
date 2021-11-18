@@ -52,13 +52,12 @@
 </div>
 <div class="wrap mb-10">
     <v-slide-group
-      v-model="model"
       class="pa-4"
       show-arrows
     >
       <v-slide-item
-        v-for="n in this.reviews"
-        :key="n"
+        v-for="(n, index) in this.reviews"
+        :key="index"
       >
         <v-card
           class="ma-4"
