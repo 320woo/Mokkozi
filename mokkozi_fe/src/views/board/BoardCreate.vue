@@ -127,21 +127,27 @@ export default {
       })
     },
     createImgUrl() {
+      // X 버튼을 누르는 경우에는, 업로드한 이미지를 초기화하는 것이므로
+      if (this.boardImages.length === 0) {
+        return
+      }
+
+      if (commonFunc.checkMyImagesLetter(this.boardImages)) {
+        this.boardImages = []
+        return
+      }
+
       // 갯수를 제한한다. (최대 5장)
       if (this.boardImages.length > 5) {
         alert("이미지는 최대 5장까지 첨부 가능합니다.")
         this.boardImages = []
+        return
       }
 
-      // X 버튼을 누르는 경우에는, 업로드한 이미지를 초기화하는 것이므로
-      if (this.boardImages.length === 0) {
-        this.isCarousel = false
-      }
       // 그 외에 1개 이상의 파일을 업로드한 경우에는...
-      else {
-        this.imagesURL = commonFunc.makeLocalURL(this.boardImages)
-        this.isCarousel = true
-      }
+      this.imagesURL = commonFunc.makeLocalURL(this.boardImages)
+      this.isCarousel = true
+
     },
   }
 }
