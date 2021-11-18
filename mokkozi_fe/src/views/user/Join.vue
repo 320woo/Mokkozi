@@ -127,6 +127,7 @@
                     label="생년월일"
                     prepend-icon="mdi-calendar"
                     :error-messages="errors"
+                    placeholder="클릭하여 생년월일을 선택해 주세요."
                     readonly
                     v-bind="attrs"
                     v-on="on"
@@ -668,13 +669,7 @@ export default {
         return
       }
 
-      const result = [];
-      // 파일 하나당 가상의 URL 만들기
-      for (let i = 0; i < this.joinInfo.myImages.length; i++) {
-        const previewURL = URL.createObjectURL(this.joinInfo.myImages[i]);
-        result.push(previewURL);
-      }
-      this.joinInfo.myImagesURL = result;
+      this.joinInfo.myImagesURL = commonFunc.makeLocalURL(this.joinInfo.myImages);
       this.isCarousel = true;
     },
     validEmail() {

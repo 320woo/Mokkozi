@@ -2,7 +2,6 @@ package com.b303.mokkozi.gallery;
 
 import com.b303.mokkozi.board.BoardService;
 import com.b303.mokkozi.board.dto.BoardDto;
-import com.b303.mokkozi.config.S3Uploader;
 import com.b303.mokkozi.entity.Board;
 import com.b303.mokkozi.entity.Gallery;
 import com.b303.mokkozi.entity.User;
@@ -32,9 +31,6 @@ public class GalleryServiceImpl implements GalleryService{
 
     @Autowired
     GalleryRepository galleryRepository;
-
-    @Autowired
-    S3Uploader s3Uploader;
 
     @Override
     public Gallery galleryCreate(GalleryVO galleryVo, String id) {
