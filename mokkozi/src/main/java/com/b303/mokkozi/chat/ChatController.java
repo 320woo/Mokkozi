@@ -84,7 +84,7 @@ public class ChatController {
 
     // chat (post) - 채팅방 만들기
     @PostMapping("")
-    public String create(@ApiIgnore Authentication authentication, @RequestParam @ApiParam(value = "상대방 email") String email) {
+    public Long create(@ApiIgnore Authentication authentication, @RequestParam @ApiParam(value = "상대방 email") String email) {
         // 내 id
         User user1 = (User) authentication.getDetails();
         Long id1 = user1.getId();
@@ -97,6 +97,6 @@ public class ChatController {
         Long chatRoomId = chatService.newRoom(id1, id2);
         // 생성된 chat_room 을 FK로 하여 상대방과 내 ID를 컬럼값으로 갖는 데이터를 저장한다.
 
-        return null;
+        return chatRoomId;
     }
 }
