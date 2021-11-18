@@ -36,7 +36,7 @@
           <!-- <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-external-link-alt</v-icon> -->
           <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-door-open</v-icon>
         </div>
-        <div id="chat-div" style="height:290px; overflow:scroll;">
+        <div id="chat-div" style="height:200px; overflow:scroll;">
           <v-expansion-panels style="border: solid; border-color: #dcdcdc;">
           <v-expansion-panel>
             <v-expansion-panel-header class="font-weight-bold" style="font-size: 20px; height: 60px" @click="CountMessage">
