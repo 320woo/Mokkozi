@@ -82,7 +82,7 @@ export default {
       this.$router.push('Join')
     },
     login () {
-      
+
       axios({
         url: process.env.VUE_APP_API_URL + '/api/meet/user/login',
         method: 'POST',
@@ -102,7 +102,7 @@ export default {
 
           // Role에 따라 다른 곳으로 보낸다.
           if (resp.data.role === '사용자') {
-            this.$router.push("Matching")
+            this.$router.push('/')
           }
           else {
             // 관리자 메인 페이지로 이동한다.

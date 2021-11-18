@@ -107,9 +107,6 @@
             <p style="float: left">아직 작성된 댓글이 없습니다 :(</p>
           </div>
           <div v-else-if="commentList[i].length === 1">
-            <v-avatar size="36px" @click="userImageClick(board.userEmail)">
-              <img alt="Avatar" :src="commentList[i][0].profileUrl" />
-            </v-avatar>
             <v-card-text style="height: 20px; text-align:start; font-size: 12px; margin: 0px">
               {{ commentList[i][0].content }}
             </v-card-text>
