@@ -39,7 +39,7 @@ import java.util.Optional;
 @RequestMapping("/api/meet/chat")
 public class ChatController {
 
-    private final SimpMessageSendingOperations messagingTemplate;
+//    private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
     ChatService chatService;
@@ -47,7 +47,7 @@ public class ChatController {
     @Autowired
     UserService userService;
 
-    private final SimpMessagingTemplate template;
+//    private final SimpMessagingTemplate template;
 
     // 채팅방 목록 조회
     @GetMapping("/me")
@@ -77,12 +77,12 @@ public class ChatController {
         return ResponseEntity.ok(ChatMessageListDto.of(200, "채팅 메시지 조회 완료", messageList));
     }
 
-    // 채팅 메시지 전송
-    @MessageMapping("/send")
-    public void sendMsg(@Payload ChatMessage chatMessage) {
-        chatService.insertMessage(chatMessage); // db에 메시지를 저장
-        template.convertAndSend("/sub/" + chatMessage.getChatRoom().getId(), chatMessage); // 해당 목적지에 메시지를 전송
-    }
+//    // 채팅 메시지 전송
+//    @MessageMapping("/send")
+//    public void sendMsg(@Payload ChatMessage chatMessage) {
+//        chatService.insertMessage(chatMessage); // db에 메시지를 저장
+//        template.convertAndSend("/sub/" + chatMessage.getChatRoom().getId(), chatMessage); // 해당 목적지에 메시지를 전송
+//    }
 
     // chat (delete) - 채팅방 삭제(나가기)
 
@@ -104,14 +104,14 @@ public class ChatController {
         return chatRoomId;
     }
 
-    @GetMapping("/alarm/stomp")
-    @ApiOperation(value = "Stomp 테스트")
-    public String stompAlarm() {
-        return "/stomp";
-    }
-
-    @MessageMapping("/{userId")
-    public void message(@DestinationVariable("userId") Long userId) {
-        messagingTemplate.convertAndSend("/sub/" + userId, "alarm socket connection completed.");
-    }
+//    @GetMapping("/alarm/stomp")
+//    @ApiOperation(value = "Stomp 테스트")
+//    public String stompAlarm() {
+//        return "/stomp";
+//    }
+//
+//    @MessageMapping("/{userId")
+//    public void message(@DestinationVariable("userId") Long userId) {
+//        messagingTemplate.convertAndSend("/sub/" + userId, "alarm socket connection completed.");
+//    }
 }

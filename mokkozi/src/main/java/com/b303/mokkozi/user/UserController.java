@@ -89,12 +89,15 @@ public class UserController {
     @GetMapping("/getuser")
     @ApiOperation(value = "유저정보", notes = "이메일로 다른 유저 정보 가져오기")
     @ApiResponses({@ApiResponse(code = 200, message = "유저정보 가져오기 성공"), @ApiResponse(code = 500, message = "유저정보 가져오기 실패")})
-    public User getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
-    		@ApiIgnore Authentication authentication) {
+    public ResponseEntity<? extends BaseResponseBody> getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
+                                           @ApiIgnore Authentication authentication) {
 
     	User getuser = userService.findByEmail(toUserEmail).get();
 
-    	return getuser;
+    	// 관심사도 불러온다.
+        List<UserInterestDto> userInterest = userService.getUserInterest(getuser);
+
+    	return ResponseEntity.status(200).body(UserDto.of(200, "유저 정보 불러오기 성공", getuser, userInterest));
     }
 
     @GetMapping("/getUserByNickname")
@@ -217,27 +220,6 @@ public class UserController {
         }
     }
 
-    // 맞팔 목록 조회
-    @Transactional
-    @GetMapping("/each_follow")
-    @ApiOperation(value = "맞팔로우 목록 ", notes = "맞팔로우 정보를 리스트로 반환")
-    @ApiResponses({@ApiResponse(code = 200, message = "맞팔로우 목록 조회 성공"), @ApiResponse(code = 500, message = "맞팔로우 목록 조회 실패")})
-    public ResponseEntity<? extends BaseResponseBody> getEachFollow(
-//            @ApiIgnore Authentication authentication
-    ){
-        try{
-//            User user = (User) authentication.getDetails();
-            User user = userService.findById((long)11).get();
-            List<UserFollowDto> following = userService.getEachFollow(user);
-            return ResponseEntity.ok(UserFollowListDto.of(200, "맞팔로우 목록 조회 성공",following));
-        } catch (AuthenticationException | NullPointerException e) {
-            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
-        } catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
-        }
-    }
-
 
     //랜덤 추천
     @GetMapping("/recommend/random")
@@ -249,7 +231,7 @@ public class UserController {
         try{
             User user = (User) authentication.getDetails();
             List<User> random = userService.getRandomUser(user);
-            return ResponseEntity.ok(UserRandomDto.of(200, "회원 랜덤 조회 성공",random));
+            return ResponseEntity.ok(UserRecommendDto.of(200, "회원 랜덤 조회 성공",random));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e){
@@ -265,11 +247,25 @@ public class UserController {
     @GetMapping("/recommend/guest_random")
     @ApiOperation(value = "랜덤 추천 목록 ", notes = "로그인한 회원을 제외한 랜덤 추천 목록을 반환")
     @ApiResponses({@ApiResponse(code = 200, message = "회원 랜덤 조회 성공"), @ApiResponse(code = 500, message = "회원 랜덤 조회 실패")})
-    public ResponseEntity<? extends BaseResponseBody> recommendRandomNotLogin(
+    public ResponseEntity<? extends BaseResponseBody> recommendRandomNotLogin(){
+        log.info("회원 랜덤 조회 시작합니다.");
+
+        List<User> random = userService.getRandomUserNotLogin();
+        log.info("랜덤으로 가져온 목록은... {}", random);
+        return ResponseEntity.status(200).body(UserRecommendDto.of(200, "회원 랜덤 조회 성공", random));
+    }
+
+    //위치 기반 추천
+    @GetMapping("/recommend/location")
+    @ApiOperation(value = "위치 기반 추천 목록 ", notes = "로그인한 회원을 제외한 위치 기반 추천 목록을 반환")
+    @ApiResponses({@ApiResponse(code = 200, message = "회원 위치 기반 조회 성공"), @ApiResponse(code = 500, message = "회원 위치 기반 조회 실패")})
+    public ResponseEntity<? extends BaseResponseBody> recommendLocation(
+            @ApiIgnore Authentication authentication
     ){
         try{
-            List<User> random = userService.getRandomUserNotLogin();
-            return ResponseEntity.ok(UserRandomDto.of(200, "회원 랜덤 조회 성공",random));
+            User user = (User) authentication.getDetails();
+            List<User> location = userService.getLocationUser(user);
+            return ResponseEntity.ok(UserRecommendDto.of(200, "회원 위치 기반 조회 성공",location));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e){

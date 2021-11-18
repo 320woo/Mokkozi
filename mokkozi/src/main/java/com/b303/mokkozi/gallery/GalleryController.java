@@ -66,7 +66,7 @@ public class GalleryController {
         for (MultipartFile file:model.getFiles()) {
             // 파일 업로드 시, Exception 처리
             try {
-                String file_path = s3Uploader.upload(file, "images");
+                String file_path = s3Uploader.upload(file, "myPage");
 
                 GalleryVO galleryVO = new GalleryVO();
                 galleryVO.setFilePath(file_path);
@@ -120,7 +120,7 @@ public class GalleryController {
         try {
             logger.info("GalleryController.uploadMyProfile 100 : S3에 파일 업로드합니다.");
             // 2번째 인자는 폴더이름이다.
-            file_path = s3Uploader.upload(model.getFile(), "PublicProfile");
+            file_path = s3Uploader.upload(model.getFile(), "profile");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(BaseResponseBody.of(500, "대표 프로필 업로드 실패"));

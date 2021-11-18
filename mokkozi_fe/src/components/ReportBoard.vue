@@ -118,6 +118,7 @@ export default {
       this.boardReasonList.forEach((reasonIdx) => {
         document.querySelector('#' + reasonIdx[0]).classList.remove('selected')
       })
+      alert("게시글이 신고되었습니다.")
       this.dialog = false
     },
     // x 아이콘으로 닫을 때 reason 초기화

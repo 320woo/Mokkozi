@@ -200,6 +200,9 @@ export default ({
       }).then(res => {
         console.log('게시물 불러오기 성공', res.data)
         this.board = res.data
+        if (this.board.galleryList.length === 0) {
+          return this.board.galleryList.push({'file_path' : 'https://mokkozi-s3.s3.ap-northeast-2.amazonaws.com/board.jpg'})
+        }
       }).catch(err => {
         console.log('게시물 불러오기 실패', err)
       })

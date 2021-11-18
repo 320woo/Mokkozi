@@ -1,9 +1,4 @@
 <template>
-  <v-sheet
-  height="800"
-  class="overflow-hidden"
-  style="position: relative;"
-  >
   <v-app>
     <v-main class="font-test" style="background-color: #ffe8e8">
       <v-container class="com">
@@ -22,12 +17,14 @@
             <div class="pa-5 d-flex flex-wrap flex-column mt-0 pt-0">
               <!-- 로고 이미지 -->
               <div class="mb-10">
+                <router-link to="/">
                 <v-img
                   src="@/assets/logo.png"
                   max-height="200"
                   max-width="200"
                   alt="로고 이미지"
                 ></v-img>
+                </router-link>
               </div>
               <!-- 메인 이미지 -->
               <div class="mb-10">
@@ -61,27 +58,7 @@
         </v-row>
       </v-container>
     </v-main>
-    <v-btn class="chatBtn" @click.stop="drawer = !drawer">
-      My Chat
-    </v-btn>
-
-
-
-      <v-navigation-drawer v-model="drawer" absolute temporary>
-        <v-list-item>
-          <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
-          </v-list-item-avatar>
-
-          <v-list-item-content>
-            <v-list-item-title>John Leider</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-divider></v-divider>
-      </v-navigation-drawer>
-    </v-app>
-  </v-sheet>
+  </v-app>
 </template>
 
 <script>
@@ -109,10 +86,5 @@ export default {
 }
 .font-test {
   font-family: "Noto Sans KR", sans-serif;
-}
-.chatBtn {
-  position: fixed;
-  bottom: 50px;
-  right: 30px;
 }
 </style>

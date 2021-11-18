@@ -57,13 +57,13 @@ public class BoardController {
     public ResponseEntity<? extends BaseResponseBody> getBoardList(
 
             @RequestParam @ApiParam(value = "게시글 페이지 Index", defaultValue = "0") int page
-//            , @ApiIgnore Authentication authentication
+            , @ApiIgnore Authentication authentication
     ) {
         log.info("BoardController.getBoardList 46 : 함수 시작.");
 
         try {
-//            User user = (User) authentication.getDetails();
-            User user = userService.findById((long)11).get();
+            User user = (User) authentication.getDetails();
+//            User user = userService.findById((long)).get();
             log.info("BoardController.getBoardList 50 : User : {}", user.getEmail());
 //            if(user!=null){}
             Page<BoardDto> boardList = boardService.getBoardList(user,page);
@@ -147,7 +147,7 @@ public class BoardController {
     }
 
     // 게시글 수정
-    @PatchMapping("")
+    @PutMapping("")
     @ApiOperation(value = "게시글 수정", notes = "게시글 정보를 수정한다.")
     @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})

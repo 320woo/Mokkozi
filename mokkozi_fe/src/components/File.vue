@@ -32,8 +32,8 @@
             </div>
           </div>
           <div class="user-info">
-            <div>{{ this.nickname }}</div>
-            <div>{{ this.email }}</div>
+            <div>이름 : {{ this.nickname }}</div>
+            <div>이메일 : {{ this.email }}</div>
           </div>
           <div class="user-follow">
             <v-btn
@@ -82,7 +82,7 @@
                         <div class="follow-title">
                           <div>팔로워</div>
                         </div>
-                        <div v-for="(item, index) in followers" :key="index">
+                        <div v-for="(item, idx) in followers" :key="idx">
                           <v-card-text
                             style="border-bottom: 1px solid gainsboro"
                           >
@@ -112,16 +112,14 @@
                           v-on="on"
                         >
                           <div class="font-weight-black">팔로잉</div>
-                          <div class="font-weight-medium">
-                            {{ num1 }}
-                          </div>
+                          <div class="font-weight-medium">{{ num1 }}</div>
                         </div>
                       </template>
                       <v-card>
                         <div class="follow-title">
                           <div>팔로잉</div>
                         </div>
-                        <div v-for="(item, index) in followings" :key="index">
+                        <div v-for="(item, idx) in followings" :key="idx">
                           <v-card-text
                             style="border-bottom: 1px solid gainsboro"
                           >
@@ -143,26 +141,47 @@
                 </v-layout>
               </v-container>
             </v-card>
+
+            <v-divider class="mt-6 mb-3"></v-divider>
+
             <span style="text-align: left">
-              <div class="mt-10 ml-10 mr-10">
-                <div>저는 이런 사람입니다</div>
-                <div>무교, 비흡연자, 술을 못마심, 내성적</div>
-                <div>저는 이런 사람을 만나고 싶어요</div>
-                <div>무교, 술을 잘마심, 친절함</div>
+              <div class="mt-6 ml-10 mr-10">
+                <div class="mb-1">저는 이런 사람입니다</div>
+                <span
+                  class="text-center"
+                  v-for="(item, idx) in interests"
+                  :key="idx"
+                >
+                  <v-chip class="mr-2" :color="colors[idx]" text-color="white">
+                    {{ item.interest }}
+                  </v-chip>
+                </span>
+                <div class="mt-5 mb-1">저는 이런 사람을 만나고 싶어요</div>
+                <div>
+                  <v-chip class="mr-2" color="purple" text-color="white">
+                    자전거타기
+                  </v-chip>
+                  <v-chip class="mr-2" color="pink" text-color="white">
+                    맛집탐방
+                  </v-chip>
+                  <v-chip class="mr-2" color="grey" text-color="white">
+                    운동
+                  </v-chip>
+                </div>
               </div>
+
+              <v-divider class="mt-6 mb-3"></v-divider>
+              <div style="text-align: center">게시물</div>
               <div>
                 <v-row>
                   <v-col
-                    v-for="n in 9"
+                    v-for="n in this.images"
                     :key="n"
-                    class="d-flex child-flex mt-10"
+                    class="d-flex child-flex mt-3"
                     cols="4"
                   >
                     <v-img
-                      :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                      :lazy-src="`https://picsum.photos/10/6?image=${
-                        n * 5 + 10
-                      }`"
+                      :src="n.file_path"
                       aspect-ratio="1"
                       class="grey lighten-2"
                     >
@@ -172,10 +191,6 @@
                           align="center"
                           justify="center"
                         >
-                          <v-progress-circular
-                            indeterminate
-                            color="grey lighten-5"
-                          ></v-progress-circular>
                         </v-row>
                       </template>
                     </v-img>
@@ -193,7 +208,7 @@
 </template>
 
 <script>
-import defaultImage from "../assets/images/커버.png";
+import defaultImage from "@/assets/images/커버.png";
 import camera from "../assets/images/camera.png";
 import ReportUser from "./ReportUser";
 import axios from "axios";
@@ -204,6 +219,7 @@ export default {
     this.getuser();
     this.follower();
     this.following();
+    this.profile_image();
   },
   components: {
     ReportUser,
@@ -217,8 +233,11 @@ export default {
     nickname: "",
     followers: [],
     followings: [],
+    images: [],
+    interests: [],
     num1: "",
     num2: "",
+    colors: ["primary", "orange", "pink", "green", "red"],
   }),
   methods: {
     getuser() {
@@ -233,9 +252,10 @@ export default {
         },
       }).then((resp) => {
         console.log("회원정보 확인: ", resp);
-        this.propImage = resp.data.profile;
-        this.nickname = resp.data.nickname;
-        this.email = resp.data.email;
+        this.propImage = resp.data.user.profile;
+        this.nickname = resp.data.user.nickname;
+        this.email = resp.data.user.email;
+        this.interests = resp.data.userInterestDto;
       });
     },
 
@@ -301,6 +321,19 @@ export default {
         this.$store.dispatch("setFollowing", resp.data.following);
       });
     },
+    profile_image() {
+      console.log("프로필 피드사진 목록");
+      axios({
+        url: process.env.VUE_APP_API_URL + "/api/meet/gallery/findByEmail",
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+      }).then((resp) => {
+        console.log("사진 목록 : ", resp.data.galleryList);
+        this.images = resp.data.galleryList;
+      });
+    },
   },
 };
 </script>
@@ -328,8 +361,10 @@ export default {
 }
 .report-icon {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  bottom: auto;
+  top: 40px;
+  left: auto;
+  right: 40px;
   cursor: pointer;
 }
 </style>
