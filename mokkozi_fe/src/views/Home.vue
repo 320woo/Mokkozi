@@ -5,7 +5,7 @@
     <!-- 배경 이미지 부분 -->
     <v-row style="text-align: center">
       <v-col v-for="(item, index) in recommends" :key="index" colos="6">
-        <v-card class="ml-2 my-1" max-width="300">
+        <v-card class="ml-2 my-1" max-width="260">
           <v-img height="180" width="260" :src="item.profile"></v-img>
 
           <v-card-title
@@ -21,11 +21,12 @@
             <v-row align="center"> </v-row>
             <div>
               <v-btn
+                @click="go_profile(item.email)"
                 style="color: white"
                 color="#FFB4B4"
                 class="mt-3 ml-2 mr-2"
                 small
-                >프로필</v-btn
+                >프로필 가기</v-btn
               ><v-btn
                 style="color: white"
                 color="#FFB4B4"
@@ -52,6 +53,7 @@ import defaultImage from "../assets/images/white.png";
 export default {
   name: "Home",
   components: {},
+
   created() {
     if (this.$store.state.jwt !== "") {
       this.my_recommend();
@@ -114,6 +116,17 @@ export default {
     //   )
 
     // },
+    go_profile(userEmail) {
+      if (!this.$store.state.jwt) {
+        alert("로그인이 필요합니다😀");
+        this.$router.push({ name: "Login" });
+      } else {
+        this.$router.push({
+          name: "Profile",
+          params: { userEmail: userEmail },
+        });
+      }
+    },
     my_recommend() {
       axios({
         url: process.env.VUE_APP_API_URL + "/api/meet/user/recommend/random",
@@ -142,12 +155,12 @@ export default {
         console.log("비로그인 : 추천 목록 가져옵니다.", resp);
 
         this.recommends = resp.data.random;
-        // var result = [];
+        var result = [];
 
-        // for (let i = 0; i < resp.data.random.length; i++) {
-        //   result[i] = resp.data.random[i].address.split(" ");
-        //   this.recommends[i].address = result[i][0] + " " + result[i][1];
-        // }
+        for (let i = 0; i < resp.data.random.length; i++) {
+          result[i] = resp.data.random[i].address.split(" ");
+          this.recommends[i].address = result[i][0] + " " + result[i][1];
+        }
       });
     },
   },
