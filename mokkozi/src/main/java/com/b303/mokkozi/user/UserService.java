@@ -3,6 +3,7 @@ package com.b303.mokkozi.user;
 import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserInterest;
 import com.b303.mokkozi.user.dto.UserFollowDto;
+import com.b303.mokkozi.user.dto.UserInterestDto;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
 import com.b303.mokkozi.user.request.UserActivePatchReq;
 import org.springframework.data.domain.Page;
@@ -30,8 +31,6 @@ public interface UserService {
 
     User join(JoinInfoPostReq info);
 
-    List<UserInterest> createUserInterest(JoinInfoPostReq info, User user);
-
     Optional<User> findById(Long id);
 
     Page<User> getUserList(User user, int page);
@@ -41,4 +40,6 @@ public interface UserService {
     List<User> getRandomUserNotLogin();
 
     List<UserFollowDto> getEachFollow(User user);
+
+    List<UserInterestDto> getUserInterest(User user);
 }

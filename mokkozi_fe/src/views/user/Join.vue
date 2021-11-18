@@ -195,9 +195,9 @@
             </ValidationProvider>
 
             <!-- 주소찾기 버튼 -->
-            <v-btn class="mb-2" rounded color="#FF9292" @click="daumPostCode">
+            <!-- <v-btn class="mb-2" rounded color="#FF9292" @click="daumPostCode">
               주소찾기
-            </v-btn>
+            </v-btn> -->
           </v-col>
 
           <!-- 관심사 선택하기 -->
@@ -369,7 +369,7 @@
             <!-- 마이 프로필에 띄울 이미지 3장 업로드 -->
             <h3>
               👍마지막이에요! 이성에게 보여줄 일상적인 나만의 모습을 선택해
-              주세요! (3개의 사진을 선택해 주세요)
+              주세요! (최대 7장까지 선택 가능합니다.)
             </h3>
             <ValidationProvider
               name="이미지"
@@ -632,13 +632,8 @@ export default {
     },
     myImages() {
       // 갯수를 제한한다.
-      if (
-        (this.joinInfo.myImages.length !== 0 &&
-          3 < this.joinInfo.myImages.length) ||
-        (this.joinInfo.myImages.length !== 0 &&
-          this.joinInfo.myImages.length < 3)
-      ) {
-        alert("3개의 이미지를 선택해 주세요.");
+      if (this.joinInfo.myImages.length > 7) {
+        alert("이미지는 최대 7장까지 선택 가능합니다.");
         this.joinInfo.myImages = [];
       }
 

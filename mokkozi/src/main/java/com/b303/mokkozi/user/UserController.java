@@ -89,12 +89,15 @@ public class UserController {
     @GetMapping("/getuser")
     @ApiOperation(value = "유저정보", notes = "이메일로 다른 유저 정보 가져오기")
     @ApiResponses({@ApiResponse(code = 200, message = "유저정보 가져오기 성공"), @ApiResponse(code = 500, message = "유저정보 가져오기 실패")})
-    public User getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
-    		@ApiIgnore Authentication authentication) {
+    public ResponseEntity<? extends BaseResponseBody> getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
+                                           @ApiIgnore Authentication authentication) {
 
     	User getuser = userService.findByEmail(toUserEmail).get();
 
-    	return getuser;
+    	// 관심사도 불러온다.
+        List<UserInterestDto> userInterest = userService.getUserInterest(getuser);
+
+    	return ResponseEntity.status(200).body(UserDto.of(200, "유저 정보 불러오기 성공", getuser, userInterest));
     }
 
     @GetMapping("/getUserByNickname")
@@ -265,20 +268,12 @@ public class UserController {
     @GetMapping("/recommend/guest_random")
     @ApiOperation(value = "랜덤 추천 목록 ", notes = "로그인한 회원을 제외한 랜덤 추천 목록을 반환")
     @ApiResponses({@ApiResponse(code = 200, message = "회원 랜덤 조회 성공"), @ApiResponse(code = 500, message = "회원 랜덤 조회 실패")})
-    public ResponseEntity<? extends BaseResponseBody> recommendRandomNotLogin(
-    ){
-        try{
-            List<User> random = userService.getRandomUserNotLogin();
-            return ResponseEntity.ok(UserRandomDto.of(200, "회원 랜덤 조회 성공",random));
-        } catch (AuthenticationException | NullPointerException e) {
-            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
-        } catch (NoSuchElementException e){
-            e.printStackTrace();
-            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 정보입니다."));
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
-        }
+    public ResponseEntity<? extends BaseResponseBody> recommendRandomNotLogin(){
+        log.info("회원 랜덤 조회 시작합니다.");
+
+        List<User> random = userService.getRandomUserNotLogin();
+        log.info("랜덤으로 가져온 목록은... {}", random);
+        return ResponseEntity.status(200).body(UserRandomDto.of(200, "회원 랜덤 조회 성공", random));
     }
 
 
