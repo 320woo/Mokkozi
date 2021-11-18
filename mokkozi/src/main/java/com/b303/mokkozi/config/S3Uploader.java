@@ -1,6 +1,7 @@
 package com.b303.mokkozi.config;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -82,7 +83,13 @@ public class S3Uploader {
 
     // S3에서 파일 삭제하기.
     public void delete(String key) {
-        log.info("삭제할 이미지의 Key값은? {}", key);
-        amazonS3Client.deleteObject(this.bucket, key);
+        key = key.replaceAll("https://mokkozi-s3.s3.ap-northeast-2.amazonaws.com/", "");
+        log.info("삭제할 이미지의 Key값:{}", key);
+        try {
+            amazonS3Client.deleteObject(this.bucket, key);
+        } catch (AmazonS3Exception e) {
+            log.info("결국 S3에선 삭제할 수 없었다...");
+        }
+
     }
 }
