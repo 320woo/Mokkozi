@@ -2,28 +2,29 @@
   /* 1)상단 배경 이미지, 2)사용자 프로필 이미지, 3)사용자 인적사항을 포함한 프레임 */
   background-color: white;
   position: relative;
-  margin-bottom: 300px;
 }
 .bg-img {
   /* 상단 배경 이미지 */
   display: inline-block;
   width: 700px;
-  height: 250px;
+  height: 272px;
   object-fit: cover;
 }
 .user-info {
   position: absolute;
   bottom: auto;
-  top: 225px;
+  width: 300px;
+  top: 245px;
   left: auto;
-  right: 380px;
+  right: 240px;
 }
 .user-follow {
   /* 사용자 프로필 이미지 프레임 */
   position: absolute;
-  top: 190px;
+  bottom: auto;
+  top: 210px;
   left: auto;
-  right: 40px;
+  right: 35px;
 }
 .user-img-frame {
   /* 사용자 프로필 이미지 프레임 */
@@ -33,8 +34,9 @@
   width: 150px;
   position: absolute;
   bottom: auto;
-  top: 10%;
-  left: 5%;
+  top: 150px;
+  right: auto;
+  left: 35px;
 }
 
 .sub-frame {
@@ -50,7 +52,7 @@
   color: white;
   position: absolute;
   bottom: auto;
-  top: 19%;
+  top: 255px;
   right: auto;
   left: 150px;
   text-align: center;
@@ -159,5 +161,4 @@
 }
 
 .main {
-  
 }

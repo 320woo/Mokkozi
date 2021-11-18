@@ -127,7 +127,7 @@ public class GalleryServiceImpl implements GalleryService{
     @Override
     public List<GalleryDto> getGalleryListByUser(User user) {
         List<Gallery> galleryList = galleryRepository.findAllByUserId(user.getId());
-
+        
         List<GalleryDto> result = new ArrayList<>();
         // GalleryDto로 변환한다.
         for (Gallery gallery:galleryList) {
