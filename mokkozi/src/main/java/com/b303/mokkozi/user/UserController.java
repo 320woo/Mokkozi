@@ -252,7 +252,7 @@ public class UserController {
         try{
             User user = (User) authentication.getDetails();
             List<User> random = userService.getRandomUser(user);
-            return ResponseEntity.ok(UserRandomDto.of(200, "회원 랜덤 조회 성공",random));
+            return ResponseEntity.ok(UserRecommendDto.of(200, "회원 랜덤 조회 성공",random));
         } catch (AuthenticationException | NullPointerException e) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
         } catch (NoSuchElementException e){
@@ -273,7 +273,29 @@ public class UserController {
 
         List<User> random = userService.getRandomUserNotLogin();
         log.info("랜덤으로 가져온 목록은... {}", random);
-        return ResponseEntity.status(200).body(UserRandomDto.of(200, "회원 랜덤 조회 성공", random));
+        return ResponseEntity.status(200).body(UserRecommendDto.of(200, "회원 랜덤 조회 성공", random));
+    }
+
+    //위치 기반 추천
+    @GetMapping("/recommend/location")
+    @ApiOperation(value = "위치 기반 추천 목록 ", notes = "로그인한 회원을 제외한 위치 기반 추천 목록을 반환")
+    @ApiResponses({@ApiResponse(code = 200, message = "회원 위치 기반 조회 성공"), @ApiResponse(code = 500, message = "회원 위치 기반 조회 실패")})
+    public ResponseEntity<? extends BaseResponseBody> recommendLocation(
+            ,@ApiIgnore Authentication authentication
+    ){
+        try{
+            User user = (User) authentication.getDetails();
+            List<User> location = userService.getLocationUser(user);
+            return ResponseEntity.ok(UserRecommendDto.of(200, "회원 위치 기반 조회 성공",location));
+        } catch (AuthenticationException | NullPointerException e) {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+        } catch (NoSuchElementException e){
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 정보입니다."));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+        }
     }
 
 
