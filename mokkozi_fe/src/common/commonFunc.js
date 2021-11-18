@@ -12,9 +12,7 @@ export function makeLocalURL(files) {
 
 // 단일 파일 이름 검사
 export function checkMyImageLetter(myImages) {
-  console.log("파일 이름 유효성 검사합니다.")
-
-  console.log("파일 이름은..", myImages.name)
+  console.log("파일 이름 유효성 검사합니다. : ", myImages.name)
 
   if (myImages.name.includes("(") || myImages.name.includes(")") ||
     myImages.name.includes("\\") || myImages.name.includes("/") ||
@@ -34,11 +32,9 @@ export function checkMyImageLetter(myImages) {
 
 // 여러 파일 이름 검사
 export function checkMyImagesLetter(myImages) {
-  console.log("파일 이름 유효성 검사합니다.")
+  console.log("파일 이름 유효성 검사합니다. : ", myImages.name)
 
-  console.log("파일 이름은..", myImages.name)
   for (let i = 0; i < myImages.length; i++) {
-    console.log("for문 돌아감")
     if (myImages[i].name.includes("(") || myImages[i].name.includes(")") ||
       myImages[i].name.includes("\\") || myImages[i].name.includes("/") ||
       myImages[i].name.includes(":") || myImages[i].name.includes(";") ||
