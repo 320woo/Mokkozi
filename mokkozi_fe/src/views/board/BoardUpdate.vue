@@ -203,21 +203,26 @@ export default {
       // X 버튼을 눌렀을 때, 기존 이미지 + 새로운 이미지가 아예 없으면 isCarousel = false
       if (this.newImages.length + this.boardImages.length === 0) {
         this.isCarousel = false
-      }
-      // 그 외에는 새로운 이미지를 추가한 것이므로..
-      else if (this.newImages.length > 0) {
-        this.isCarousel = true
+        return
       }
 
       // 갯수를 제한한다. (최대 5장)
       if (this.newImages.length + this.boardImages.length > 5) {
-        alert("이미지는 최대 5장까지 첨부 가능합니다.")
+        alert("게시글 첨부 이미지는 최대 5장까지 첨부 가능합니다.")
         this.newImages = []
+        return
+      }
+
+      // 특수문자 검사
+      if (commonFunc.checkMyImagesLetter(this.newImages)) {
+        this.newImages = []
+        return
       }
 
       // 그 외에 1개 이상의 파일을 업로드한 경우에는...
       else {
         this.newImagesURL = commonFunc.makeLocalURL(this.newImages)
+        this.isCarousel = true
       }
     },
     deleteImg(index) {

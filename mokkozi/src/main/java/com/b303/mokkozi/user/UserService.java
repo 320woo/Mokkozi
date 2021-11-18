@@ -42,4 +42,6 @@ public interface UserService {
     List<UserFollowDto> getEachFollow(User user);
 
     List<UserInterestDto> getUserInterest(User user);
+
+    List<User>  getLocationUser(User user);
 }

@@ -83,7 +83,7 @@ public class BoardServiceImpl implements BoardService {
                 // 1. S3에 업로드하기.
                 String file_path = "";
                 try {
-                    file_path = s3Uploader.upload(file, "images");
+                    file_path = s3Uploader.upload(file, "board");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -92,7 +92,7 @@ public class BoardServiceImpl implements BoardService {
                 GalleryVO galleryVO = new GalleryVO();
                 galleryVO.setSort("board");
                 galleryVO.setFilePath(file_path);
-                galleryVO.setTitle(file.getOriginalFilename());
+                galleryVO.setTitle(file_path.replaceAll("https://mokkozi.s3.ap-northeast-2.amazonaws.com/", ""));
 
                 log.info("BoardServiceImpl.createBoard 94 : DB에 갤러리 정보 저장합니다. {} | {}", galleryVO, board.getId());
                 galleryService.galleryCreate(galleryVO, board.getId().toString());
@@ -115,7 +115,7 @@ public class BoardServiceImpl implements BoardService {
 
         // 하나하나 Key값을 이용해 S3에서 지운다.
         for (GalleryDto galleryDto:galleryList) {
-            String key = galleryDto.getFile_path().replaceAll("https://mokkozi.s3.ap-northeast-2.amazonaws.com/", "");
+            String key = galleryDto.getTitle();
             s3Uploader.delete(key);
 
             // 이미지 삭제하기
@@ -183,7 +183,8 @@ public class BoardServiceImpl implements BoardService {
                 // 찾지 못하면 NoSuchElementException이 발생한다.
                 Gallery gallery = galleryService.getGallery(Long.parseLong(galleryId));
 
-                String key = gallery.getFilePath().replaceAll("https://mokkozi.s3.ap-northeast-2.amazonaws.com/", "");
+                String key = gallery.getTitle();
+                log.info("BoardServiceImpl.modifyBoard 187 : 삭제할 이미지의 Key값은:{}", key);
                 s3Uploader.delete(key);
             }
             // 2. DB에서 이미지 삭제하기
@@ -197,12 +198,12 @@ public class BoardServiceImpl implements BoardService {
             if (model.getNewFiles() != null) {
                 for (MultipartFile file:model.getNewFiles()) {
                     try {
-                        String file_path = s3Uploader.upload(file, "images");
+                        String file_path = s3Uploader.upload(file, "board");
 
                         // 4. DB에 새로운 이미지 추가하기
                         GalleryVO galleryVO = new GalleryVO();
                         galleryVO.setFilePath(file_path);
-                        galleryVO.setTitle(file.getOriginalFilename());
+                        galleryVO.setTitle(file_path.replaceAll("https://mokkozi.s3.ap-northeast-2.amazonaws.com/", ""));
                         galleryVO.setSort("board");
 
                         galleryService.galleryCreate(galleryVO, model.getId().toString());
