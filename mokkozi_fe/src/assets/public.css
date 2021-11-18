@@ -13,9 +13,10 @@
 .user-info {
   position: absolute;
   bottom: auto;
+  width: 300px;
   top: 245px;
   left: auto;
-  right: 380px;
+  right: 240px;
 }
 .user-follow {
   /* 사용자 프로필 이미지 프레임 */

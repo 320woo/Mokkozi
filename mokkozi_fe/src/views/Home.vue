@@ -142,12 +142,12 @@ export default {
         console.log("비로그인 : 추천 목록 가져옵니다.", resp);
 
         this.recommends = resp.data.random;
-        const result = [];
+        // var result = [];
 
-        for (let i = 0; i < resp.data.random.length; i++) {
-          result[i] = resp.data.random[i].address.split(" ");
-          this.recommends[i].address = result[i][0] + " " + result[i][1];
-        }
+        // for (let i = 0; i < resp.data.random.length; i++) {
+        //   result[i] = resp.data.random[i].address.split(" ");
+        //   this.recommends[i].address = result[i][0] + " " + result[i][1];
+        // }
       });
     },
   },

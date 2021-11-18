@@ -32,8 +32,8 @@
             </div>
           </div>
           <div class="user-info">
-            <div>{{ this.nickname }}</div>
-            <div>{{ this.email }}</div>
+            <div>이름 : {{ this.nickname }}</div>
+            <div>이메일 : {{ this.email }}</div>
           </div>
           <div class="user-follow">
             <v-btn
@@ -82,7 +82,7 @@
                         <div class="follow-title">
                           <div>팔로워</div>
                         </div>
-                        <div v-for="(item, index) in followers" :key="index">
+                        <div v-for="(item, idx) in followers" :key="idx">
                           <v-card-text
                             style="border-bottom: 1px solid gainsboro"
                           >
@@ -119,7 +119,7 @@
                         <div class="follow-title">
                           <div>팔로잉</div>
                         </div>
-                        <div v-for="(item, index) in followings" :key="index">
+                        <div v-for="(item, idx) in followings" :key="idx">
                           <v-card-text
                             style="border-bottom: 1px solid gainsboro"
                           >
@@ -141,27 +141,36 @@
                 </v-layout>
               </v-container>
             </v-card>
+
+            <v-divider class="mt-6 mb-3"></v-divider>
+
             <span style="text-align: left">
-              <div class="mt-10 ml-10 mr-10">
-                <div>나를 소개합니다</div>
+              <div class="mt-6 ml-10 mr-10">
+                <div class="mb-1">저는 이런 사람입니다</div>
                 <span
                   class="text-center"
-                  v-for="(item, index) in interests"
-                  :key="index"
+                  v-for="(item, idx) in interests"
+                  :key="idx"
                 >
-                  <v-chip
-                    class="mr-2"
-                    :color="colors[index]"
-                    text-color="white"
-                  >
+                  <v-chip class="mr-2" :color="colors[idx]" text-color="white">
                     {{ item.interest }}
                   </v-chip>
                 </span>
-                <div>저는 이런 사람을 만나고 싶어요</div>
-                <div>무교, 술을 잘마심, 친절함</div>
+                <div class="mt-5 mb-1">저는 이런 사람을 만나고 싶어요</div>
+                <div>
+                  <v-chip class="mr-2" color="purple" text-color="white">
+                    자전거타기
+                  </v-chip>
+                  <v-chip class="mr-2" color="pink" text-color="white">
+                    맛집탐방
+                  </v-chip>
+                  <v-chip class="mr-2" color="grey" text-color="white">
+                    운동
+                  </v-chip>
+                </div>
               </div>
 
-              <v-divider class="mt-4 mb-3"></v-divider>
+              <v-divider class="mt-6 mb-3"></v-divider>
               <div style="text-align: center">게시물</div>
               <div>
                 <v-row>
@@ -228,7 +237,7 @@ export default {
     interests: [],
     num1: "",
     num2: "",
-    colors: ["primary", "secondary", "pink", "green", "red"],
+    colors: ["primary", "orange", "pink", "green", "red"],
   }),
   methods: {
     getuser() {
