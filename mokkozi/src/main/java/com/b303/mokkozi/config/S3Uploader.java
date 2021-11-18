@@ -83,7 +83,6 @@ public class S3Uploader {
     // S3에서 파일 삭제하기.
     public void delete(String key) {
         log.info("삭제할 이미지의 Key값은? {}", key);
-        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.bucket, key);
-        amazonS3Client.deleteObject(deleteObjectRequest);
+        amazonS3Client.deleteObject(this.bucket, key);
     }
 }
