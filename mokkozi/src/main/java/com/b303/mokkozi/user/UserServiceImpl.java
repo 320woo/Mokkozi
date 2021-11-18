@@ -6,6 +6,7 @@ import com.b303.mokkozi.entity.User;
 import com.b303.mokkozi.entity.UserFollow;
 import com.b303.mokkozi.entity.UserInterest;
 import com.b303.mokkozi.user.dto.UserFollowDto;
+import com.b303.mokkozi.user.dto.UserInterestDto;
 import com.b303.mokkozi.user.request.JoinInfoPostReq;
 import com.b303.mokkozi.user.request.UserActivePatchReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,20 +86,6 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    @Override
-    public List<UserInterest> createUserInterest(JoinInfoPostReq info, User user) {
-        List<UserInterest> result = new ArrayList<>();
-
-        for (String hobby : info.getHobby()) {
-            UserInterest userInterest = new UserInterest();
-            userInterest.setUser(user);
-            userInterest.setInterest(hobby);
-
-            userInterestRepository.save(userInterest);
-            result.add(userInterest);
-        }
-        return result;
-    }
 
     @Override
     public Optional<User> findById(Long id) {
@@ -193,5 +180,17 @@ public class UserServiceImpl implements UserService {
         return list;
     }
 
+    @Override
+    public List<UserInterestDto> getUserInterest(User user) {
+        List<UserInterest> temp = userInterestRepository.findByUserId(user.getId());
 
+        List<UserInterestDto> result = new ArrayList<>();
+        for (UserInterest userInterest:temp) {
+            UserInterestDto userInterestDto = new UserInterestDto();
+            userInterestDto.setInterest(userInterest.getInterest());
+
+            result.add(userInterestDto);
+        }
+        return result;
+    }
 }

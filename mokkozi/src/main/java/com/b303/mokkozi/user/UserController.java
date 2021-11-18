@@ -89,12 +89,15 @@ public class UserController {
     @GetMapping("/getuser")
     @ApiOperation(value = "유저정보", notes = "이메일로 다른 유저 정보 가져오기")
     @ApiResponses({@ApiResponse(code = 200, message = "유저정보 가져오기 성공"), @ApiResponse(code = 500, message = "유저정보 가져오기 실패")})
-    public User getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
-    		@ApiIgnore Authentication authentication) {
+    public ResponseEntity<? extends BaseResponseBody> getuser(@RequestParam @ApiParam(value = "다른 사용자의 이메일", required = true) String toUserEmail,
+                                           @ApiIgnore Authentication authentication) {
 
     	User getuser = userService.findByEmail(toUserEmail).get();
 
-    	return getuser;
+    	// 관심사도 불러온다.
+        List<UserInterestDto> userInterest = userService.getUserInterest(getuser);
+
+    	return ResponseEntity.status(200).body(UserDto.of(200, "유저 정보 불러오기 성공", getuser, userInterest));
     }
 
     @GetMapping("/getUserByNickname")
