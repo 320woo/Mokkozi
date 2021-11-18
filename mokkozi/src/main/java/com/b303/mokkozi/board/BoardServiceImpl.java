@@ -184,6 +184,7 @@ public class BoardServiceImpl implements BoardService {
                 Gallery gallery = galleryService.getGallery(Long.parseLong(galleryId));
 
                 String key = gallery.getFilePath().replaceAll("https://mokkozi.s3.ap-northeast-2.amazonaws.com/", "");
+                log.info("BoardServiceImpl.modifyBoard 187 : 삭제할 이미지의 Key값은 !!! {}", key);
                 s3Uploader.delete(key);
             }
             // 2. DB에서 이미지 삭제하기
