@@ -4,7 +4,7 @@
     <v-icon style="position: fixed; color: #FFB4B4;" @click="backToBoardClick">fas fa-chevron-left</v-icon>
     <div class="background-div">
       <div class="board-div">
-        <v-card class="board-card" max-width="24rem" height="30rem">
+        <v-card class="board-card" max-width="24rem" height="42rem">
           <v-card-title
             style="
               display: flex;
@@ -76,65 +76,71 @@
           style="margin-bottom: 0.2rem"
           >
           </v-img>
+          <div>
+            <v-card-text class="like-text">
+              <i
+                v-if="board.boardLike"
+                class="fas fa-heart"
+                style="color: red"
+                @click="boardUnLike(board.id)"
+              ></i>
+              <i
+                v-else
+                class="far fa-heart"
+                style="color: red"
+                @click="boardLike(board.id)"
+              ></i>
+              {{ board.likeCount }}명이 이 글을 좋아합니다.
+            </v-card-text>
 
-          <v-card-text class="like-text">
-            <i
-              v-if="board.boardLike"
-              class="fas fa-heart"
-              style="color: red"
-              @click="boardUnLike(board.id)"
-            ></i>
-            <i
-              v-else
-              class="far fa-heart"
-              style="color: red"
-              @click="boardLike(board.id)"
-            ></i>
-            {{ board.likeCount }}명이 이 글을 좋아합니다.
-          </v-card-text>
-
-          <v-card-text @click="boardDetailClick(board.id)" style="font-size:15px; margin: 4px 0px">
-            {{ board.content }}
-          </v-card-text>
-          <!-- 작성한 댓글이 존재한다면 -->
-          <!-- 댓글 1개까지 출력하기 -->
-          <div v-for="(comment) in board.commentList" :key="comment.id" style="height: 15px">
-            <p v-if="board.commentList.length < 2" style="float:left; font-size: 12px; margin: 0px">
-              {{ comment.content }}
-            </p>
+            <v-card-text style="font-size:15px; margin: 4px 0px">
+              {{ board.content }}
+            </v-card-text>
           </div>
+          <!-- 작성한 댓글이 존재한다면 -->
+          <div v-for="(comment) in board.commentList" :key="comment.id"  style="display: flex; flex-direction: row;">
+            <div style="width: 3rem;">
+              <v-list-item-avatar @click="userImageClick(comment.email)">
+                <img :src="comment.file_path">
+              </v-list-item-avatar>
+            </div>
+            <div style="width: 17rem;">
+              <v-list-item-content>
+                <span class="font-weight-bold" style="text-align: start; font-size: 14px">{{ comment.nickName }}</span>
+                <span class="comment-text">{{ comment.content }}</span>
+              </v-list-item-content>
+            </div>
+          </div>
+
           <div v-if="board.commentList.length === 0" style="height: 15px; font-size: 12px">
             <p>아직 작성된 댓글이 없습니다 :(</p>
           </div>
-          <div v-else-if="board.commentList.length >= 3" style="height: 15px;">
-            <p style="float:left; color: gray; cursor: pointer; height: 15px; font-size: 12px; margin: 0px" @click="commentClick"
-            >댓글 더 보기..</p>
-          </div>
-          <!-- 댓글 작성란 -->
-          <div style="display:flex; justify-content: space-between;">
-            <input
-              v-model="commentContent"
-              style="
-              height: 24px;
-              font-size: 0.875rem;
-              border: none;
-              width: 16rem;
-              outline-style: none;
-              "
-              type="text"
-              placeholder="댓글 달기"
-            />
-            <v-btn
-              color="#FFB4B4"
-              style="padding: 0px 5px;"
-              min-width="40px"
-              height="24px"
-              @click="createComment(board.id)"
-            >
-              작성
-            </v-btn>
-          </div>
         </v-card>
+        <!-- 댓글 작성란 -->
+        <div style="display:flex; justify-content: space-between;">
+          <input
+            v-model="commentContent"
+            style="
+            height: 24px;
+            font-size: 0.875rem;
+            border: none;
+            width: 16rem;
+            outline-style: none;
+            "
+            type="text"
+            placeholder="댓글 달기"
+            @keydown.enter="createComment(board.id)"
+          />
+          <v-btn
+            color="#FFB4B4"
+            style="padding: 0px 5px;"
+            min-width="40px"
+            height="24px"
+            @click="createComment(board.id)"
+          >
+            작성
+          </v-btn>
+        </div>
       </div>
     </div>
   </v-container>
@@ -155,7 +161,6 @@ export default ({
     }
   },
   data: () => ({
-    image: 'https://images.dog.ceo/breeds/bulldog-english/murphy.jpg',
     commentContent: '',
     commentList: "",
     board: [],
@@ -264,7 +269,7 @@ export default ({
   }
   .board-div {
     width: 24rem;
-    height: 34rem;
+    height: 48rem;
     display: inline-block;
     background-color: #ffe8e8;
     padding: 2rem 2rem;
@@ -283,9 +288,13 @@ export default ({
   .board-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-content: center;
     background-color: #ffe8e8;
+    overflow-y: scroll;
+  }
+  .board-card::-webkit-scrollbar {
+    display: none;
   }
   .theme--light.v-card {
     background-color: #ffe8e8;
@@ -317,5 +326,10 @@ export default ({
   }
   .like-text {
     font-weight: 500;
+  }
+  .comment-text {
+    word-break:break-all;
+    text-align: start;
+    font-size: 12px;
   }
 </style>
