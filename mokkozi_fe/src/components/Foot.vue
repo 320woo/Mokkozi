@@ -5,7 +5,7 @@
     class="footer justify-space-around"
     background-color="#FFB4B4"
   >
-    <router-link to="/" style="text-decoration: none; color:white">
+    <router-link to="/home" style="text-decoration: none; color:white">
       <v-btn dark
                   dense
                   color="white"
