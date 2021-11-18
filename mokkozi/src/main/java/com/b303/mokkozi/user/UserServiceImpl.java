@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-@Service("userService")
+@Service
 public class UserServiceImpl implements UserService {
 
     @Autowired

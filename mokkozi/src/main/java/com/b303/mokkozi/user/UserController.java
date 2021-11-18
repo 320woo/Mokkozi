@@ -220,27 +220,6 @@ public class UserController {
         }
     }
 
-    // 맞팔 목록 조회
-    @Transactional
-    @GetMapping("/each_follow")
-    @ApiOperation(value = "맞팔로우 목록 ", notes = "맞팔로우 정보를 리스트로 반환")
-    @ApiResponses({@ApiResponse(code = 200, message = "맞팔로우 목록 조회 성공"), @ApiResponse(code = 500, message = "맞팔로우 목록 조회 실패")})
-    public ResponseEntity<? extends BaseResponseBody> getEachFollow(
-//            @ApiIgnore Authentication authentication
-    ){
-        try{
-//            User user = (User) authentication.getDetails();
-            User user = userService.findById((long)11).get();
-            List<UserFollowDto> following = userService.getEachFollow(user);
-            return ResponseEntity.ok(UserFollowListDto.of(200, "맞팔로우 목록 조회 성공",following));
-        } catch (AuthenticationException | NullPointerException e) {
-            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
-        } catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
-        }
-    }
-
 
     //랜덤 추천
     @GetMapping("/recommend/random")
