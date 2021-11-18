@@ -37,7 +37,7 @@
           <v-icon class="exit-icon" right dark @click="leaveSession">fas fa-door-open</v-icon>
         </div>
         <div id="chat-div" style="height:290px; overflow:scroll;">
-          <v-expansion-panels style="border: solid; border-color: #dcdcdc">
+          <v-expansion-panels style="border: solid; border-color: #dcdcdc;">
           <v-expansion-panel>
             <v-expansion-panel-header class="font-weight-bold" style="font-size: 20px; height: 60px" @click="CountMessage">
               채팅
@@ -54,7 +54,7 @@
               </template>
             </v-expansion-panel-header>
             <v-divider></v-divider>
-            <v-expansion-panel-content style="margin-top: 10px" v-for="(message, i) in messages" :key="i">
+            <v-expansion-panel-content style="margin-top: 10px;" v-for="(message, i) in messages" :key="i">
               <div v-if="message.from == myUserName" class="my-message">
                 <!-- <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span> -->
                 <span class="my-message-content">{{ message.content }}</span>
