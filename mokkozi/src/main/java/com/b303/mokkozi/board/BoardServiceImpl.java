@@ -115,7 +115,7 @@ public class BoardServiceImpl implements BoardService {
 
         // 하나하나 Key값을 이용해 S3에서 지운다.
         for (GalleryDto galleryDto:galleryList) {
-            String key = galleryDto.getTitle();
+            String key = galleryDto.getFile_path();
             s3Uploader.delete(key);
 
             // 이미지 삭제하기
@@ -183,7 +183,7 @@ public class BoardServiceImpl implements BoardService {
                 // 찾지 못하면 NoSuchElementException이 발생한다.
                 Gallery gallery = galleryService.getGallery(Long.parseLong(galleryId));
 
-                String key = gallery.getTitle();
+                String key = gallery.getFilePath();
                 log.info("BoardServiceImpl.modifyBoard 187 : 삭제할 이미지의 Key값은:{}", key);
                 s3Uploader.delete(key);
             }
