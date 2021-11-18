@@ -134,6 +134,19 @@ export default {
     // this.mySessionId = 'room' + Math.floor(Math.random() * 100)
   },
   methods: {
+    // 유저 프로필 가져오기
+    getUserProfile(nickName) {
+      console.log("유저 프로필 요청이 들어오는지?!");
+      axios({
+        url: process.env.VUE_APP_API_URL + `/api/meet/user/getUserByNickname?nickName=${nickName}`,
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+      }).then((resp) => {
+        console.log("유저 프로필 : ", resp)
+      })
+    },
     // 팔로잉 목록 가져오기
     following() {
       console.log("팔로잉 목록");
@@ -170,6 +183,8 @@ export default {
         const eventData = JSON.parse(event.data)
         this.messages.push(eventData)
         console.log('메세지 내용 출력', this.messages)
+        // console.log('이벤트 데이터 출력!!', eventData.from)
+        this.getUserProfile(eventData.from)
         if (!this.chatOpen) {
           this.message = ''
           this.messageLength++
