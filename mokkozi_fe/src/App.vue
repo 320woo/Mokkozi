@@ -22,12 +22,14 @@
             <div class="pa-5 d-flex flex-wrap flex-column mt-0 pt-0">
               <!-- 로고 이미지 -->
               <div class="mb-10">
+                <router-link to="/">
                 <v-img
                   src="@/assets/logo.png"
                   max-height="200"
                   max-width="200"
                   alt="로고 이미지"
                 ></v-img>
+                </router-link>
               </div>
               <!-- 메인 이미지 -->
               <div class="mb-10">

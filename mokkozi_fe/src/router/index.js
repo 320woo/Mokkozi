@@ -64,11 +64,6 @@ const routes = [
     component: Join
   },
   {
-    path: '/face',
-    name: 'FaceDetection',
-    component: () => import('../components/FaceDetection.vue')
-  },
-  {
     path: '/profile/:userEmail',
     name: 'Profile',
     component: () => import('../components/File.vue'),
