@@ -147,7 +147,7 @@ public class BoardController {
     }
 
     // 게시글 수정
-    @PatchMapping("")
+    @PutMapping("")
     @ApiOperation(value = "게시글 수정", notes = "게시글 정보를 수정한다.")
     @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
             @ApiResponse(code = 401, message = "로그인 인증 실패"), @ApiResponse(code = 403, message = "잘못된 요청")})

@@ -172,7 +172,7 @@ export default {
 
       axios({
         url: process.env.VUE_APP_API_URL + '/api/meet/board',
-        method: 'PATCH',
+        method: 'PUT',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
         },
