@@ -212,6 +212,7 @@ import defaultImage from "@/assets/images/커버.png";
 import camera from "../assets/images/camera.png";
 import ReportUser from "./ReportUser";
 import axios from "axios";
+// import { mapGetters } from "vuex";
 
 export default {
   name: "File",
@@ -221,6 +222,7 @@ export default {
     this.following();
     this.profile_image();
   },
+  computed: {},
   components: {
     ReportUser,
   },
@@ -272,6 +274,7 @@ export default {
         },
       }).then((resp) => {
         console.log("팔로우 가즈아: ", resp);
+        console.log((this.followings.length += 1));
       });
     },
 
@@ -301,7 +304,6 @@ export default {
         console.log("팔로워 수 : ", resp);
         this.followers = resp.data.followers;
         console.log(resp.data.followers.length);
-        // this.followers_length = resp.data.followers.length;
         this.num2 = resp.data.followers.length;
         this.$store.dispatch("setFollowers", resp.data.followers);
       });
@@ -317,6 +319,7 @@ export default {
       }).then((resp) => {
         console.log("팔로잉 목록 : ", resp);
         this.followings = resp.data.followers;
+        this.$store.state.follow = resp.data.followers.length;
         this.num1 = resp.data.followers.length;
         this.$store.dispatch("setFollowing", resp.data.following);
       });

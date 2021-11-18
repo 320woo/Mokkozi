@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="target">
     <v-main class="font-test" style="background-color: #ffe8e8">
       <v-container class="com">
         <v-row
@@ -18,12 +18,12 @@
               <!-- 로고 이미지 -->
               <div class="mb-10">
                 <router-link to="/">
-                <v-img
-                  src="@/assets/logo.png"
-                  max-height="200"
-                  max-width="200"
-                  alt="로고 이미지"
-                ></v-img>
+                  <v-img
+                    src="@/assets/logo.png"
+                    max-height="200"
+                    max-width="200"
+                    alt="로고 이미지"
+                  ></v-img>
                 </router-link>
               </div>
               <!-- 메인 이미지 -->

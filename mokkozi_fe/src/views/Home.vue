@@ -1,11 +1,58 @@
 <template>
-  <v-container fluid style="width: 600px; height: 700px">
-    <div class="mt-3"></div>
+  <v-container
+    class="board-container"
+    fluid
+    style="width: 600px; height: 700px"
+  >
+    <div class="review ml-5" style="width: 500px">
+      <div class="wrap">
+        <div class="reviews" style="text-align: center">
+          <img
+            :src="this.reviewImg"
+            style="width: 123px; height: 36px; margin-top: 30px"
+          />
+          <h1>모꼬지 유저들의 리얼 후기</h1>
+          <div
+            class="font02"
+            style="width: 100%; margin: 0 auto; margin-bottom: 30px"
+          >
+            모꼬지에서 인연을 연인으로 만든 실제 사용자분들의<br />진솔한 리뷰를
+            만나보세요!
+          </div>
+        </div>
+      </div>
+      <div class="wrap mb-10">
+        <v-slide-group class="pa-4" show-arrows>
+          <v-slide-item v-for="(n, index) in this.reviews" :key="index">
+            <v-card class="ma-4" height="200" color="#FF9292" width="340">
+              <v-card-text class="white">
+                <div class="my-4">
+                  {{ n.content }}
+                </div>
+              </v-card-text>
 
+              <v-divider class="mx-4"></v-divider>
+
+              <v-card-actions>
+                <v-list-item class="grow">
+                  <v-list-item-avatar color="pink darken-3">
+                    <v-img class="elevation-6" alt="" :src="n.avatar"></v-img>
+                  </v-list-item-avatar>
+
+                  <v-list-item-content>
+                    <v-list-item-title>{{ n.nickName }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-card-actions>
+            </v-card>
+          </v-slide-item>
+        </v-slide-group>
+      </div>
+    </div>
     <!-- 배경 이미지 부분 -->
     <v-row style="text-align: center">
       <v-col v-for="(item, index) in recommends" :key="index" colos="6">
-        <v-card class="ml-2 my-1" max-width="300">
+        <v-card class="ml-2 my-1" max-width="260">
           <v-img height="180" width="260" :src="item.profile"></v-img>
 
           <v-card-title
@@ -21,11 +68,12 @@
             <v-row align="center"> </v-row>
             <div>
               <v-btn
+                @click="go_profile(item.email)"
                 style="color: white"
                 color="#FFB4B4"
                 class="mt-3 ml-2 mr-2"
                 small
-                >프로필</v-btn
+                >프로필 가기</v-btn
               ><v-btn
                 style="color: white"
                 color="#FFB4B4"
@@ -40,62 +88,6 @@
         </v-card>
       </v-col>
     </v-row>
-      <!-- 사용자 프로필 이미지 부분 -->
-
-<div class="review" style="width:500px;">
-<div class="wrap" >
-    <div class="mt-10 reviews" style="text-align: center ">
-      <img :src="this.reviewImg" style="width:123px;height:36px; margin-top:30px;">
-      <h1>모꼬지 유저들의 리얼 후기</h1>
-      <div class="font02" style="width:80%; margin:0 auto;margin-bottom:30px;">모꼬지에서 인연을 연인으로 만든 실제 사용자분들의<br>진솔한 리뷰를 만나보세요!</div>
-    </div>
-</div>
-<div class="wrap mb-10">
-    <v-slide-group
-      class="pa-4"
-      show-arrows
-    >
-      <v-slide-item
-        v-for="(n, index) in this.reviews"
-        :key="index"
-      >
-        <v-card
-          class="ma-4"
-          height="200"
-          color="#FF9292"
-          width="340"
-        >
-        <v-card-text class="white">
-          <div class="my-4">
-            {{n.content}}
-          </div>
-        </v-card-text>
-
-          <v-divider class="mx-4"></v-divider>
-
-            <v-card-actions>
-      <v-list-item class="grow">
-        <v-list-item-avatar color="pink darken-3">
-          <v-img
-            class="elevation-6"
-            alt=""
-            :src="n.avatar"
-          ></v-img>
-        </v-list-item-avatar>
-
-        <v-list-item-content>
-          <v-list-item-title>{{n.nickName}}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-card-actions>
-        </v-card>
-      </v-slide-item>
-    </v-slide-group>
-  </v-sheet>
-
-</div>
-</div>
-
   </v-container>
 </template>
 <script>
@@ -103,13 +95,14 @@ import axios from "axios";
 import defaultImage from "../assets/images/white.png";
 // import Stomp from 'webstomp-client'
 // import SockJS from 'sockjs-client'
-import reviewImg from '../assets/images/reviews.png'
-import male from '../assets/images/male.svg'
-import female from '../assets/images/female.svg'
+import reviewImg from "../assets/images/reviews.png";
+import male from "../assets/images/male.svg";
+import female from "../assets/images/female.svg";
 
 export default {
   name: "Home",
   components: {},
+
   created() {
     if (this.$store.state.jwt !== "") {
       this.my_recommend();
@@ -123,44 +116,32 @@ export default {
       defaultImage: defaultImage,
       recommends: [],
       address: [],
-      items: [
+      reviewImg: reviewImg,
+      reviews: [
         {
-          src: "@/assets/images/커버.png",
+          nickName: "OggGi",
+          content:
+            " 소개팅 서비스라고 해서 반신반의했는데 덕분에 여기 통해서 지금 남자친구와 만났어요! 아기자기하고 깔끔해서 사용할 때 더 만족했던 것 같아요!",
+          avatar: female,
         },
         {
-          src: "@/assets/images/데이트2.png",
+          nickName: "팡교",
+          content:
+            "꽤 괜찮은 웹! 원하는 상대를 찾을 수 있는 것도 마음에 들고 무엇보다 추천 기능을 통해 새로운 사람들을 만나면서 얻는 설렘도 좋습니다!",
+          avatar: male,
         },
         {
-          src: "@/assets/images/데이트3.png",
+          nickName: "bird1",
+          content:
+            "저는 모꼬지 앱 최고의 수혜자라고 할 수 있습니다. 부족한 저에게 무척 과분한 지금의 여자친구를 모꼬지를 통해서 만나 3년째 만나고 있어요.",
+          avatar: male,
         },
         {
-          src: "@/assets/images/데이트4.png",
+          nickName: "꾸뛰르",
+          content:
+            "저는 기계치임에도 불구하고 손쉽게 사용할 수 있을 만큼 사용법이 간단했습니다. 깔끔하고 매우 관리가 잘 되었다는 느낌을 받았습니다. ",
+          avatar: female,
         },
-        {
-          src: "@/assets/images/데이트5.png",
-        },
-      ],
-      reviewImg : reviewImg,
-      reviews:[
-        {nickName:"OggGirr",
-        content:" 소개팅 서비스라고 해서 반신반의했는데 덕분에 여기 통해서 지금 남자친구와 만났어요! 아기자기하고 깔끔해서 사용할 때 더 만족했던 것 같아요!",
-        avatar : female
-        },
-        {
-          nickName:"팡교",
-          content : "꽤 괜찮은 웹! 원하는 상대를 찾을 수 있는 것도 마음에 들고 무엇보다 추천 기능을 통해 새로운 사람들을 만나면서 얻는 설렘도 좋습니다!",
-          avatar : male
-        },
-        {
-          nickName:"bird1",
-          content : "저는 모꼬지 앱 최고의 수혜자라고 할 수 있습니다. 부족한 저에게 무척 과분한 지금의 여자친구를 모꼬지를 통해서 만나 3년째 만나고 있어요.",
-          avatar : male
-        },
-        {
-          nickName:"꾸뛰르",
-          content : "작동법이 정말로 쉽습니다! 저는 기계치임에도 불구하고 손쉽게 사용할 수 있을 만큼 사용법이 간단했습니다. 깔끔하고 매우 관리가 잘 되었다는 느낌을 받았습니다. ",
-          avatar : female
-        }
       ],
     };
   },
@@ -194,6 +175,17 @@ export default {
     //   )
 
     // },
+    go_profile(userEmail) {
+      if (!this.$store.state.jwt) {
+        alert("로그인이 필요합니다😀");
+        this.$router.push({ name: "Login" });
+      } else {
+        this.$router.push({
+          name: "Profile",
+          params: { userEmail: userEmail },
+        });
+      }
+    },
     my_recommend() {
       axios({
         url: process.env.VUE_APP_API_URL + "/api/meet/user/recommend/random",
@@ -222,19 +214,24 @@ export default {
         console.log("비로그인 : 추천 목록 가져옵니다.", resp);
 
         this.recommends = resp.data.random;
-        // var result = [];
+        var result = [];
 
-        // for (let i = 0; i < resp.data.random.length; i++) {
-        //   result[i] = resp.data.random[i].address.split(" ");
-        //   this.recommends[i].address = result[i][0] + " " + result[i][1];
-        // }
+        for (let i = 0; i < resp.data.random.length; i++) {
+          result[i] = resp.data.random[i].address.split(" ");
+          this.recommends[i].address = result[i][0] + " " + result[i][1];
+        }
       });
     },
   },
 };
 </script>
 <style scoped>
+/* Hide scrollbar for IE, Edge and Firefox */
 .board-container {
   overflow-y: scroll;
+  position: relative;
+}
+.board-container::-webkit-scrollbar {
+  display: none;
 }
 </style>
