@@ -70,6 +70,18 @@ public class UserServiceImpl implements UserService {
 
         // 2. DB에 저장
         User result = userRepository.save(user);
+
+        // 3. 관심사 저장하기.
+        for (String hobby:info.getHobby()) {
+            UserInterest userInterest = new UserInterest();
+
+            userInterest.setUser(user);
+            userInterest.setInterest(hobby);
+
+            userInterestRepository.save(userInterest);
+        }
+
+
         return result;
     }
 
