@@ -103,6 +103,13 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("setJwt", '')
+      this.$store.dispatch("setNickname", '')
+      this.$store.dispatch("setProfile", '')
+      this.$store.dispatch("setEmail", '')
+      this.$store.dispatch("setAddress", '')
+      this.$store.dispatch("setRole", '')
+      this.$store.dispatch("setMeeting", false)
+      this.$router.push({ name: 'Login' })
     },
     exitAlert() {
       alert("화면에 나가기 버튼을 클릭해주세요!")
