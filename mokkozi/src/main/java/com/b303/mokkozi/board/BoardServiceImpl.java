@@ -92,7 +92,7 @@ public class BoardServiceImpl implements BoardService {
                 GalleryVO galleryVO = new GalleryVO();
                 galleryVO.setSort("board");
                 galleryVO.setFilePath(file_path);
-                galleryVO.setTitle(file_path.replaceAll("https://mokkozi.s3.ap-northeast-2.amazonaws.com/", ""));
+                galleryVO.setTitle(file.getOriginalFilename());
 
                 log.info("BoardServiceImpl.createBoard 94 : DB에 갤러리 정보 저장합니다. {} | {}", galleryVO, board.getId());
                 galleryService.galleryCreate(galleryVO, board.getId().toString());
@@ -203,7 +203,7 @@ public class BoardServiceImpl implements BoardService {
                         // 4. DB에 새로운 이미지 추가하기
                         GalleryVO galleryVO = new GalleryVO();
                         galleryVO.setFilePath(file_path);
-                        galleryVO.setTitle(file_path.replaceAll("https://mokkozi.s3.ap-northeast-2.amazonaws.com/", ""));
+                        galleryVO.setTitle(file.getOriginalFilename());
                         galleryVO.setSort("board");
 
                         galleryService.galleryCreate(galleryVO, model.getId().toString());

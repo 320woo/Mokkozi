@@ -205,7 +205,7 @@
           <v-col class="input" cols="10">
             <h3>
               🎈 다음으로 본인의 관심사를 선택해 주세요! <br />
-              (3가지 이상 선택해 주세요!)
+              (최소 1개 ~ 5개까지 선택해 주세요😄)
             </h3>
             <div class="d-flex-column mx-3 mb-5">
               <span id="애니" class="hobby" @click="changeHobby('애니', '애니')"
@@ -533,6 +533,13 @@ export default {
       }).open();
     },
     changeHobby(id, hobbyName) {
+      // 관심사 최대 5개로 한다.
+      if (this.joinInfo.hobby.length > 5) {
+        this.isAlert = true;
+        this.joinInfo.hobby = []
+        return
+      }
+
       // 관심사를 선택했으므로, 경고창을 제거한다.
       this.isAlert = false;
 

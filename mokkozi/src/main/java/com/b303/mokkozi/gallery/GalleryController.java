@@ -71,7 +71,7 @@ public class GalleryController {
                 GalleryVO galleryVO = new GalleryVO();
                 galleryVO.setFilePath(file_path);
                 galleryVO.setSort(model.getSort());
-                galleryVO.setTitle(file_path.replaceAll("https://mokkozi.s3.ap-northeast-2.amazonaws.com/", ""));
+                galleryVO.setTitle(file.getOriginalFilename());
 
                 // 게시글 이미지 업로드인 경우
                 if (model.getEmail().equals("")) {
