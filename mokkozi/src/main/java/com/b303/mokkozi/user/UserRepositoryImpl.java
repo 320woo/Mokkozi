@@ -33,4 +33,12 @@ public class UserRepositoryImpl {
         return Optional.ofNullable(em.createQuery(str).setMaxResults(maxResults)
                 .getResultList()).orElse(null);
     }
+
+    public List<User> getLocationUser(Long userId, String addr) {
+        int maxResults = 5;
+        String str = "SELECT u FROM User u WHERE u.id is not "+ userId +" AND u.address LIKE '%"+addr+"%' ORDER BY RAND()";
+        return Optional.ofNullable(em.createQuery(str).setMaxResults(maxResults)
+                .getResultList()).orElse(null);
+
+    }
 }

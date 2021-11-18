@@ -9,12 +9,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UserRandomDto extends BaseResponseBody {
+public class UserRecommendDto extends BaseResponseBody {
 
     private List<User> random;
 
-    public static UserRandomDto of(Integer statusCode, String message, List<User> random) {
-        UserRandomDto res = new UserRandomDto();
+    public static UserRecommendDto of(Integer statusCode, String message, List<User> random) {
+        UserRecommendDto res = new UserRecommendDto();
         res.setStatusCode(statusCode);
         res.setMessage(message);
         res.setRandom(random);

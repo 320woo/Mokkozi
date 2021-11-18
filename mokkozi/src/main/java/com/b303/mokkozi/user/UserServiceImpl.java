@@ -181,6 +181,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getLocationUser(User user) {
+
+        String[] address = user.getAddress().split(" ");
+        String addr = address[0]+" "+address[1];
+
+
+        List<User> list = userRepositoryImpl.getLocationUser(user.getId(), addr);
+
+        return list;
+    }
+
+    @Override
     public List<UserInterestDto> getUserInterest(User user) {
         List<UserInterest> temp = userInterestRepository.findByUserId(user.getId());
 
@@ -193,4 +205,5 @@ public class UserServiceImpl implements UserService {
         }
         return result;
     }
+
 }
