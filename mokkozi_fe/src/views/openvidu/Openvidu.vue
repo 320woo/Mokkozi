@@ -59,12 +59,14 @@
                 <!-- <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span> -->
                 <span class="my-message-content">{{ message.content }}</span>
                 <v-avatar color="brown" size="36">
-                  <span class="white--text text-h5">KG</span>
+                  <img alt="Avatar" :src="myProfileImg" />
+                  <!-- <span class="white--text text-h5">{{ profileImg }}</span> -->
                 </v-avatar>
               </div>
               <div v-else class="your-message">
                 <v-avatar color="pink" size="36">
-                  <span class="white--text text-h5">WH</span>
+                  <img alt="Avatar" :src="yourProfileImg" />
+                  <!-- <span class="white--text text-h5">{{ profileImg }}</span> -->
                 </v-avatar>
                 <!-- <span class="font-weight-bold" style="margin: 0px 3px; word-break: keep-all">{{ message.from }}</span> -->
                 <span class="your-message-content">{{ message.content }}</span>
@@ -118,22 +120,42 @@ export default {
       messageLength: '0',
       chatOpen: false,
       followings: [], // 팔로잉 목록
-      profileImg: ''
+      myProfileImg: '',
+      yourProfileImg: ''
     }
   },
-  // computed: {
-  //   nickName () {
-  //     return this.$store.state.user.nickName
-  //   },
-  //   profile () {
-  //     return this.$store.state.user.profile
-  //   }
-  // },
+  created () {
+    if (!this.$store.state.jwt) {
+      alert("로그인이 필요합니다😀")
+      this.$router.push({ name: 'Login' })
+    }
+  },
   mounted () {
     this.myUserName = this.$store.state.user.nickname
     // this.mySessionId = 'room' + Math.floor(Math.random() * 100)
   },
   methods: {
+    // 유저 프로필 가져오기
+    getUserProfile(nickName) {
+      console.log("유저 프로필 요청이 들어오는지?!");
+      axios({
+        url: process.env.VUE_APP_API_URL + `/api/meet/user/getUserByNickname?nickName=${nickName}`,
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.$store.state.jwt,
+        },
+      }).then((resp) => {
+        console.log("유저 프로필 성공 : ", resp)
+        console.log(resp.data.user.profile)
+        if (resp.data.user.nickname === this.myUserName) {
+          this.myProfileImg = resp.data.user.profile
+        } else {
+          this.yourProfileImg = resp.data.user.profile
+        }
+      }).catch((err) => {
+        console.log("유저 프로필 실패 : ", err)
+      })
+    },
     // 팔로잉 목록 가져오기
     following() {
       console.log("팔로잉 목록");
@@ -170,6 +192,8 @@ export default {
         const eventData = JSON.parse(event.data)
         this.messages.push(eventData)
         console.log('메세지 내용 출력', this.messages)
+        // console.log('이벤트 데이터 출력!!', eventData.from)
+        this.getUserProfile(eventData.from)
         if (!this.chatOpen) {
           this.message = ''
           this.messageLength++
@@ -225,6 +249,7 @@ export default {
             // --- Publish your stream ---
             this.session.publish(this.publisher)
             console.log('session.connect 성공 후 publisher', publisher) // 삭제 예정
+            this.$store.dispatch("setMeeting", true)
           })
           .catch(error => {
             console.log('session.connect 실패.. There was an error connecting to the session:', error.code, error.message)
@@ -241,6 +266,7 @@ export default {
       this.subscribers = []
       this.messages = []
       this.OV = undefined
+      this.$store.dispatch("setMeeting", false)
       window.removeEventListener('beforeunload', this.leaveSession)
     },
     updateMainVideoStreamManager (stream) {

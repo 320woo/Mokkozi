@@ -184,6 +184,12 @@ export default {
     commentContent: '', // 새롭게 작성할 댓글의 내용
     commentList: "",
   }),
+  created () {
+    if (!this.$store.state.jwt) {
+      alert("로그인이 필요합니다😀")
+      this.$router.push({ name: 'Login' })
+    }
+  },
   computed: {
     loginUser() {
       return this.$store.state.user.email;

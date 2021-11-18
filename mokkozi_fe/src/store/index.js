@@ -14,7 +14,8 @@ export default new Vuex.Store({
       address: '',
     },
     role: '',
-    BASE_URL: 'https://localhost:8000'
+    BASE_URL: 'https://localhost:8000',
+    meeting: false
   },
   // Actions에서 commit() 함수를 통해 호출. state를 직접적으로 수정한다.
   mutations: {
@@ -44,6 +45,9 @@ export default new Vuex.Store({
     },
     setFollowing(state, following) {
       state.user.following = following;
+    },
+    setMeeting(state, meeting) {
+      state.meeting = meeting;
     }
   },
   // 항상 context가 인자로 넘어온다. 단, 직접적으로 state를 변경하지는 않는다. dispatch()를 통해 호출한다.
@@ -74,6 +78,9 @@ export default new Vuex.Store({
     },
     setFollowing(context,following) {
       context.commit('setFollowing', following)
+    },
+    setMeeting(context, meeting) {
+      context.commit('setMeeting', meeting)
     }
   },
   modules: {
