@@ -26,7 +26,7 @@
                 :error-messages="errors"
                 placeholder="이메일을 입력하세요."
                 prepend-icon="mdi-email"
-                @keypress="validEmail(joinInfo.email)"
+                @keypress="validEmail"
               />
             </ValidationProvider>
 
@@ -63,7 +63,7 @@
                 v-model="joinInfo.nickName"
                 :error-messages="errors"
                 prepend-icon="mdi-account-box-outline"
-                @keyup="validNickname(joinInfo.nickName)"
+                @keyup="validNickname"
                 placeholder="닉네임을 입력하세요."
               />
             </ValidationProvider>
@@ -195,9 +195,9 @@
             </ValidationProvider>
 
             <!-- 주소찾기 버튼 -->
-            <v-btn class="mb-2" rounded color="#FF9292" @click="daumPostCode">
+            <!-- <v-btn class="mb-2" rounded color="#FF9292" @click="daumPostCode">
               주소찾기
-            </v-btn>
+            </v-btn> -->
           </v-col>
 
           <!-- 관심사 선택하기 -->
@@ -369,7 +369,7 @@
             <!-- 마이 프로필에 띄울 이미지 3장 업로드 -->
             <h3>
               👍마지막이에요! 이성에게 보여줄 일상적인 나만의 모습을 선택해
-              주세요! (3개의 사진을 선택해 주세요)
+              주세요! (최대 7장까지 선택 가능합니다.)
             </h3>
             <ValidationProvider
               name="이미지"
@@ -385,7 +385,7 @@
                 prepend-icon="mdi-tooltip-image"
                 @change="myImages"
                 show-size
-                placeholder="상대방에게 보여줄 나만의 이미지를 올려 주세요! (3장)"
+                placeholder="상대방에게 보여줄 나만의 이미지를 올려 주세요! (최대 7장)"
               />
             </ValidationProvider>
 
@@ -428,6 +428,7 @@ import { required, email, size, max, min } from "vee-validate/dist/rules";
 import { ValidationObserver, ValidationProvider, extend } from "vee-validate";
 import axios from "axios";
 import router from "../../router";
+import * as commonFunc from "../../common/commonFunc"
 
 extend("emailValidate", {
   ...email,
@@ -630,42 +631,53 @@ export default {
         }
       });
     },
-    myImages() {
-      // 갯수를 제한한다.
-      if (
-        (this.joinInfo.myImages.length !== 0 &&
-          3 < this.joinInfo.myImages.length) ||
-        (this.joinInfo.myImages.length !== 0 &&
-          this.joinInfo.myImages.length < 3)
-      ) {
-        alert("3개의 이미지를 선택해 주세요.");
-        this.joinInfo.myImages = [];
-      }
-
-      // X 버튼을 누르는 경우에는, 초기화를 한 것이므로
-      if (this.joinInfo.myImages.length === 0) {
-        this.isCarousel = false;
-      } else {
-        const result = [];
-        // 파일 하나당 가상의 URL 만들기
-        for (let i = 0; i < this.joinInfo.myImages.length; i++) {
-          const previewURL = URL.createObjectURL(this.joinInfo.myImages[i]);
-          result.push(previewURL);
-        }
-        this.joinInfo.myImagesURL = result;
-        this.isCarousel = true;
-      }
-    },
     myProfile() {
       // X 버튼 누르는 경우 초기화
       if (this.joinInfo.imgFile === null) {
         this.isProfile = false;
-      } else {
-        this.joinInfo.profileURL = URL.createObjectURL(this.joinInfo.imgFile);
-        this.isProfile = true;
+        return
       }
+
+      // 이미지에 특수 문자가 포함되어 있는 경우 제외
+      if (commonFunc.checkMyImageLetter(this.joinInfo.imgFile)) {
+        this.joinInfo.imgFile = null
+        return
+      }
+
+      // 그 외의 경우
+      this.joinInfo.profileURL = URL.createObjectURL(this.joinInfo.imgFile);
+      this.isProfile = true;
     },
-    validEmail(email) {
+    myImages() {
+      // X 버튼을 누르는 경우에는, 초기화를 한 것이므로
+      if (this.joinInfo.myImages.length === 0) {
+        this.isCarousel = false;
+        return
+      }
+
+      // 이미지에 특수 문자가 포함되어 있는 경우 제외
+      if (commonFunc.checkMyImagesLetter(this.joinInfo.myImages)) {
+        this.joinInfo.myImages = []
+        return
+      }
+
+      // 갯수를 제한한다.
+      if (this.joinInfo.myImages.length > 7) {
+        alert("이미지는 최대 7장까지 선택 가능합니다.");
+        this.joinInfo.myImages = [];
+        return
+      }
+
+      const result = [];
+      // 파일 하나당 가상의 URL 만들기
+      for (let i = 0; i < this.joinInfo.myImages.length; i++) {
+        const previewURL = URL.createObjectURL(this.joinInfo.myImages[i]);
+        result.push(previewURL);
+      }
+      this.joinInfo.myImagesURL = result;
+      this.isCarousel = true;
+    },
+    validEmail() {
       // 공백 값인 경우 제외
       if (this.joinInfo.email === "") {
         return;
@@ -707,7 +719,7 @@ export default {
         this.emailLoading = false;
       }, 2000);
     },
-    validNickname(value) {
+    validNickname() {
       // 공백 값인 경우 제외
       if (this.joinInfo.nickName === "") {
         return;
