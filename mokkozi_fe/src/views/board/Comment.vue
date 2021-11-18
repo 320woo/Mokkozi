@@ -2,30 +2,31 @@
   <div class="background-div">
     <div class="comment-div">
       <v-card
-        class="board-card"
+        class="comment-card"
         max-width="24rem"
-        height="auto"
+        height="42rem"
       >
-        <!-- <v-card-title style="display:flex; justify-content:space-between;" class="font-weight-bold"><v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>댓글<v-icon>fas fa-ellipsis-h</v-icon></v-card-title> -->
-        <v-toolbar
-            color="#ffe8e8"
-            style="box-shadow: none;"
-          >
-            <v-btn icon>
-              <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
-            </v-btn>
-            <v-spacer></v-spacer>
+        <v-card-title
+          style="
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.2rem;
+          "
+        >
+          <v-btn icon>
+            <v-icon @click="backToBoardClick">fas fa-chevron-left</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
             <v-toolbar-title class="font-weight-bold">댓글</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-list-item-avatar @click="userImageClick">
+            <v-list-item-avatar @click="userImageClick(board.userEmail)">
               <img :src="board.profileUrl">
             </v-list-item-avatar>
-          </v-toolbar>
+        </v-card-title>
         <v-divider style="margin: 0.5rem 0rem;"></v-divider>
-
         <div v-for="comment in conmmentList" :key="comment.id"  style="display: flex; flex-direction: row; justify-content: center">
           <div style="width: 3rem;">
-            <v-list-item-avatar>
+            <v-list-item-avatar @click="userImageClick(comment.email)">
               <img :src="comment.file_path">
             </v-list-item-avatar>
           </div>
@@ -36,31 +37,31 @@
             </v-list-item-content>
           </div>
         </div>
-
-        <div style="display:flex; justify-content: space-between;">
-          <input
-              v-model="commentContent"
-              style="
-              height: 24px;
-              font-size: 0.875rem;
-              border: none;
-              width: 16rem;
-              outline-style: none;
-              "
-              type="text"
-              placeholder="댓글 달기"
-            />
-            <v-btn
-              color="#FFB4B4"
-              style="padding: 0px 5px;"
-              min-width="40px"
-              height="24px"
-              @click="createComment(board.id)"
-            >
-              작성
-            </v-btn>
-        </div>
       </v-card>
+      <div style="display:flex; justify-content: space-between;">
+      <input
+          v-model="commentContent"
+          style="
+          height: 24px;
+          font-size: 0.875rem;
+          border: none;
+          width: 16rem;
+          outline-style: none;
+          "
+          type="text"
+          placeholder="댓글 달기"
+          @keydown.enter="createComment(board.id)"
+        />
+        <v-btn
+          color="#FFB4B4"
+          style="padding: 0px 5px;"
+          min-width="40px"
+          height="24px"
+          @click="createComment(board.id)"
+        >
+          작성
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -89,8 +90,8 @@ export default {
     backToBoardClick () {
       this.$router.push({ name: 'Board' })
     },
-    userImageClick () {
-      this.$router.push({ name: 'Profile' })
+    userImageClick(userEmail) {
+      this.$router.push({ name: "Profile", params: { userEmail: userEmail } });
     },
     // 게시물 불러오기
     getSelectBoard (boardId) {
@@ -110,7 +111,7 @@ export default {
     // 댓글 불러오기
     getCommentList (boardId) {
       axios({
-        url: process.env.VUE_APP_API_URL + `/api/meet/comment?${boardId}`,
+        url: process.env.VUE_APP_API_URL + `/api/meet/comment?boardId=${boardId}`,
         methods: 'GET',
         headers:{
           Authorization:"Bearer "+ this.$store.state.jwt
@@ -152,16 +153,17 @@ export default {
 
 <style scoped>
   .background-div {
-      padding: 0.5rem 5rem 0.5rem 5rem;
-      text-align: center;
-    }
+    margin-top: 50px;
+    padding: 0.5rem 5rem 0.5rem 5rem;
+    text-align: center;
+  }
   .comment-div {
     width: 24rem;
-    height: 50rem;
+    height: 48rem;
     display: inline-block;
     background-color: #ffe8e8;
     padding: 2rem 2rem;
-    border-radius: 2rem;
+    border-radius: 1rem;
     overflow-y: scroll;
   }
   .comment-div::-webkit-scrollbar {
@@ -177,14 +179,17 @@ export default {
     word-break: break-all;
     padding: 0;
   }
-  .board-card {
+  .comment-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-content: center;
     background-color: #ffe8e8;
-    border-radius: 2rem;
+    overflow-y: scroll;
   }
+  .comment-card::-webkit-scrollbar {
+  display: none;
+}
   .theme--light.v-card {
     background-color: #ffe8e8;
   }
