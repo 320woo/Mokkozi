@@ -9,3 +9,46 @@ export function makeLocalURL(files) {
   }
   return result
 }
+
+// 단일 파일 이름 검사
+export function checkMyImageLetter(myImages) {
+  console.log("파일 이름 유효성 검사합니다.")
+
+  console.log("파일 이름은..", myImages.name)
+
+  if (myImages.name.includes("(") || myImages.name.includes(")") ||
+    myImages.name.includes("\\") || myImages.name.includes("/") ||
+    myImages.name.includes(":") || myImages.name.includes(";") ||
+    myImages.name.includes("*") || myImages.name.includes("?") ||
+    myImages.name.includes('"') || myImages.name.includes("'") ||
+    myImages.name.includes("<") || myImages.name.includes(">") ||
+    myImages.name.includes("|") || myImages.name.includes(" ")) {
+    alert("파일 이름에 사용할 수 없는 특수문자가 포함되어 있습니다.")
+
+    return true
+  }
+  return false
+
+}
+
+
+// 여러 파일 이름 검사
+export function checkMyImagesLetter(myImages) {
+  console.log("파일 이름 유효성 검사합니다.")
+
+  console.log("파일 이름은..", myImages.name)
+  for (let i = 0; i < myImages.length; i++) {
+    console.log("for문 돌아감")
+    if (myImages[i].name.includes("(") || myImages[i].name.includes(")") ||
+      myImages[i].name.includes("\\") || myImages[i].name.includes("/") ||
+      myImages[i].name.includes(":") || myImages[i].name.includes(";") ||
+      myImages[i].name.includes("*") || myImages[i].name.includes("?") ||
+      myImages[i].name.includes('"') || myImages[i].name.includes("'") ||
+      myImages[i].name.includes("<") || myImages[i].name.includes(">") ||
+      myImages[i].name.includes("|") || myImages[i].name.includes(" ")) {
+      alert("파일 이름에 사용할 수 없는 특수문자가 포함되어 있습니다.")
+      return true
+    }
+    return false
+  }
+}
